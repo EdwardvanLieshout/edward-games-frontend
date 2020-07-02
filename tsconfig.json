@@ -5,7 +5,11 @@
   To learn more about this file see: https://angular.io/config/solution-tsconfig.
 */
 {
-  "files": [],
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "target": "es5",
+    "lib": ["es6"]
+  },
   "references": [
     {
       "path": "./tsconfig.app.json"
@@ -16,5 +20,5 @@
     {
       "path": "./e2e/tsconfig.json"
     }
-]
+  ]
 }

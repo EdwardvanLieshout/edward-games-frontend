@@ -1,0 +1,11 @@
+@import "../abstracts/all";
+
+.hidden {
+  display: none !important;
+
+  &--visually {
+    @include hide-visually-only;
+  }
+}
+
+

@@ -1,0 +1,7 @@
+@import '../config';
+@import '../abstracts/all';
+
+.#{$block-prefix}room__canvas {
+  width: 100%;
+  height: 500px;
+}

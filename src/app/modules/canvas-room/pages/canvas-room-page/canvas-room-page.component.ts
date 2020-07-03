@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-canvas-room-page',
@@ -7,8 +7,8 @@ import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } fro
 })
 export class CanvasRoomPageComponent implements OnInit {
 
-  public readonly SCREEN_WIDTH = 640;
-  public readonly SCREEN_HEIGHT = 480;
+  public SCREEN_WIDTH = 600;
+  public SCREEN_HEIGHT = 400;
 
   public readonly TEXTURE_WIDTH = 64;
   public readonly TEXTURE_HEIGHT = 64;
@@ -52,6 +52,7 @@ export class CanvasRoomPageComponent implements OnInit {
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
 
+
   private ctx: CanvasRenderingContext2D;
   private data: ImageData;
 
@@ -66,21 +67,32 @@ export class CanvasRoomPageComponent implements OnInit {
   private time = 0;
   private oldTime = 0;
 
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?): void {
+   this.SCREEN_WIDTH = this.canvas.nativeElement.width;
+   this.SCREEN_HEIGHT = this.canvas.nativeElement.height;
+   this.ctx = this.canvas.nativeElement.getContext('2d');
+  }
+
   public ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.loadTexture().then((imageData) => {
-      this.textures = [
-        imageData,
-        imageData,
-        imageData,
-        imageData,
-        imageData,
-        imageData,
-        imageData,
-        imageData
-      ];
-      this.showCanvas = true;
-      this.performTick();
+    this.loadTexture('texture0').then((imageData1) => {
+      this.loadTexture('texture1').then((imageData2) => {
+        this.textures = [
+          imageData1,
+          imageData2,
+          imageData1,
+          imageData2,
+          imageData1,
+          imageData2,
+          imageData1,
+          imageData2
+        ];
+        this.showCanvas = true;
+        this.onResize();
+        this.performTick();
+      });
     });
   }
 
@@ -257,9 +269,9 @@ export class CanvasRoomPageComponent implements OnInit {
         else {
           const dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
           const brightness = Math.abs((y - this.SCREEN_HEIGHT / 2) / this.SCREEN_HEIGHT * 2);
-          this.data.data[dataIndex] = (y < this.SCREEN_HEIGHT / 2 ? 255 : 150) * brightness;
-          this.data.data[dataIndex + 1] = (y < this.SCREEN_HEIGHT / 2 ? 255 : 150) * brightness;
-          this.data.data[dataIndex + 2] = (y < this.SCREEN_HEIGHT / 2 ? 255 : 150) * brightness;
+          this.data.data[dataIndex] = (y < this.SCREEN_HEIGHT / 2 ? 100 : 150) * brightness;
+          this.data.data[dataIndex + 1] = (y < this.SCREEN_HEIGHT / 2 ? 100 : 150) * brightness;
+          this.data.data[dataIndex + 2] = (y < this.SCREEN_HEIGHT / 2 ? 100 : 150) * brightness;
           this.data.data[dataIndex + 3] = 255;
         }
 
@@ -298,9 +310,9 @@ export class CanvasRoomPageComponent implements OnInit {
     this.planeY = oldPlaneX * Math.sin(rotSpeed) + this.planeY * Math.cos(rotSpeed);
   }
 
-  private loadTexture = (): Promise<ImageData> => {
+  private loadTexture = (name: string): Promise<ImageData> => {
     const image = new Image(this.TEXTURE_WIDTH, this.TEXTURE_HEIGHT);
-    image.src = '../../../../assets/textures/texture.png';
+    image.src = `../../../../assets/textures/${name}.png`;
     return new Promise((resolve, reject) => {
       image.onload = () => {
         this.ctx.drawImage(image, 0, 0);

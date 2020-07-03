@@ -6,5 +6,5 @@
   (window:keydown.arrowup)="startMoveForward()"
   (window:keyup.arrowup)="cancelMoveForward()"
   >
-  <canvas [ngClass]="{'hidden-visually': !showCanvas}" #canvas [width]="SCREEN_WIDTH" [height]="SCREEN_HEIGHT" style="border:1px solid #c3c3c3;"></canvas>
+  <canvas [ngClass]="{'hidden-visually': !showCanvas}" class="e-room__canvas" [width]="SCREEN_WIDTH" [height]="SCREEN_HEIGHT" #canvas style="border:1px solid #c3c3c3;"></canvas>
 </div>

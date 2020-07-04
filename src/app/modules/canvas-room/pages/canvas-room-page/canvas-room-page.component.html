@@ -1,4 +1,5 @@
-<div class="e-flex">
+<h1 class="text--green text__shadow--green-8">Title</h1>
+<div class="e-flex margin--1">
   <app-room-view class="e-flex__col e-flex__col-4" (tickFinished)="onTickFinish()"></app-room-view>
   <div class="margin-left--1">
     <app-map-view [events]="tickFinished.asObservable()"></app-map-view>

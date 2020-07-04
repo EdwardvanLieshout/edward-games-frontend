@@ -1,4 +1,15 @@
-import { Component, OnInit, ElementRef, ViewChild, HostListener, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  ViewChild,
+  HostListener,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  OnDestroy
+} from '@angular/core';
 import { TextureTypeEnum } from '../../../../../../shared/models/enums/textureType.enum';
 import { TileTypeEnum } from '../../../../../../shared/models/enums/tileType.enum';
 import { MapService } from '../../../../../../core/services/map.service';
@@ -8,7 +19,7 @@ import { MapService } from '../../../../../../core/services/map.service';
   templateUrl: './room-view.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RoomViewComponent implements OnInit {
+export class RoomViewComponent implements OnInit, OnDestroy {
 
   public SCREEN_WIDTH = 600;
   public SCREEN_HEIGHT = 400;
@@ -68,6 +79,10 @@ export class RoomViewComponent implements OnInit {
     });
   }
 
+  public ngOnDestroy(): void {
+    clearTimeout(this.tick);
+  }
+
   public performTick = (): void => {
     if (this.rotatingRight) {
       this.rotateRight();
@@ -86,7 +101,7 @@ export class RoomViewComponent implements OnInit {
     this.tickFinished.emit();
     this.tick = setTimeout(() => {
     this.performTick();
-    }, 30);
+    }, 45);
   }
 
   public startRotateRight = (): void => {

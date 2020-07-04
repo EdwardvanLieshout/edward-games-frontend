@@ -1,0 +1,9 @@
+$_default-colour: $colour-black;
+
+@mixin text-shadow($_color: $_default-colour, $_amount: 4px) {
+  text-shadow: 0px 0px $_amount $_color;
+}
+
+@mixin box-shadow($_color: $_default-colour, $_amount: 4px) {
+  box-shadow: 0px 0px $_amount $_amount $_color;
+}

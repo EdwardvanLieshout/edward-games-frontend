@@ -1,0 +1,18 @@
+@import '../abstracts/all';
+
+.text {
+  &--green {
+    color: $colour-green;
+  }
+
+  &__shadow {
+    &--green {
+      @include text-shadow($colour-green-shadow, 4px);
+      @for $i from 5 through 12 {
+        &-#{$i} {
+          @include text-shadow($colour-green-shadow, #{$i}px);
+        }
+      }
+    }
+  }
+}

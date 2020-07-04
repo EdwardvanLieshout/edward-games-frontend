@@ -1,15 +1,6 @@
-<canvas
-  (window:keydown.arrowright)="startRotateRight()"
-  (window:keyup.arrowright)="cancelRotateRight()"
-  (window:keydown.arrowleft)="startRotateLeft()"
-  (window:keyup.arrowleft)="cancelRotateLeft()"
-  (window:keydown.arrowup)="startMoveForward()"
-  (window:keyup.arrowup)="cancelMoveForward()"
-  (window:keydown.arrowdown)="startMoveBackward()"
-  (window:keyup.arrowdown)="cancelMoveBackward()"
-  [ngClass]="{'hidden--visually': !showCanvas, 'e-room__canvas': true}"
-  [width]="SCREEN_WIDTH"
-  [height]="SCREEN_HEIGHT"
-  #canvas>
-</canvas>
-<p [ngClass]="{'hidden--visually': showCanvas}">Loading...</p>
+<div class="e-flex">
+  <app-room-view class="e-flex__col e-flex__col-4" (tickFinished)="onTickFinish()"></app-room-view>
+  <div class="margin-left--1">
+    <app-map-view [events]="tickFinished.asObservable()"></app-map-view>
+  </div>
+</div>

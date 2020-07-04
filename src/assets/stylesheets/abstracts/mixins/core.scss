@@ -1,3 +1,9 @@
+@mixin media-small {
+  @media screen and (max-width: ($media-medium-width - 1px)) {
+    @content;
+  }
+}
+
 @mixin hide-visually-only {
   border: 0;
   clip: rect(0, 0, 0, 0);

@@ -1,4 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
+import { TextureTypeEnum } from '../../../../shared/models/enums/textureType.enum';
+import { TileTypeEnum } from '../../../../shared/models/enums/tileType.enum';
+import { ITile } from '../../../../shared/models/interfaces/tile.interface';
+import { MapService } from '../../../../core/services/map.service';
 
 @Component({
   selector: 'app-canvas-room-page',
@@ -13,41 +17,17 @@ export class CanvasRoomPageComponent implements OnInit {
   public readonly TEXTURE_WIDTH = 64;
   public readonly TEXTURE_HEIGHT = 64;
 
-  public readonly MAP_WIDTH = 24;
-  public readonly MAP_HEIGHT = 24;
 
-  public showCanvas: boolean;
+  public showCanvas = false;
 
   public rotatingLeft: boolean;
   public rotatingRight: boolean;
   public movingForward: boolean;
+  public movingBackward: boolean;
 
-  public worldMap = [
-    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 7, 7, 7, 7, 7, 7, 7, 7],
-    [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 7],
-    [4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
-    [4, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
-    [4, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 7],
-    [4, 0, 4, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 7, 0, 7, 7, 7, 7, 7],
-    [4, 0, 5, 0, 0, 0, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 7, 0, 0, 0, 7, 7, 7, 1],
-    [4, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 7, 0, 0, 0, 0, 0, 0, 8],
-    [4, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 1],
-    [4, 0, 8, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 7, 0, 0, 0, 0, 0, 0, 8],
-    [4, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 7, 0, 0, 0, 7, 7, 7, 1],
-    [4, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 0, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 1],
-    [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-    [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
-    [6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-    [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 6, 0, 6, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3],
-    [4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2],
-    [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 0, 0, 5, 0, 0, 2, 0, 0, 0, 2],
-    [4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2],
-    [4, 0, 6, 0, 6, 0, 0, 0, 0, 4, 6, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 2],
-    [4, 0, 0, 5, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2],
-    [4, 0, 6, 0, 6, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 5, 0, 0, 2, 0, 0, 0, 2],
-    [4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2],
-    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3]
-  ];
+  public tileEnum = TileTypeEnum;
+  public texEnum = TextureTypeEnum;
+
 
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
@@ -58,15 +38,9 @@ export class CanvasRoomPageComponent implements OnInit {
 
   private textures: ImageData[];
 
-  private posX = 22.0;
-  private posY = 11.5;
-  private dirX = -1.0;
-  private dirY = 0.0;
-  private planeX = 0.0;
-  private planeY = 0.66;
-  private time = 0;
-  private oldTime = 0;
+  private tick;
 
+  constructor(public mapService: MapService, private ref: ChangeDetectorRef) {}
 
   @HostListener('window:resize', ['$event'])
   onResize(event?): void {
@@ -77,27 +51,24 @@ export class CanvasRoomPageComponent implements OnInit {
 
   public ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.loadTexture('texture0').then((imageData1) => {
-      this.loadTexture('texture1').then((imageData2) => {
-        this.textures = [
-          imageData1,
-          imageData2,
-          imageData1,
-          imageData2,
-          imageData1,
-          imageData2,
-          imageData1,
-          imageData2
-        ];
-        this.showCanvas = true;
-        this.onResize();
-        this.performTick();
+    this.loadTexture('texture0').then((imageData0) => {
+      this.loadTexture('texture1').then((imageData1) => {
+        this.loadTexture('texture2').then((imageData2) => {
+          this.textures = [
+            imageData0,
+            imageData1,
+            imageData2,
+          ];
+          this.showCanvas = true;
+          this.ref.markForCheck();
+          this.onResize();
+          this.performTick();
+        });
       });
     });
   }
 
   public performTick = (): void => {
-    this.calculateRays();
     if (this.rotatingRight) {
       this.rotateRight();
     }
@@ -107,50 +78,160 @@ export class CanvasRoomPageComponent implements OnInit {
     if (this.movingForward) {
       this.moveForward();
     }
-    setTimeout(() => {
-      this.performTick();
-    }, 60);
+    if (this.movingBackward) {
+      this.moveBackward();
+    }
+    this.calculateRays();
+    clearTimeout(this.tick);
+    this.tick = setTimeout(() => {
+    this.performTick();
+    }, 30);
   }
 
   public startRotateRight = (): void => {
-    this.rotatingRight = true;
+    if (!this.rotatingRight) {
+      this.rotatingRight = true;
+      clearTimeout(this.tick);
+      this.performTick();
+    }
   }
 
   public cancelRotateRight = (): void => {
     this.rotatingRight = false;
+    clearTimeout(this.tick);
+    this.performTick();
   }
 
   public startRotateLeft = (): void => {
-    this.rotatingLeft = true;
+    if (!this.rotatingLeft) {
+      this.rotatingLeft = true;
+      clearTimeout(this.tick);
+      this.performTick();
+    }
   }
 
   public cancelRotateLeft = (): void => {
     this.rotatingLeft = false;
+    clearTimeout(this.tick);
+    this.performTick();
   }
 
   public startMoveForward = (): void => {
-    this.movingForward = true;
+    if (!this.movingForward) {
+      this.movingForward = true;
+      clearTimeout(this.tick);
+      this.performTick();
+    }
   }
 
   public cancelMoveForward = (): void => {
     this.movingForward = false;
+    clearTimeout(this.tick);
+    this.performTick();
+  }
+
+  public startMoveBackward = (): void => {
+    if (!this.movingBackward) {
+      this.movingBackward = true;
+      clearTimeout(this.tick);
+      this.performTick();
+    }
+  }
+
+  public cancelMoveBackward = (): void => {
+    this.movingBackward = false;
+    clearTimeout(this.tick);
+    this.performTick();
   }
 
   public calculateRays = (): void => {
-    this.ctx.fillStyle = 'blue';
-    this.ctx.fillRect(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
-    this.ctx.fillStyle = 'green';
-    this.ctx.fillRect(this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
 
     this.data = this.ctx.createImageData(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
 
+    for (let y = 0; y < this.SCREEN_HEIGHT; y++){
+      const rayDirX0 = this.mapService.getDirX() - this.mapService.getPlaneX();
+      const rayDirY0 = this.mapService.getDirY() - this.mapService.getPlaneY();
+      const rayDirX1 = this.mapService.getDirX() + this.mapService.getPlaneX();
+      const rayDirY1 = this.mapService.getDirY() + this.mapService.getPlaneY();
+
+      const p = y - this.SCREEN_HEIGHT / 2;
+
+      const posZ = 0.5 * this.SCREEN_HEIGHT;
+
+      const rowDistance = posZ / p;
+
+      const floorStepX = rowDistance * (rayDirX1 - rayDirX0) / this.SCREEN_WIDTH;
+      const floorStepY = rowDistance * (rayDirY1 - rayDirY0) / this.SCREEN_WIDTH;
+
+      let floorX = this.mapService.getPosX() + rowDistance * rayDirX0;
+      let floorY = this.mapService.getPosY() + rowDistance * rayDirY0;
+      for (let x = 0; x < this.SCREEN_WIDTH; x++) {
+        const cellX = Math.trunc(floorX);
+        const cellY = Math.trunc(floorY);
+
+        // tslint:disable-next-line:no-bitwise
+        const tx = Math.trunc(this.TEXTURE_WIDTH * (floorX - cellX)) & (this.TEXTURE_WIDTH - 1);
+        // tslint:disable-next-line:no-bitwise
+        const ty = Math.trunc(this.TEXTURE_HEIGHT * (floorY - cellY)) & (this.TEXTURE_HEIGHT - 1);
+
+        floorX += floorStepX;
+        floorY += floorStepY;
+
+        let floorTexture;
+        let ceilingTexture;
+
+        if (this.mapService.getMap()[cellX] && this.mapService.getMap()[cellX][cellY]) {
+          floorTexture = this.mapService.getMap()[cellX][cellY].tex0;
+          ceilingTexture = this.mapService.getMap()[cellX][cellY].tex1;
+        } else {
+          floorTexture = 0;
+          ceilingTexture = 0;
+        }
+        if (!ceilingTexture){
+          ceilingTexture = 0;
+        }
+        const texIndex = (this.TEXTURE_WIDTH * ty + tx) * 4;
+        let color = {
+          r: this.textures[floorTexture].data[texIndex],
+          g: this.textures[floorTexture].data[texIndex + 1],
+          b: this.textures[floorTexture].data[texIndex + 2],
+          a: this.textures[floorTexture].data[texIndex + 3]
+        };
+
+        color.r = color.r / rowDistance;
+        color.g = color.g / rowDistance;
+        color.b = color.b / rowDistance;
+        let dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
+        this.data.data[dataIndex] = color.r;
+        this.data.data[dataIndex + 1] = color.g;
+        this.data.data[dataIndex + 2] = color.b;
+        this.data.data[dataIndex + 3] = color.a;
+
+        color = {
+          r: this.textures[ceilingTexture].data[texIndex],
+          g: this.textures[ceilingTexture].data[texIndex + 1],
+          b: this.textures[ceilingTexture].data[texIndex + 2],
+          a: this.textures[ceilingTexture].data[texIndex + 3]
+        };
+
+        color.r = color.r / rowDistance;
+        color.g = color.g / rowDistance;
+        color.b = color.b / rowDistance;
+        dataIndex = ((this.SCREEN_HEIGHT - y - 1) * this.SCREEN_WIDTH + x) * 4;
+        this.data.data[dataIndex] = color.r;
+        this.data.data[dataIndex + 1] = color.g;
+        this.data.data[dataIndex + 2] = color.b;
+        this.data.data[dataIndex + 3] = color.a;
+      }
+    }
+
     for (let x = 0; x < this.SCREEN_WIDTH; x++) {
       const cameraX = 2 * x / this.SCREEN_WIDTH - 1;
-      const rayDirX = this.dirX + this.planeX * cameraX;
-      const rayDirY = this.dirY + this.planeY * cameraX;
+      const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
+      const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
 
-      let mapX = Math.trunc(this.posX);
-      let mapY = Math.trunc(this.posY);
+      let mapX = Math.trunc(this.mapService.getPosX());
+      let mapY = Math.trunc(this.mapService.getPosY());
 
       let sideDistX;
       let sideDistY;
@@ -168,22 +249,22 @@ export class CanvasRoomPageComponent implements OnInit {
       if (rayDirX < 0)
       {
         stepX = -1;
-        sideDistX = (this.posX - mapX) * deltaDistX;
+        sideDistX = (this.mapService.getPosX() - mapX) * deltaDistX;
       }
       else
       {
         stepX = 1;
-        sideDistX = (mapX + 1.0 - this.posX) * deltaDistX;
+        sideDistX = (mapX + 1.0 - this.mapService.getPosX()) * deltaDistX;
       }
       if (rayDirY < 0)
       {
         stepY = -1;
-        sideDistY = (this.posY - mapY) * deltaDistY;
+        sideDistY = (this.mapService.getPosY() - mapY) * deltaDistY;
       }
       else
       {
         stepY = 1;
-        sideDistY = (mapY + 1.0 - this.posY) * deltaDistY;
+        sideDistY = (mapY + 1.0 - this.mapService.getPosY()) * deltaDistY;
       }
       while (!hit)
       {
@@ -199,16 +280,16 @@ export class CanvasRoomPageComponent implements OnInit {
           mapY += stepY;
           side = true;
         }
-        if (this.worldMap[mapX][mapY] > 0){
+        if (this.mapService.getMap()[mapX][mapY].tileType === this.tileEnum.WALL){
           hit = true;
         }
       }
 
       if (!side) {
-        perpWallDist = (mapX - this.posX + (1 - stepX) / 2) / rayDirX;
+        perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
       }
       else {
-        perpWallDist = (mapY - this.posY + (1 - stepY) / 2) / rayDirY;
+        perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
       }
 
       const lineHeight = Math.trunc(this.SCREEN_HEIGHT / perpWallDist);
@@ -222,14 +303,14 @@ export class CanvasRoomPageComponent implements OnInit {
         drawEnd = this.SCREEN_HEIGHT - 1;
       }
 
-      const texNum = this.worldMap[mapX][mapY] - 1;
+      const texNum = this.mapService.getMap()[mapX][mapY].tex0;
 
       let wallX;
       if (!side) {
-        wallX = this.posY + perpWallDist * rayDirY;
+        wallX = this.mapService.getPosY() + perpWallDist * rayDirY;
       }
       else {
-        wallX = this.posX + perpWallDist * rayDirX;
+        wallX = this.mapService.getPosX() + perpWallDist * rayDirX;
       }
       wallX -= Math.trunc(wallX);
       let texX = Math.trunc(wallX * this.TEXTURE_WIDTH);
@@ -242,9 +323,8 @@ export class CanvasRoomPageComponent implements OnInit {
 
       const step = 1.0 * this.TEXTURE_HEIGHT / lineHeight;
       let texPos = (drawStart - this.SCREEN_HEIGHT / 2 + lineHeight / 2) * step;
-      for (let y = 0; y < this.SCREEN_HEIGHT; y++) {
+      for (let y = drawStart; y < drawEnd; y++) {
 
-        if (y >= drawStart && y < drawEnd) {
           // tslint:disable-next-line:no-bitwise
           const texY = Math.trunc(texPos) & (this.TEXTURE_HEIGHT - 1);
           texPos += step;
@@ -265,49 +345,25 @@ export class CanvasRoomPageComponent implements OnInit {
           this.data.data[dataIndex + 1] = color.g;
           this.data.data[dataIndex + 2] = color.b;
           this.data.data[dataIndex + 3] = color.a;
-        }
-        else {
-          const dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
-          const brightness = Math.abs((y - this.SCREEN_HEIGHT / 2) / this.SCREEN_HEIGHT * 2);
-          this.data.data[dataIndex] = (y < this.SCREEN_HEIGHT / 2 ? 100 : 150) * brightness;
-          this.data.data[dataIndex + 1] = (y < this.SCREEN_HEIGHT / 2 ? 100 : 150) * brightness;
-          this.data.data[dataIndex + 2] = (y < this.SCREEN_HEIGHT / 2 ? 100 : 150) * brightness;
-          this.data.data[dataIndex + 3] = 255;
-        }
-
       }
     }
     this.ctx.putImageData(this.data, 0, 0);
   }
 
   private moveForward = (): void => {
-    const moveSpeed = 0.06 * 2.0;
-    if (!this.worldMap[Math.trunc(this.posX + this.dirX * moveSpeed)][Math.trunc(this.posY)]) {
-      this.posX += this.dirX * moveSpeed;
-    }
-    if (!this.worldMap[Math.trunc(this.posX)][Math.trunc(this.posY + this.dirY * moveSpeed)]) {
-      this.posY += this.dirY * moveSpeed;
-    }
+    this.mapService.moveForward();
+  }
+
+  private moveBackward = (): void => {
+    this.mapService.moveBackward();
   }
 
   private rotateRight = (): void => {
-    const rotSpeed = 0.06 * 2.0;
-    const oldDirX = this.dirX;
-    this.dirX = this.dirX * Math.cos(-rotSpeed) - this.dirY * Math.sin(-rotSpeed);
-    this.dirY = oldDirX * Math.sin(-rotSpeed) + this.dirY * Math.cos(-rotSpeed);
-    const oldPlaneX = this.planeX;
-    this.planeX = this.planeX * Math.cos(-rotSpeed) - this.planeY * Math.sin(-rotSpeed);
-    this.planeY = oldPlaneX * Math.sin(-rotSpeed) + this.planeY * Math.cos(-rotSpeed);
+    this.mapService.rotateRight();
   }
 
   private rotateLeft = (): void => {
-    const rotSpeed = 0.06 * 2.0;
-    const oldDirX = this.dirX;
-    this.dirX = this.dirX * Math.cos(rotSpeed) - this.dirY * Math.sin(rotSpeed);
-    this.dirY = oldDirX * Math.sin(rotSpeed) + this.dirY * Math.cos(rotSpeed);
-    const oldPlaneX = this.planeX;
-    this.planeX = this.planeX * Math.cos(rotSpeed) - this.planeY * Math.sin(rotSpeed);
-    this.planeY = oldPlaneX * Math.sin(rotSpeed) + this.planeY * Math.cos(rotSpeed);
+    this.mapService.rotateLeft();
   }
 
   private loadTexture = (name: string): Promise<ImageData> => {

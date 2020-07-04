@@ -1,10 +1,15 @@
-<div
+<canvas
   (window:keydown.arrowright)="startRotateRight()"
   (window:keyup.arrowright)="cancelRotateRight()"
   (window:keydown.arrowleft)="startRotateLeft()"
   (window:keyup.arrowleft)="cancelRotateLeft()"
   (window:keydown.arrowup)="startMoveForward()"
   (window:keyup.arrowup)="cancelMoveForward()"
-  >
-  <canvas [ngClass]="{'hidden-visually': !showCanvas}" class="e-room__canvas" [width]="SCREEN_WIDTH" [height]="SCREEN_HEIGHT" #canvas style="border:1px solid #c3c3c3;"></canvas>
-</div>
+  (window:keydown.arrowdown)="startMoveBackward()"
+  (window:keyup.arrowdown)="cancelMoveBackward()"
+  [ngClass]="{'hidden--visually': !showCanvas, 'e-room__canvas': true}"
+  [width]="SCREEN_WIDTH"
+  [height]="SCREEN_HEIGHT"
+  #canvas>
+</canvas>
+<p [ngClass]="{'hidden--visually': showCanvas}">Loading...</p>

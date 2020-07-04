@@ -1,5 +1,9 @@
 export enum TextureTypeEnum {
   GREENGRID = 0,
-  REDGRID = 1,
-  BLUEGRID = 2,
+  WOOD = 1,
+  PLAIN = 2,
+  BRICKWALL = 3,
+  SKY = 4,
+  HILLS = 5,
+  GRASS = 6
 }

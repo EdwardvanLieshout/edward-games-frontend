@@ -1,0 +1,14 @@
+@import '../abstracts/all';
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: $colour-black;
+  color: $colour-light-gray;
+}

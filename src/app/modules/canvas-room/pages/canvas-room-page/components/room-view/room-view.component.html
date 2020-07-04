@@ -7,9 +7,10 @@
   (window:keyup.arrowup)="cancelMoveForward()"
   (window:keydown.arrowdown)="startMoveBackward()"
   (window:keyup.arrowdown)="cancelMoveBackward()"
-  [ngClass]="{'hidden--visually': !showCanvas, 'e-room__canvas': true}"
+  [ngClass]="{'hidden--visually': !showCanvas, 'e-room__canvas': true, 'border__shadow--green': true}"
   [width]="SCREEN_WIDTH"
   [height]="SCREEN_HEIGHT"
   #canvas>
 </canvas>
-<p [ngClass]="{'hidden--visually': showCanvas}">Loading...</p>
+
+<p [ngClass]="{'hidden': showCanvas, 'e-room__loading': true}"></p>

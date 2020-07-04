@@ -9,11 +9,4 @@ import { Subject } from 'rxjs';
 })
 export class CanvasRoomPageComponent {
 
-  @Output()
-  tickFinished: Subject<void> = new Subject<void>();
-
-  public onTickFinish = (): void => {
-    this.tickFinished.next();
-  }
-
 }

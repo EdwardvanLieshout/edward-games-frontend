@@ -16,7 +16,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   private eventsSubscription: Subscription;
 
-  @Input() events: Observable<void>;
+  public events: Observable<void>;
 
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
@@ -26,8 +26,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
   constructor(public mapService: MapService) {}
 
   public ngOnInit(): void {
+    this.events = this.mapService.getEvents();
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.eventsSubscription = this.events.subscribe(() => this.performTick());
+    this.performTick();
   }
 
   public ngOnDestroy(): void {
@@ -35,28 +37,109 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   public performTick = (): void => {
+    this.ctx.fillStyle = 'rgb(100, 100, 100)';
+    this.ctx.fillRect(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
+    for (let i = -1; i <= 1; i += 0.1) {
+      this.drawCameraRay(i, 'rgb(100, 180, 100', 7);
+    }
     for (let x = 0; x < this.mapService.MAP_WIDTH; x++) {
       for (let y = 0; y < this.mapService.MAP_HEIGHT; y++) {
-        if (this.mapService.getMap()[y][x].tileType === TileTypeEnum.FLOOR) {
-          this.ctx.fillStyle = 'rgb(100, 100, 100)';
-        }
-        else {
+        if (this.mapService.getMap()[y][x].tileType === TileTypeEnum.WALL) {
           this.ctx.fillStyle = 'rgb(200, 200, 200)';
+          this.ctx.fillRect(
+            x * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH,
+            y * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
+            this.SCREEN_WIDTH / this.mapService.MAP_WIDTH,
+            this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
+          );
         }
-        this.ctx.fillRect(
-          x * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH,
-          y * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
-          this.SCREEN_WIDTH / this.mapService.MAP_WIDTH,
-          this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
-        );
       }
     }
-    this.ctx.fillStyle = 'rgb(140, 200, 255)';
+    this.ctx.fillStyle = 'rgb(100, 255, 100)';
     this.ctx.fillRect(
-      this.mapService.getPosY() * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT - 1,
-      this.mapService.getPosX() * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH - 1,
-      3,
-      3
+      this.mapService.getPosY() * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT - 2,
+      this.mapService.getPosX() * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH - 2,
+      4,
+      4
     );
+  }
+
+  public drawCameraRay = (cameraX: number, strokeStyle: string, lineWidth: number): void => {
+    const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
+    const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
+
+    let mapX = Math.trunc(this.mapService.getPosX());
+    let mapY = Math.trunc(this.mapService.getPosY());
+
+    let sideDistX;
+    let sideDistY;
+
+    const deltaDistX = Math.abs(1 / rayDirX);
+    const deltaDistY = Math.abs(1 / rayDirY);
+
+    let stepX;
+    let stepY;
+
+    let hit = false;
+    let side = false;
+
+    if (rayDirX < 0)
+    {
+      stepX = -1;
+      sideDistX = (this.mapService.getPosX() - mapX) * deltaDistX;
+    }
+    else
+    {
+      stepX = 1;
+      sideDistX = (mapX + 1.0 - this.mapService.getPosX()) * deltaDistX;
+    }
+    if (rayDirY < 0)
+    {
+      stepY = -1;
+      sideDistY = (this.mapService.getPosY() - mapY) * deltaDistY;
+    }
+    else
+    {
+      stepY = 1;
+      sideDistY = (mapY + 1.0 - this.mapService.getPosY()) * deltaDistY;
+    }
+    while (!hit)
+    {
+      if (sideDistX < sideDistY)
+      {
+        sideDistX += deltaDistX;
+        mapX += stepX;
+        side = false;
+      }
+      else
+      {
+        sideDistY += deltaDistY;
+        mapY += stepY;
+        side = true;
+      }
+      if (this.mapService.getMap()[mapX][mapY].tileType === TileTypeEnum.WALL){
+        hit = true;
+      }
+    }
+    let perpWallDist;
+    if (!side) {
+      perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
+    }
+    else {
+      perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(
+      this.mapService.getPosY() * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
+    this.mapService.getPosX() * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH
+    );
+    this.ctx.lineTo(
+      (this.mapService.getPosY() + (perpWallDist + 0.1) * rayDirY) * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
+      (this.mapService.getPosX() + (perpWallDist + 0.1) * rayDirX) * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH
+    );
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeStyle = strokeStyle;
+    this.ctx.stroke();
   }
 }

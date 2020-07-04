@@ -1,14 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { MapService } from '../../../../../../core/services/map.service';
 
 @Component({
   selector: 'app-room-title',
   templateUrl: './room-title.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoomTitleComponent implements OnInit, OnDestroy {
-
   private eventsSubscription: Subscription;
 
   public titleText = '';
@@ -30,6 +36,5 @@ export class RoomTitleComponent implements OnInit, OnDestroy {
   public performTick = (): void => {
     this.titleText = this.mapService.getRoom();
     this.ref.markForCheck();
-  }
-
+  };
 }

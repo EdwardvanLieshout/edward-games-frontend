@@ -1,8 +1,13 @@
 <app-room-title></app-room-title>
 <div class="e-flex margin--2">
-  <app-room-view class="e-flex__col e-flex__col-3 margin-bottom--2" (tickFinished)="onTickFinish()"></app-room-view>
+  <app-room-view
+    class="e-flex__col e-flex__col-3 margin-bottom--2"
+    (tickFinished)="onTickFinish()"
+  ></app-room-view>
   <div class="e-flex__col e-flex e-flex--reverse">
-    <div class="margin-bottom--1 margin-left--2 bg--lightgray border__shadow--green">
+    <div
+      class="margin-bottom--1 margin-left--2 bg--lightgray border__shadow--green"
+    >
       <app-map-view class="margin-auto"></app-map-view>
     </div>
     <div class="margin-left--2">

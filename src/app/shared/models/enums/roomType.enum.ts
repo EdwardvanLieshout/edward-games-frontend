@@ -3,5 +3,5 @@ export enum RoomTypeEnum {
   AUTHOR = 'Authors Room',
   ADVENTURE = 'Adventure Gate',
   GADGETS = 'Hall of Gadgets',
-  SOCIAL = 'Social Area'
+  SOCIAL = 'Social Area',
 }

@@ -1,1 +1,6 @@
-<p>canvas-room-page works!</p>
+<div class="e-flex">
+  <app-room-view class="e-flex__col e-flex__col-4" (tickFinished)="onTickFinish()"></app-room-view>
+  <div class="margin-left--1">
+    <app-map-view [events]="tickFinished.asObservable()"></app-map-view>
+  </div>
+</div>

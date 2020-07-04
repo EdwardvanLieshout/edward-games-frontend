@@ -1,15 +1,19 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs';
+
 
 @Component({
   selector: 'app-canvas-room-page',
   templateUrl: './canvas-room-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CanvasRoomPageComponent implements OnInit {
+export class CanvasRoomPageComponent {
 
-  constructor() { }
+  @Output()
+  tickFinished: Subject<void> = new Subject<void>();
 
-  ngOnInit(): void {
+  public onTickFinish = (): void => {
+    this.tickFinished.next();
   }
 
 }

@@ -1,4 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { MapService } from '../../../../../../core/services/map.service';
 import { TileTypeEnum } from '../../../../../../shared/models/enums/tileType.enum';
@@ -6,11 +15,9 @@ import { TileTypeEnum } from '../../../../../../shared/models/enums/tileType.enu
 @Component({
   selector: 'app-map-view',
   templateUrl: './map-view.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapViewComponent implements OnInit, OnDestroy {
-
-
   public SCREEN_WIDTH = 150;
   public SCREEN_HEIGHT = 150;
 
@@ -47,26 +54,36 @@ export class MapViewComponent implements OnInit, OnDestroy {
         if (this.mapService.getMap()[y][x].tileType === TileTypeEnum.WALL) {
           this.ctx.fillStyle = 'rgb(200, 200, 200)';
           this.ctx.fillRect(
-            x * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH,
-            y * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
+            (x * this.SCREEN_WIDTH) / this.mapService.MAP_WIDTH,
+            (y * this.SCREEN_HEIGHT) / this.mapService.MAP_HEIGHT,
             this.SCREEN_WIDTH / this.mapService.MAP_WIDTH,
-            this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
+            this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT
           );
         }
       }
     }
     this.ctx.fillStyle = 'rgb(100, 255, 100)';
     this.ctx.fillRect(
-      this.mapService.getPosY() * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT - 2,
-      this.mapService.getPosX() * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH - 2,
+      (this.mapService.getPosY() * this.SCREEN_HEIGHT) /
+        this.mapService.MAP_HEIGHT -
+        2,
+      (this.mapService.getPosX() * this.SCREEN_WIDTH) /
+        this.mapService.MAP_WIDTH -
+        2,
       4,
       4
     );
-  }
+  };
 
-  public drawCameraRay = (cameraX: number, strokeStyle: string, lineWidth: number): void => {
-    const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
-    const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
+  public drawCameraRay = (
+    cameraX: number,
+    strokeStyle: string,
+    lineWidth: number
+  ): void => {
+    const rayDirX =
+      this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
+    const rayDirY =
+      this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
 
     let mapX = Math.trunc(this.mapService.getPosX());
     let mapY = Math.trunc(this.mapService.getPosY());
@@ -83,63 +100,60 @@ export class MapViewComponent implements OnInit, OnDestroy {
     let hit = false;
     let side = false;
 
-    if (rayDirX < 0)
-    {
+    if (rayDirX < 0) {
       stepX = -1;
       sideDistX = (this.mapService.getPosX() - mapX) * deltaDistX;
-    }
-    else
-    {
+    } else {
       stepX = 1;
       sideDistX = (mapX + 1.0 - this.mapService.getPosX()) * deltaDistX;
     }
-    if (rayDirY < 0)
-    {
+    if (rayDirY < 0) {
       stepY = -1;
       sideDistY = (this.mapService.getPosY() - mapY) * deltaDistY;
-    }
-    else
-    {
+    } else {
       stepY = 1;
       sideDistY = (mapY + 1.0 - this.mapService.getPosY()) * deltaDistY;
     }
-    while (!hit)
-    {
-      if (sideDistX < sideDistY)
-      {
+    while (!hit) {
+      if (sideDistX < sideDistY) {
         sideDistX += deltaDistX;
         mapX += stepX;
         side = false;
-      }
-      else
-      {
+      } else {
         sideDistY += deltaDistY;
         mapY += stepY;
         side = true;
       }
-      if (this.mapService.getMap()[mapX][mapY].tileType === TileTypeEnum.WALL){
+      if (this.mapService.getMap()[mapX][mapY].tileType === TileTypeEnum.WALL) {
         hit = true;
       }
     }
     let perpWallDist;
     if (!side) {
-      perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
-    }
-    else {
-      perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
+      perpWallDist =
+        (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
+    } else {
+      perpWallDist =
+        (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
     }
 
     this.ctx.beginPath();
     this.ctx.moveTo(
-      this.mapService.getPosY() * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
-    this.mapService.getPosX() * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH
+      (this.mapService.getPosY() * this.SCREEN_HEIGHT) /
+        this.mapService.MAP_HEIGHT,
+      (this.mapService.getPosX() * this.SCREEN_WIDTH) /
+        this.mapService.MAP_WIDTH
     );
     this.ctx.lineTo(
-      (this.mapService.getPosY() + (perpWallDist + 0.1) * rayDirY) * this.SCREEN_HEIGHT / this.mapService.MAP_HEIGHT,
-      (this.mapService.getPosX() + (perpWallDist + 0.1) * rayDirX) * this.SCREEN_WIDTH / this.mapService.MAP_WIDTH
+      ((this.mapService.getPosY() + (perpWallDist + 0.1) * rayDirY) *
+        this.SCREEN_HEIGHT) /
+        this.mapService.MAP_HEIGHT,
+      ((this.mapService.getPosX() + (perpWallDist + 0.1) * rayDirX) *
+        this.SCREEN_WIDTH) /
+        this.mapService.MAP_WIDTH
     );
     this.ctx.lineWidth = lineWidth;
     this.ctx.strokeStyle = strokeStyle;
     this.ctx.stroke();
-  }
+  };
 }

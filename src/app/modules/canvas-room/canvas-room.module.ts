@@ -7,12 +7,14 @@ import { MapViewComponent } from './pages/canvas-room-page/components/map-view/m
 import { RoomTitleComponent } from './pages/canvas-room-page/components/room-title/room-title.component';
 import { RoomInfoComponent } from './pages/canvas-room-page/components/room-info/room-info.component';
 
-
-
 @NgModule({
-  declarations: [CanvasRoomPageComponent, RoomViewComponent, MapViewComponent, RoomTitleComponent, RoomInfoComponent],
-  imports: [
-    CommonModule, CanvasRoomRoutingModule
-  ]
+  declarations: [
+    CanvasRoomPageComponent,
+    RoomViewComponent,
+    MapViewComponent,
+    RoomTitleComponent,
+    RoomInfoComponent,
+  ],
+  imports: [CommonModule, CanvasRoomRoutingModule],
 })
-export class CanvasRoomModule { }
+export class CanvasRoomModule {}

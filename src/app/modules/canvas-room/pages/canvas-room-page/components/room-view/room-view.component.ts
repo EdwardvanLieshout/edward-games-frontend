@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
   Output,
   EventEmitter,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { TextureTypeEnum } from '../../../../../../shared/models/enums/textureType.enum';
 import { TileTypeEnum } from '../../../../../../shared/models/enums/tileType.enum';
@@ -20,7 +20,6 @@ import { MapService } from '../../../../../../core/services/map.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoomViewComponent implements OnInit, OnDestroy {
-
   public SCREEN_WIDTH = 600;
   public SCREEN_HEIGHT = 400;
 
@@ -40,7 +39,6 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
 
-
   private ctx: CanvasRenderingContext2D;
   private data: ImageData;
 
@@ -52,39 +50,29 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize(event?): void {
-   this.SCREEN_WIDTH = this.canvas.nativeElement.width;
-   this.SCREEN_HEIGHT = this.canvas.nativeElement.height;
-   this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.SCREEN_WIDTH = this.canvas.nativeElement.width;
+    this.SCREEN_HEIGHT = this.canvas.nativeElement.height;
+    this.ctx = this.canvas.nativeElement.getContext('2d');
   }
 
   public ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.loadTexture('grid').then((imageData0) => {
-      this.loadTexture('wood').then((imageData1) => {
-        this.loadTexture('plain').then((imageData2) => {
-          this.loadTexture('brickwall').then((imageData3) => {
-            this.loadTexture('sky').then((imageData4) => {
-              this.loadTexture('hills').then((imageData5) => {
-                this.loadTexture('grass').then((imageData6) => {
-                  this.textures = [
-                    imageData0,
-                    imageData1,
-                    imageData2,
-                    imageData3,
-                    imageData4,
-                    imageData5,
-                    imageData6,
-                  ];
-                  this.showCanvas = true;
-                  this.ref.markForCheck();
-                  this.onResize();
-                  this.performTick();
-                });
-              });
-            });
-          });
-        });
-      });
+    Promise.all(
+      [
+        'grid',
+        'wood',
+        'plain',
+        'brickwall',
+        'sky',
+        'hills',
+        'grass',
+      ].map((str) => this.loadTexture(str))
+    ).then((values) => {
+      this.textures = values;
+      this.showCanvas = true;
+      this.ref.markForCheck();
+      this.onResize();
+      this.performTick();
     });
   }
 
@@ -108,9 +96,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     this.calculateRays();
     clearTimeout(this.tick);
     this.tick = setTimeout(() => {
-    this.performTick();
+      this.performTick();
     }, 60);
-  }
+  };
 
   public startRotateRight = (): void => {
     if (!this.rotatingRight) {
@@ -118,13 +106,13 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       clearTimeout(this.tick);
       this.performTick();
     }
-  }
+  };
 
   public cancelRotateRight = (): void => {
     this.rotatingRight = false;
     clearTimeout(this.tick);
     this.performTick();
-  }
+  };
 
   public startRotateLeft = (): void => {
     if (!this.rotatingLeft) {
@@ -132,13 +120,13 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       clearTimeout(this.tick);
       this.performTick();
     }
-  }
+  };
 
   public cancelRotateLeft = (): void => {
     this.rotatingLeft = false;
     clearTimeout(this.tick);
     this.performTick();
-  }
+  };
 
   public startMoveForward = (): void => {
     if (!this.movingForward) {
@@ -146,13 +134,13 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       clearTimeout(this.tick);
       this.performTick();
     }
-  }
+  };
 
   public cancelMoveForward = (): void => {
     this.movingForward = false;
     clearTimeout(this.tick);
     this.performTick();
-  }
+  };
 
   public startMoveBackward = (): void => {
     if (!this.movingBackward) {
@@ -160,19 +148,18 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       clearTimeout(this.tick);
       this.performTick();
     }
-  }
+  };
 
   public cancelMoveBackward = (): void => {
     this.movingBackward = false;
     clearTimeout(this.tick);
     this.performTick();
-  }
+  };
 
   public calculateRays = (): void => {
-
     this.data = this.ctx.createImageData(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
 
-    for (let y = 0; y < this.SCREEN_HEIGHT; y++){
+    for (let y = 0; y < this.SCREEN_HEIGHT; y++) {
       const rayDirX0 = this.mapService.getDirX() - this.mapService.getPlaneX();
       const rayDirY0 = this.mapService.getDirY() - this.mapService.getPlaneY();
       const rayDirX1 = this.mapService.getDirX() + this.mapService.getPlaneX();
@@ -184,8 +171,10 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
       const rowDistance = posZ / p;
 
-      const floorStepX = rowDistance * (rayDirX1 - rayDirX0) / this.SCREEN_WIDTH;
-      const floorStepY = rowDistance * (rayDirY1 - rayDirY0) / this.SCREEN_WIDTH;
+      const floorStepX =
+        (rowDistance * (rayDirX1 - rayDirX0)) / this.SCREEN_WIDTH;
+      const floorStepY =
+        (rowDistance * (rayDirY1 - rayDirY0)) / this.SCREEN_WIDTH;
 
       let floorX = this.mapService.getPosX() + rowDistance * rayDirX0;
       let floorY = this.mapService.getPosY() + rowDistance * rayDirY0;
@@ -193,10 +182,12 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         const cellX = Math.trunc(floorX);
         const cellY = Math.trunc(floorY);
 
-        // tslint:disable-next-line:no-bitwise
-        const tx = Math.trunc(this.TEXTURE_WIDTH * (floorX - cellX)) & (this.TEXTURE_WIDTH - 1);
-        // tslint:disable-next-line:no-bitwise
-        const ty = Math.trunc(this.TEXTURE_HEIGHT * (floorY - cellY)) & (this.TEXTURE_HEIGHT - 1);
+        const tx =
+          Math.trunc(this.TEXTURE_WIDTH * (floorX - cellX)) &
+          (this.TEXTURE_WIDTH - 1);
+        const ty =
+          Math.trunc(this.TEXTURE_HEIGHT * (floorY - cellY)) &
+          (this.TEXTURE_HEIGHT - 1);
 
         floorX += floorStepX;
         floorY += floorStepY;
@@ -204,17 +195,18 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         let floorTexture;
         let ceilingTexture;
 
-        if (this.mapService.getMap()[cellX] &&
+        if (
+          this.mapService.getMap()[cellX] &&
           this.mapService.getMap()[cellX][cellY] &&
-          this.mapService.getMap()[cellX][cellY].tex1 !== undefined)
-        {
+          this.mapService.getMap()[cellX][cellY].tex1 !== undefined
+        ) {
           floorTexture = this.mapService.getMap()[cellX][cellY].tex0;
           ceilingTexture = this.mapService.getMap()[cellX][cellY].tex1;
         } else {
           floorTexture = TextureTypeEnum.PLAIN;
           ceilingTexture = TextureTypeEnum.PLAIN;
         }
-        if (ceilingTexture === undefined){
+        if (ceilingTexture === undefined) {
           ceilingTexture = TextureTypeEnum.PLAIN;
         }
         const texIndex = (this.TEXTURE_WIDTH * ty + tx) * 4;
@@ -222,7 +214,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
           r: this.textures[floorTexture].data[texIndex],
           g: this.textures[floorTexture].data[texIndex + 1],
           b: this.textures[floorTexture].data[texIndex + 2],
-          a: this.textures[floorTexture].data[texIndex + 3]
+          a: this.textures[floorTexture].data[texIndex + 3],
         };
 
         color.r = color.r / rowDistance;
@@ -238,7 +230,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
           r: this.textures[ceilingTexture].data[texIndex],
           g: this.textures[ceilingTexture].data[texIndex + 1],
           b: this.textures[ceilingTexture].data[texIndex + 2],
-          a: this.textures[ceilingTexture].data[texIndex + 3]
+          a: this.textures[ceilingTexture].data[texIndex + 3],
         };
 
         color.r = color.r / rowDistance;
@@ -253,9 +245,11 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     }
 
     for (let x = 0; x < this.SCREEN_WIDTH; x++) {
-      const cameraX = 2 * x / this.SCREEN_WIDTH - 1;
-      const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
-      const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
+      const cameraX = (2 * x) / this.SCREEN_WIDTH - 1;
+      const rayDirX =
+        this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
+      const rayDirY =
+        this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
 
       let mapX = Math.trunc(this.mapService.getPosX());
       let mapY = Math.trunc(this.mapService.getPosY());
@@ -263,8 +257,12 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       let sideDistX;
       let sideDistY;
 
-      const deltaDistX = Math.sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX));
-      const deltaDistY = Math.sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY));
+      const deltaDistX = Math.sqrt(
+        1 + (rayDirY * rayDirY) / (rayDirX * rayDirX)
+      );
+      const deltaDistY = Math.sqrt(
+        1 + (rayDirX * rayDirX) / (rayDirY * rayDirY)
+      );
       let perpWallDist;
 
       let stepX;
@@ -273,50 +271,43 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       let hit = false;
       let side = false;
 
-      if (rayDirX < 0)
-      {
+      if (rayDirX < 0) {
         stepX = -1;
         sideDistX = (this.mapService.getPosX() - mapX) * deltaDistX;
-      }
-      else
-      {
+      } else {
         stepX = 1;
         sideDistX = (mapX + 1.0 - this.mapService.getPosX()) * deltaDistX;
       }
-      if (rayDirY < 0)
-      {
+      if (rayDirY < 0) {
         stepY = -1;
         sideDistY = (this.mapService.getPosY() - mapY) * deltaDistY;
-      }
-      else
-      {
+      } else {
         stepY = 1;
         sideDistY = (mapY + 1.0 - this.mapService.getPosY()) * deltaDistY;
       }
-      while (!hit)
-      {
-        if (sideDistX < sideDistY)
-        {
+      while (!hit) {
+        if (sideDistX < sideDistY) {
           sideDistX += deltaDistX;
           mapX += stepX;
           side = false;
-        }
-        else
-        {
+        } else {
           sideDistY += deltaDistY;
           mapY += stepY;
           side = true;
         }
-        if (this.mapService.getMap()[mapX][mapY].tileType === this.tileEnum.WALL){
+        if (
+          this.mapService.getMap()[mapX][mapY].tileType === this.tileEnum.WALL
+        ) {
           hit = true;
         }
       }
 
       if (!side) {
-        perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
-      }
-      else {
-        perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
+        perpWallDist =
+          (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
+      } else {
+        perpWallDist =
+          (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
       }
 
       const lineHeight = Math.trunc(this.SCREEN_HEIGHT / perpWallDist) + 10;
@@ -335,8 +326,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       let wallX;
       if (!side) {
         wallX = this.mapService.getPosY() + perpWallDist * rayDirY;
-      }
-      else {
+      } else {
         wallX = this.mapService.getPosX() + perpWallDist * rayDirX;
       }
       wallX -= Math.trunc(wallX);
@@ -348,50 +338,64 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         texX = this.TEXTURE_WIDTH - texX - 1;
       }
 
-      const step = 1.0 * this.TEXTURE_HEIGHT / lineHeight;
+      const step = (1.0 * this.TEXTURE_HEIGHT) / lineHeight;
       let texPos = (drawStart - this.SCREEN_HEIGHT / 2 + lineHeight / 2) * step;
       for (let y = drawStart; y < drawEnd; y++) {
+        // tslint:disable-next-line:no-bitwise
+        const texY = Math.trunc(texPos) & (this.TEXTURE_HEIGHT - 1);
+        texPos += step;
+        const texIndex = (this.TEXTURE_HEIGHT * texY + texX) * 4;
+        const color = {
+          r: this.textures[texNum].data[texIndex],
+          g: this.textures[texNum].data[texIndex + 1],
+          b: this.textures[texNum].data[texIndex + 2],
+          a: this.textures[texNum].data[texIndex + 3],
+        };
 
-          // tslint:disable-next-line:no-bitwise
-          const texY = Math.trunc(texPos) & (this.TEXTURE_HEIGHT - 1);
-          texPos += step;
-          const texIndex = (this.TEXTURE_HEIGHT * texY + texX) * 4;
-          const color = {
-            r: this.textures[texNum].data[texIndex],
-            g: this.textures[texNum].data[texIndex + 1],
-            b: this.textures[texNum].data[texIndex + 2],
-            a: this.textures[texNum].data[texIndex + 3]
-          };
+        color.r =
+          (color.r *
+            (lineHeight > this.SCREEN_HEIGHT
+              ? this.SCREEN_HEIGHT
+              : lineHeight)) /
+          this.SCREEN_HEIGHT;
+        color.g =
+          (color.g *
+            (lineHeight > this.SCREEN_HEIGHT
+              ? this.SCREEN_HEIGHT
+              : lineHeight)) /
+          this.SCREEN_HEIGHT;
+        color.b =
+          (color.b *
+            (lineHeight > this.SCREEN_HEIGHT
+              ? this.SCREEN_HEIGHT
+              : lineHeight)) /
+          this.SCREEN_HEIGHT;
 
-          color.r = color.r * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight) / this.SCREEN_HEIGHT;
-          color.g = color.g * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight) / this.SCREEN_HEIGHT;
-          color.b = color.b * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight) / this.SCREEN_HEIGHT;
-
-          const dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
-          this.data.data[dataIndex] = color.r;
-          this.data.data[dataIndex + 1] = color.g;
-          this.data.data[dataIndex + 2] = color.b;
-          this.data.data[dataIndex + 3] = color.a;
+        const dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
+        this.data.data[dataIndex] = color.r;
+        this.data.data[dataIndex + 1] = color.g;
+        this.data.data[dataIndex + 2] = color.b;
+        this.data.data[dataIndex + 3] = color.a;
       }
     }
     this.ctx.putImageData(this.data, 0, 0);
-  }
+  };
 
   private moveForward = (): void => {
     this.mapService.moveForward();
-  }
+  };
 
   private moveBackward = (): void => {
     this.mapService.moveBackward();
-  }
+  };
 
   private rotateRight = (): void => {
     this.mapService.rotateRight();
-  }
+  };
 
   private rotateLeft = (): void => {
     this.mapService.rotateLeft();
-  }
+  };
 
   private loadTexture = (name: string): Promise<ImageData> => {
     const image = new Image(this.TEXTURE_WIDTH, this.TEXTURE_HEIGHT);
@@ -399,9 +403,10 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       image.onload = () => {
         this.ctx.drawImage(image, 0, 0);
-        resolve(this.ctx.getImageData(0, 0, this.TEXTURE_WIDTH, this.TEXTURE_HEIGHT));
+        resolve(
+          this.ctx.getImageData(0, 0, this.TEXTURE_WIDTH, this.TEXTURE_HEIGHT)
+        );
       };
     });
-
-  }
+  };
 }

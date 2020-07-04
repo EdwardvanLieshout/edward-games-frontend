@@ -5,5 +5,5 @@ export enum TextureTypeEnum {
   BRICKWALL = 3,
   SKY = 4,
   HILLS = 5,
-  GRASS = 6
+  GRASS = 6,
 }

@@ -8,17 +8,15 @@ import { CoreModule } from './core/core.module';
 import { CanvasRoomModule } from './modules/canvas-room/canvas-room.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CoreModule,
     SharedModule,
-    CanvasRoomModule
+    CanvasRoomModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

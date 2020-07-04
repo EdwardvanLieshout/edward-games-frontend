@@ -1,5 +1,5 @@
-@import '../animation-speeds';
-@import '../colours';
+@import "../animation-speeds";
+@import "../colours";
 
 $_default-colour: $colour-green;
 
@@ -15,7 +15,7 @@ $_default-colour: $colour-green;
   border: 4px solid $_colour;
   border-left-color: transparent;
   border-radius: 50%;
-  content: '';
+  content: "";
   height: 1.6rem;
   width: 1.6rem;
   position: absolute;
@@ -33,7 +33,6 @@ $_default-colour: $colour-green;
     @content;
   }
 }
-
 
 @mixin spinner-after-element($colour) {
   @include _spinner-root-defaults;

@@ -16,7 +16,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   private eventsSubscription: Subscription;
 
-  @Input() events: Observable<void>;
+  public events: Observable<void>;
 
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
@@ -26,8 +26,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
   constructor(public mapService: MapService) {}
 
   public ngOnInit(): void {
+    this.events = this.mapService.getEvents();
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.eventsSubscription = this.events.subscribe(() => this.performTick());
+    this.performTick();
   }
 
   public ngOnDestroy(): void {

@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { TileTypeEnum } from '../../shared/models/enums/tileType.enum';
 import { TextureTypeEnum } from '../../shared/models/enums/textureType.enum';
 import { ITile } from '../../shared/models/interfaces/tile.interface';
+import { RoomTypeEnum } from '../../shared/models/enums/roomType.enum';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
 
+  mapUpdated: Subject<void> = new Subject<void>();
 
   public readonly MAP_WIDTH = 15;
   public readonly MAP_HEIGHT = 15;
@@ -16,118 +19,101 @@ export class MapService {
   public worldMap: ITile[][] = [
     [
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
     ],
     [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.ADVENTURE},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.ADVENTURE},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.ADVENTURE},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.ADVENTURE},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.ADVENTURE},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.WOOD, tex1: this.texEnum.PLAIN, room: RoomTypeEnum.AUTHOR},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
     ],
     [
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GRASS, tex1: this.texEnum.SKY, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.MAIN},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
@@ -137,79 +123,11 @@ export class MapService {
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
-    ],
-    [
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
@@ -224,8 +142,76 @@ export class MapService {
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.SOCIAL},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
@@ -241,12 +227,29 @@ export class MapService {
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
-      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.REDGRID, tex1: this.texEnum.BLUEGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID}
+    ],
+    [
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
+      {tileType: this.tileEnum.FLOOR, tex0: this.texEnum.GREENGRID, tex1: this.texEnum.GREENGRID, room: RoomTypeEnum.GADGETS},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
       {tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID},
@@ -282,6 +285,10 @@ export class MapService {
 
   public getMap = (): ITile[][] => {
     return this.worldMap;
+  }
+
+  public getEvents = (): Observable<void> => {
+    return this.mapUpdated.asObservable();
   }
 
   public getPosX = (): number => {
@@ -325,6 +332,7 @@ export class MapService {
     ].tileType) {
       this.setPosY(this.getPosY() + this.getDirY() * this.moveSpeed);
     }
+    this.mapUpdated.next();
   }
 
   public moveBackward = (): void => {
@@ -344,6 +352,7 @@ export class MapService {
     ].tileType) {
       this.setPosY(this.getPosY() - this.getDirY() * this.moveSpeed);
     }
+    this.mapUpdated.next();
   }
 
   public rotateRight = (): void => {
@@ -353,6 +362,7 @@ export class MapService {
     const oldPlaneX = this.getPlaneX();
     this.setPlaneX(this.getPlaneX() * Math.cos(-this.rotSpeed) - this.getPlaneY() * Math.sin(-this.rotSpeed));
     this.setPlaneY(oldPlaneX * Math.sin(-this.rotSpeed) + this.getPlaneY() * Math.cos(-this.rotSpeed));
+    this.mapUpdated.next();
   }
 
   public rotateLeft = (): void => {
@@ -362,8 +372,14 @@ export class MapService {
     const oldPlaneX = this.getPlaneX();
     this.setPlaneX(this.getPlaneX() * Math.cos(this.rotSpeed) - this.getPlaneY() * Math.sin(this.rotSpeed));
     this.setPlaneY(oldPlaneX * Math.sin(this.rotSpeed) + this.getPlaneY() * Math.cos(this.rotSpeed));
+    this.mapUpdated.next();
   }
 
+  public getRoom = (): string => {
+    return this.worldMap[Math.trunc(this.posX)][Math.trunc(this.posY)].room ?
+      this.worldMap[Math.trunc(this.posX)][Math.trunc(this.posY)].room :
+      '';
+  }
 
   private setPosX = (newValue: number): void => {
     this.posX = newValue;

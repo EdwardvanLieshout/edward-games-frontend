@@ -1,21 +1,38 @@
 @import '../config';
 @import '../abstracts/all';
 
-.#{$block-prefix}room__canvas {
-  width: 100%;
-  height: 400px;
+.#{$block-prefix}room {
 
-  @include box-shadow($colour-green);
+  &__canvas {
+    width: 100%;
+    height: 400px;
 
-  @include media-small {
-    height: 300px;
+    @include media-small {
+      height: 300px;
+    }
   }
+
+  &__loading {
+    width: 100%;
+    height: 400px;
+
+    @include media-small {
+      height: 300px;
+    }
+    @include spinner-before-element($colour-green) {
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -moz-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    };
+  }
+
 }
 
 .#{$block-prefix}map__canvas {
   width: 150px;
   height: 150px;
   background-color: $colour-light-gray;
-
-  @include box-shadow($colour-green);
 }

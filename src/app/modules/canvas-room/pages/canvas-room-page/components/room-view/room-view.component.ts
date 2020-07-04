@@ -37,9 +37,6 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   public tileEnum = TileTypeEnum;
   public texEnum = TextureTypeEnum;
 
-  @Output()
-  public tickFinished: EventEmitter<void> = new EventEmitter<void>();
-
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
 
@@ -62,18 +59,30 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.loadTexture('texture0').then((imageData0) => {
-      this.loadTexture('texture1').then((imageData1) => {
-        this.loadTexture('texture2').then((imageData2) => {
-          this.textures = [
-            imageData0,
-            imageData1,
-            imageData2,
-          ];
-          this.showCanvas = true;
-          this.ref.markForCheck();
-          this.onResize();
-          this.performTick();
+    this.loadTexture('grid').then((imageData0) => {
+      this.loadTexture('wood').then((imageData1) => {
+        this.loadTexture('plain').then((imageData2) => {
+          this.loadTexture('brickwall').then((imageData3) => {
+            this.loadTexture('sky').then((imageData4) => {
+              this.loadTexture('hills').then((imageData5) => {
+                this.loadTexture('grass').then((imageData6) => {
+                  this.textures = [
+                    imageData0,
+                    imageData1,
+                    imageData2,
+                    imageData3,
+                    imageData4,
+                    imageData5,
+                    imageData6,
+                  ];
+                  this.showCanvas = true;
+                  this.ref.markForCheck();
+                  this.onResize();
+                  this.performTick();
+                });
+              });
+            });
+          });
         });
       });
     });
@@ -98,10 +107,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     }
     this.calculateRays();
     clearTimeout(this.tick);
-    this.tickFinished.emit();
     this.tick = setTimeout(() => {
     this.performTick();
-    }, 45);
+    }, 60);
   }
 
   public startRotateRight = (): void => {
@@ -196,15 +204,18 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         let floorTexture;
         let ceilingTexture;
 
-        if (this.mapService.getMap()[cellX] && this.mapService.getMap()[cellX][cellY]) {
+        if (this.mapService.getMap()[cellX] &&
+          this.mapService.getMap()[cellX][cellY] &&
+          this.mapService.getMap()[cellX][cellY].tex1 !== undefined)
+        {
           floorTexture = this.mapService.getMap()[cellX][cellY].tex0;
           ceilingTexture = this.mapService.getMap()[cellX][cellY].tex1;
         } else {
-          floorTexture = 0;
-          ceilingTexture = 0;
+          floorTexture = TextureTypeEnum.PLAIN;
+          ceilingTexture = TextureTypeEnum.PLAIN;
         }
-        if (!ceilingTexture){
-          ceilingTexture = 0;
+        if (ceilingTexture === undefined){
+          ceilingTexture = TextureTypeEnum.PLAIN;
         }
         const texIndex = (this.TEXTURE_WIDTH * ty + tx) * 4;
         let color = {
@@ -308,7 +319,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
       }
 
-      const lineHeight = Math.trunc(this.SCREEN_HEIGHT / perpWallDist);
+      const lineHeight = Math.trunc(this.SCREEN_HEIGHT / perpWallDist) + 10;
 
       let drawStart = Math.trunc(-lineHeight / 2 + this.SCREEN_HEIGHT / 2);
       if (drawStart < 0) {

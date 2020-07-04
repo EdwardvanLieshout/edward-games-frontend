@@ -28,5 +28,10 @@ $_base: 0.8rem;
         #{$_type}-left: ($i * $_base);
       }
     }
+    &-auto {
+      display: block;
+      #{$_type}-left: auto;
+      #{$_type}-right: auto;
+    }
   }
 }

@@ -6,4 +6,12 @@ export enum TextureTypeEnum {
   SKY = 4,
   HILLS = 5,
   GRASS = 6,
+  TV1 = 7,
+  TV2 = 8,
+  TV3 = 9,
+  TV4 = 10,
+  TV1S = 11,
+  TV2S = 12,
+  TV3S = 13,
+  TV4S = 14,
 }

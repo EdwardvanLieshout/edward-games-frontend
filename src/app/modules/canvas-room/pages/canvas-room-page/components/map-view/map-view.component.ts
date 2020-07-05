@@ -33,7 +33,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   constructor(public mapService: MapService) {}
 
   public ngOnInit(): void {
-    this.events = this.mapService.getEvents();
+    this.events = this.mapService.getPositionEvents();
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.eventsSubscription = this.events.subscribe(() => this.performTick());
     this.performTick();

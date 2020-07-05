@@ -4,12 +4,18 @@ import { TextureTypeEnum } from '../../shared/models/enums/textureType.enum';
 import { ITile } from '../../shared/models/interfaces/tile.interface';
 import { RoomTypeEnum } from '../../shared/models/enums/roomType.enum';
 import { Subject, Observable } from 'rxjs';
+import { PassageTypeEnum } from '../../shared/models/enums/passageType.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
-  mapUpdated: Subject<void> = new Subject<void>();
+  private mapUpdated: Subject<void> = new Subject<void>();
+  private canNavigate: Subject<PassageTypeEnum> = new Subject<
+    PassageTypeEnum
+  >();
+
+  public currentPassage: PassageTypeEnum = PassageTypeEnum.NONE;
 
   public readonly MAP_WIDTH = 15;
   public readonly MAP_HEIGHT = 15;
@@ -26,7 +32,7 @@ export class MapService {
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
-      { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
+      { tileType: this.tileEnum.WALL, tex0: this.texEnum.TV1 },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
@@ -117,7 +123,7 @@ export class MapService {
         tex1: this.texEnum.PLAIN,
         room: RoomTypeEnum.AUTHOR,
       },
-      { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
+      { tileType: this.tileEnum.WALL, tex0: this.texEnum.TV1 },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
@@ -198,7 +204,7 @@ export class MapService {
         room: RoomTypeEnum.MAIN,
       },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
-      { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
+      { tileType: this.tileEnum.WALL, tex0: this.texEnum.TV1 },
       {
         tileType: this.tileEnum.FLOOR,
         tex0: this.texEnum.WOOD,
@@ -252,7 +258,7 @@ export class MapService {
       },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
-      { tileType: this.tileEnum.WALL, tex0: this.texEnum.BRICKWALL },
+      { tileType: this.tileEnum.WALL, tex0: this.texEnum.TV1 },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
@@ -601,8 +607,12 @@ export class MapService {
     return this.worldMap;
   };
 
-  public getEvents = (): Observable<void> => {
+  public getPositionEvents = (): Observable<void> => {
     return this.mapUpdated.asObservable();
+  };
+
+  public getPassageEvents = (): Observable<PassageTypeEnum> => {
+    return this.canNavigate.asObservable();
   };
 
   public getPosX = (): number => {
@@ -645,6 +655,7 @@ export class MapService {
       this.setPosY(this.getPosY() + this.getDirY() * this.moveSpeed);
     }
     this.mapUpdated.next();
+    this.checkScreens();
   };
 
   public moveBackward = (): void => {
@@ -663,6 +674,7 @@ export class MapService {
       this.setPosY(this.getPosY() - this.getDirY() * this.moveSpeed);
     }
     this.mapUpdated.next();
+    this.checkScreens();
   };
 
   public rotateRight = (): void => {
@@ -685,6 +697,7 @@ export class MapService {
         this.getPlaneY() * Math.cos(-this.rotSpeed)
     );
     this.mapUpdated.next();
+    this.checkScreens();
   };
 
   public rotateLeft = (): void => {
@@ -707,6 +720,7 @@ export class MapService {
         this.getPlaneY() * Math.cos(this.rotSpeed)
     );
     this.mapUpdated.next();
+    this.checkScreens();
   };
 
   public getRoom = (): string => {
@@ -737,5 +751,80 @@ export class MapService {
 
   private setPlaneY = (newValue: number): void => {
     this.planeY = newValue;
+  };
+
+  private checkScreens = (): void => {
+    // console.log(this.posX + ' - ' + this.posY);
+    // console.log(this.dirX + ' - ' + this.dirY);
+    // console.log();
+
+    const oldPassage = this.currentPassage;
+
+    if (
+      this.posX >= 1 &&
+      this.posX < 1.5 &&
+      this.posY > 9.2 &&
+      this.posY < 9.8 &&
+      this.dirX < -0.5
+    ) {
+      this.currentPassage = PassageTypeEnum.ABOUTAUTHOR;
+      if (oldPassage !== PassageTypeEnum.ABOUTAUTHOR) {
+        this.worldMap[0][9].tex0 = this.texEnum.TV1S;
+        this.canNavigate.next(PassageTypeEnum.ABOUTAUTHOR);
+      }
+      return;
+    }
+
+    if (
+      this.posX > 2.2 &&
+      this.posX < 2.8 &&
+      this.posY >= 10.5 &&
+      this.posY < 11 &&
+      this.dirY > 0.5
+    ) {
+      this.currentPassage = PassageTypeEnum.EXPERIENCE;
+      if (oldPassage !== PassageTypeEnum.EXPERIENCE) {
+        this.worldMap[2][11].tex0 = this.texEnum.TV1S;
+        this.canNavigate.next(PassageTypeEnum.EXPERIENCE);
+      }
+      return;
+    }
+    if (
+      this.posX > 4.5 &&
+      this.posX <= 5 &&
+      this.posY > 10.2 &&
+      this.posY < 10.8 &&
+      this.dirX > 0.5
+    ) {
+      this.currentPassage = PassageTypeEnum.MEDIA;
+      if (oldPassage !== PassageTypeEnum.MEDIA) {
+        this.worldMap[5][10].tex0 = this.texEnum.TV1S;
+        this.canNavigate.next(PassageTypeEnum.MEDIA);
+      }
+      return;
+    }
+    if (
+      this.posX > 4.2 &&
+      this.posX < 4.8 &&
+      this.posY > 9 &&
+      this.posY <= 9.5 &&
+      this.dirY < -0.5
+    ) {
+      this.currentPassage = PassageTypeEnum.CONTACT;
+      if (oldPassage !== PassageTypeEnum.CONTACT) {
+        this.worldMap[4][8].tex0 = this.texEnum.TV1S;
+        this.canNavigate.next(PassageTypeEnum.CONTACT);
+      }
+      return;
+    }
+
+    this.currentPassage = PassageTypeEnum.NONE;
+    if (oldPassage !== PassageTypeEnum.NONE) {
+      this.worldMap[0][9].tex0 = this.texEnum.TV1;
+      this.worldMap[2][11].tex0 = this.texEnum.TV1;
+      this.worldMap[5][10].tex0 = this.texEnum.TV1;
+      this.worldMap[4][8].tex0 = this.texEnum.TV1;
+      this.canNavigate.next(PassageTypeEnum.NONE);
+    }
   };
 }

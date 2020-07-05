@@ -11,4 +11,18 @@ html {
 body {
   background-color: $colour-black;
   color: $colour-light-gray;
+  font-family: $font-default;
+}
+
+button {
+  @include hide-button-defaults;
+  color: $colour-light-gray;
+  cursor: pointer;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }

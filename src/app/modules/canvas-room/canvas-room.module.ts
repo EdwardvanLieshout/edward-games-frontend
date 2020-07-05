@@ -6,6 +6,7 @@ import { RoomViewComponent } from './pages/canvas-room-page/components/room-view
 import { MapViewComponent } from './pages/canvas-room-page/components/map-view/map-view.component';
 import { RoomTitleComponent } from './pages/canvas-room-page/components/room-title/room-title.component';
 import { RoomInfoComponent } from './pages/canvas-room-page/components/room-info/room-info.component';
+import { ScreenModalComponent } from './pages/canvas-room-page/components/screen-modal/screen-modal.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { RoomInfoComponent } from './pages/canvas-room-page/components/room-info
     MapViewComponent,
     RoomTitleComponent,
     RoomInfoComponent,
+    ScreenModalComponent,
   ],
   imports: [CommonModule, CanvasRoomRoutingModule],
 })

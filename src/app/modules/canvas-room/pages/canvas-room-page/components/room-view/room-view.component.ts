@@ -44,6 +44,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   private textures: ImageData[];
 
+  private animationCounter = 0;
   private tick;
 
   constructor(public mapService: MapService, private ref: ChangeDetectorRef) {}
@@ -66,6 +67,14 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         'sky',
         'hills',
         'grass',
+        'brickwall-tv1',
+        'brickwall-tv2',
+        'brickwall-tv3',
+        'brickwall-tv4',
+        'brickwall-tv1-selected',
+        'brickwall-tv2-selected',
+        'brickwall-tv3-selected',
+        'brickwall-tv4-selected',
       ].map((str) => this.loadTexture(str))
     ).then((values) => {
       this.textures = values;
@@ -97,68 +106,52 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     clearTimeout(this.tick);
     this.tick = setTimeout(() => {
       this.performTick();
-    }, 60);
+    }, 10);
   };
 
   public startRotateRight = (): void => {
     if (!this.rotatingRight) {
       this.rotatingRight = true;
-      clearTimeout(this.tick);
-      this.performTick();
     }
   };
 
   public cancelRotateRight = (): void => {
     this.rotatingRight = false;
-    clearTimeout(this.tick);
-    this.performTick();
   };
 
   public startRotateLeft = (): void => {
     if (!this.rotatingLeft) {
       this.rotatingLeft = true;
-      clearTimeout(this.tick);
-      this.performTick();
     }
   };
 
   public cancelRotateLeft = (): void => {
     this.rotatingLeft = false;
-    clearTimeout(this.tick);
-    this.performTick();
   };
 
   public startMoveForward = (): void => {
     if (!this.movingForward) {
       this.movingForward = true;
-      clearTimeout(this.tick);
-      this.performTick();
     }
   };
 
   public cancelMoveForward = (): void => {
     this.movingForward = false;
-    clearTimeout(this.tick);
-    this.performTick();
   };
 
   public startMoveBackward = (): void => {
     if (!this.movingBackward) {
       this.movingBackward = true;
-      clearTimeout(this.tick);
-      this.performTick();
     }
   };
 
   public cancelMoveBackward = (): void => {
     this.movingBackward = false;
-    clearTimeout(this.tick);
-    this.performTick();
   };
 
   public calculateRays = (): void => {
     this.data = this.ctx.createImageData(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
-
+    this.animationCounter = (this.animationCounter + 1) % 4;
     for (let y = 0; y < this.SCREEN_HEIGHT; y++) {
       const rayDirX0 = this.mapService.getDirX() - this.mapService.getPlaneX();
       const rayDirY0 = this.mapService.getDirY() - this.mapService.getPlaneY();
@@ -321,7 +314,10 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         drawEnd = this.SCREEN_HEIGHT - 1;
       }
 
-      const texNum = this.mapService.getMap()[mapX][mapY].tex0;
+      let texNum = this.mapService.getMap()[mapX][mapY].tex0;
+      if (texNum === this.texEnum.TV1 || texNum === this.texEnum.TV1S) {
+        texNum += this.animationCounter;
+      }
 
       let wallX;
       if (!side) {

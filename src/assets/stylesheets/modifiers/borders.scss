@@ -22,6 +22,11 @@
     @include _multiple-border-weights($colour-green);
   }
 
+  &--light {
+    border: solid 1px $colour-light-gray;
+    @include _multiple-border-weights($colour-light-gray);
+  }
+
   &__shadow {
     &--green {
       @include box-shadow($colour-green, 4px);

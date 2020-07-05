@@ -9,6 +9,10 @@
     color: $colour-green;
   }
 
+  &--dark {
+    color: $colour-dark-gray;
+  }
+
   &__shadow {
     &--green {
       @include text-shadow($colour-green-shadow, 4px);

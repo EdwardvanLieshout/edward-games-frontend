@@ -6,4 +6,10 @@
   &--visually {
     @include hide-visually-only;
   }
+
+  &-s {
+    @include media-small {
+      display: none !important;
+    }
+  }
 }

@@ -4,6 +4,32 @@
   }
 }
 
+@mixin active-mouse-states {
+  &:active,
+  &:focus,
+  &:focus-within,
+  &:hover {
+    @content;
+  }
+}
+
+@mixin transition-fast {
+  transition: $animation-fast;
+}
+
+@mixin transition-slow {
+  transition: $animation-slow;
+}
+
+@mixin hide-button-defaults {
+  background: none;
+  border: none;
+  box-shadow: none;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+}
+
 @mixin hide-visually-only {
   border: 0;
   clip: rect(0, 0, 0, 0);

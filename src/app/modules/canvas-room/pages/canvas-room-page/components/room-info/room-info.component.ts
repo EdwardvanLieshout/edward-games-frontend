@@ -54,7 +54,7 @@ export class RoomInfoComponent implements OnInit, OnDestroy {
   constructor(public mapService: MapService, public ref: ChangeDetectorRef) {}
 
   public ngOnInit(): void {
-    this.events = this.mapService.getEvents();
+    this.events = this.mapService.getPositionEvents();
     this.eventsSubscription = this.events.subscribe(() => this.performTick());
     this.performTick();
   }

@@ -8,6 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { MapService } from '../../../../../../core/services/map.service';
 import { PassageTypeEnum } from '../../../../../../shared/models/enums/passageType.enum';
 import { IScreen } from '../../../../../../shared/models/interfaces/screen.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-screen-modal',
@@ -47,7 +48,11 @@ export class ScreenModalComponent implements OnInit {
 
   public info: IScreen = this.infoDictionary['None'];
 
-  constructor(public mapService: MapService, public ref: ChangeDetectorRef) {}
+  constructor(
+    public mapService: MapService,
+    public ref: ChangeDetectorRef,
+    public router: Router
+  ) {}
 
   public ngOnInit(): void {
     this.events = this.mapService.getPassageEvents();
@@ -64,5 +69,9 @@ export class ScreenModalComponent implements OnInit {
 
   public close = (): void => {
     this.passage = PassageTypeEnum.NONE;
+  };
+
+  public proceed = (): void => {
+    this.router.navigate(['author/about']);
   };
 }

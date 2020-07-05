@@ -4,6 +4,18 @@
   }
 }
 
+@mixin media-medium {
+  @media screen and (min-width: $media-medium-width) {
+    @content;
+  }
+}
+
+@mixin media-large {
+  @media screen and (min-width: $media-large-width) {
+    @content;
+  }
+}
+
 @mixin active-mouse-states {
   &:active,
   &:focus,

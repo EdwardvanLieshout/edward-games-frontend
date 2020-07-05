@@ -1,0 +1,19 @@
+@import "../config";
+@import "../abstracts/all";
+
+.#{$block-prefix}container {
+  margin: 0 auto;
+  min-height: 0.8rem;
+  padding: 0 $media-small-offset;
+  width: 100%;
+
+  @include media-medium {
+    min-width: ($media-medium-width);
+    padding: 0 $media-medium-offset;
+  }
+
+  @include media-large {
+    min-width: ($media-medium-width);
+    padding: 0 $media-large-offset;
+  }
+}

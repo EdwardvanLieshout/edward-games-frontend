@@ -10,6 +10,11 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'author',
+    loadChildren: () =>
+      import('./modules/author/author.module').then((m) => m.AuthorModule),
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',

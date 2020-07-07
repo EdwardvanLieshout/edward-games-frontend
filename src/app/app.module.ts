@@ -9,13 +9,7 @@ import { CanvasRoomModule } from './modules/canvas-room/canvas-room.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    CoreModule,
-    SharedModule,
-    CanvasRoomModule,
-  ],
+  imports: [BrowserModule, AppRoutingModule, CoreModule, SharedModule, CanvasRoomModule],
   providers: [],
   bootstrap: [AppComponent],
 })

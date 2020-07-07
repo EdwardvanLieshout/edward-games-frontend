@@ -6,8 +6,6 @@ import {
   HostListener,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
-  Output,
-  EventEmitter,
   OnDestroy,
 } from '@angular/core';
 import { TextureTypeEnum } from '../../../../../../shared/models/enums/textureType.enum';
@@ -37,7 +35,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   public texEnum = TextureTypeEnum;
 
   @ViewChild('canvas', { static: true })
-  canvas: ElementRef<HTMLCanvasElement>;
+  public canvas: ElementRef<HTMLCanvasElement>;
 
   private ctx: CanvasRenderingContext2D;
   private data: ImageData;
@@ -50,7 +48,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   constructor(public mapService: MapService, private ref: ChangeDetectorRef) {}
 
   @HostListener('window:resize', ['$event'])
-  onResize(event?): void {
+  public onResize(): void {
     this.SCREEN_WIDTH = this.canvas.nativeElement.width;
     this.SCREEN_HEIGHT = this.canvas.nativeElement.height;
     this.ctx = this.canvas.nativeElement.getContext('2d');
@@ -86,7 +84,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    clearTimeout(this.tick);
+    cancelAnimationFrame(this.tick);
   }
 
   public performTick = (): void => {
@@ -103,10 +101,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       this.moveBackward();
     }
     this.calculateRays();
-    clearTimeout(this.tick);
-    this.tick = setTimeout(() => {
+    this.tick = requestAnimationFrame(() => {
       this.performTick();
-    }, 10);
+    });
   };
 
   public startRotateRight = (): void => {
@@ -164,10 +161,8 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
       const rowDistance = posZ / p;
 
-      const floorStepX =
-        (rowDistance * (rayDirX1 - rayDirX0)) / this.SCREEN_WIDTH;
-      const floorStepY =
-        (rowDistance * (rayDirY1 - rayDirY0)) / this.SCREEN_WIDTH;
+      const floorStepX = (rowDistance * (rayDirX1 - rayDirX0)) / this.SCREEN_WIDTH;
+      const floorStepY = (rowDistance * (rayDirY1 - rayDirY0)) / this.SCREEN_WIDTH;
 
       let floorX = this.mapService.getPosX() + rowDistance * rayDirX0;
       let floorY = this.mapService.getPosY() + rowDistance * rayDirY0;
@@ -175,12 +170,10 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         const cellX = Math.trunc(floorX);
         const cellY = Math.trunc(floorY);
 
-        const tx =
-          Math.trunc(this.TEXTURE_WIDTH * (floorX - cellX)) &
-          (this.TEXTURE_WIDTH - 1);
-        const ty =
-          Math.trunc(this.TEXTURE_HEIGHT * (floorY - cellY)) &
-          (this.TEXTURE_HEIGHT - 1);
+        // tslint:disable-next-line:no-bitwise
+        const tx = Math.trunc(this.TEXTURE_WIDTH * (floorX - cellX)) & (this.TEXTURE_WIDTH - 1);
+        // tslint:disable-next-line:no-bitwise
+        const ty = Math.trunc(this.TEXTURE_HEIGHT * (floorY - cellY)) & (this.TEXTURE_HEIGHT - 1);
 
         floorX += floorStepX;
         floorY += floorStepY;
@@ -239,10 +232,8 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
     for (let x = 0; x < this.SCREEN_WIDTH; x++) {
       const cameraX = (2 * x) / this.SCREEN_WIDTH - 1;
-      const rayDirX =
-        this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
-      const rayDirY =
-        this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
+      const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
+      const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
 
       let mapX = Math.trunc(this.mapService.getPosX());
       let mapY = Math.trunc(this.mapService.getPosY());
@@ -250,12 +241,8 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       let sideDistX;
       let sideDistY;
 
-      const deltaDistX = Math.sqrt(
-        1 + (rayDirY * rayDirY) / (rayDirX * rayDirX)
-      );
-      const deltaDistY = Math.sqrt(
-        1 + (rayDirX * rayDirX) / (rayDirY * rayDirY)
-      );
+      const deltaDistX = Math.sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX));
+      const deltaDistY = Math.sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY));
       let perpWallDist;
 
       let stepX;
@@ -288,19 +275,15 @@ export class RoomViewComponent implements OnInit, OnDestroy {
           mapY += stepY;
           side = true;
         }
-        if (
-          this.mapService.getMap()[mapX][mapY].tileType === this.tileEnum.WALL
-        ) {
+        if (this.mapService.getMap()[mapX][mapY].tileType === this.tileEnum.WALL) {
           hit = true;
         }
       }
 
       if (!side) {
-        perpWallDist =
-          (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
+        perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
       } else {
-        perpWallDist =
-          (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
+        perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
       }
 
       const lineHeight = Math.trunc(this.SCREEN_HEIGHT / perpWallDist) + 10;
@@ -348,24 +331,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
           a: this.textures[texNum].data[texIndex + 3],
         };
 
-        color.r =
-          (color.r *
-            (lineHeight > this.SCREEN_HEIGHT
-              ? this.SCREEN_HEIGHT
-              : lineHeight)) /
-          this.SCREEN_HEIGHT;
-        color.g =
-          (color.g *
-            (lineHeight > this.SCREEN_HEIGHT
-              ? this.SCREEN_HEIGHT
-              : lineHeight)) /
-          this.SCREEN_HEIGHT;
-        color.b =
-          (color.b *
-            (lineHeight > this.SCREEN_HEIGHT
-              ? this.SCREEN_HEIGHT
-              : lineHeight)) /
-          this.SCREEN_HEIGHT;
+        color.r = (color.r * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight)) / this.SCREEN_HEIGHT;
+        color.g = (color.g * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight)) / this.SCREEN_HEIGHT;
+        color.b = (color.b * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight)) / this.SCREEN_HEIGHT;
 
         const dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
         this.data.data[dataIndex] = color.r;
@@ -399,9 +367,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       image.onload = () => {
         this.ctx.drawImage(image, 0, 0);
-        resolve(
-          this.ctx.getImageData(0, 0, this.TEXTURE_WIDTH, this.TEXTURE_HEIGHT)
-        );
+        resolve(this.ctx.getImageData(0, 0, this.TEXTURE_WIDTH, this.TEXTURE_HEIGHT));
       };
     });
   };

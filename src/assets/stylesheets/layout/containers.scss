@@ -1,5 +1,5 @@
-@import "../config";
-@import "../abstracts/all";
+@import '../config';
+@import '../abstracts/all';
 
 .#{$block-prefix}container {
   margin: 0 auto;
@@ -15,5 +15,19 @@
   @include media-large {
     min-width: ($media-medium-width);
     padding: 0 $media-large-offset;
+  }
+
+  &--small {
+    padding: 0 3 * $media-small-offset;
+
+    @include media-medium {
+      min-width: ($media-medium-width);
+      padding: 0 3 * $media-medium-offset;
+    }
+
+    @include media-large {
+      min-width: ($media-medium-width);
+      padding: 0 4 * $media-large-offset;
+    }
   }
 }

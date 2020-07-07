@@ -1,4 +1,4 @@
-@import "../abstracts/all";
+@import '../abstracts/all';
 
 html {
   -webkit-font-smoothing: antialiased;
@@ -25,4 +25,16 @@ input,
 select,
 textarea {
   font-family: inherit;
+}
+
+a {
+  color: $colour-green;
+
+  &:visited {
+    color: $colour-green-shadow;
+  }
+
+  &:hover {
+    color: $colour-green-light;
+  }
 }

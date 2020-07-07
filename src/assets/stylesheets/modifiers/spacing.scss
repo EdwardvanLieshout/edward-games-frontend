@@ -1,6 +1,6 @@
 $_base: 0.8rem;
 
-@each $_type in "margin", "padding" {
+@each $_type in 'margin', 'padding' {
   .#{$_type} {
     @for $i from 0 through 8 {
       &--#{$i} {

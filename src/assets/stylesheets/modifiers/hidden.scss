@@ -1,4 +1,4 @@
-@import "../abstracts/all";
+@import '../abstracts/all';
 
 .hidden {
   display: none !important;
@@ -12,4 +12,15 @@
       display: none !important;
     }
   }
+
+  &-ml {
+    @include media-medium {
+      display: none !important;
+    }
+  }
+}
+
+.invisible {
+  visibility: hidden;
+  position: absolute;
 }

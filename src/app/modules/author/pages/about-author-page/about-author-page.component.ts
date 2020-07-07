@@ -5,6 +5,7 @@ import {
   ViewChild,
   ElementRef,
   ChangeDetectorRef,
+  OnDestroy,
 } from '@angular/core';
 import * as THREE from 'three-full';
 
@@ -13,40 +14,33 @@ import * as THREE from 'three-full';
   templateUrl: './about-author-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutAuthorPageComponent implements OnInit {
+export class AboutAuthorPageComponent implements OnInit, OnDestroy {
+  public loading = true;
+  public moving = false;
+
+  @ViewChild('canvasContainer', { static: true })
+  public container: ElementRef<HTMLDivElement>;
+
   private scene;
   private camera;
   private renderer;
   private loader;
   private controls;
-
-  private i = 0;
-
   private edward;
-
-  public loading = true;
-
-  @ViewChild('canvasContainer', { static: true })
-  public container: ElementRef<HTMLDivElement>;
+  private tick;
 
   constructor(public ref: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, 150 / 150, 0.1, 1000);
-
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(150, 150);
     this.container.nativeElement.appendChild(this.renderer.domElement);
-    var geometry = new THREE.BoxGeometry();
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    var light = new THREE.AmbientLight(0xffffff); // soft white light
+    const light = new THREE.AmbientLight(0xffffff);
     this.scene.add(light);
     this.loader = new THREE.GLTFLoader();
-    this.controls = new THREE.OrbitControls(
-      this.camera,
-      this.renderer.domElement
-    );
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.loader.load('../../../../assets/models/scene.gltf', (obj) => {
       this.edward = obj.scene;
       this.scene.add(this.edward);
@@ -62,13 +56,24 @@ export class AboutAuthorPageComponent implements OnInit {
     });
   }
 
+  public ngOnDestroy(): void {
+    cancelAnimationFrame(this.tick);
+    this.scene.dispose();
+    this.controls.dispose();
+    this.renderer.dispose();
+  }
+
   public animate = (): void => {
-    // this.edward.rotation.z = (this.edward.rotation.z + 0.02) % 6.25;
-    // if (this.edward.rotation.z > 1.5 && this.edward.rotation.z <= 4.5 ) {
-    //   this.edward.rotation.z = (this.edward.rotation.z + 0.1) % 6.25;
-    // }
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.animate);
+    this.tick = requestAnimationFrame(this.animate);
+  };
+
+  public startMove = (): void => {
+    this.moving = true;
+  };
+
+  public stopMove = (): void => {
+    this.moving = false;
   };
 }

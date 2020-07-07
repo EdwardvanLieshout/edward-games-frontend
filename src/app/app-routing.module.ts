@@ -4,15 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () =>
-      import('./modules/canvas-room/canvas-room.module').then(
-        (m) => m.CanvasRoomModule
-      ),
+    loadChildren: () => import('./modules/canvas-room/canvas-room.module').then((m) => m.CanvasRoomModule),
   },
   {
     path: 'author',
-    loadChildren: () =>
-      import('./modules/author/author.module').then((m) => m.AuthorModule),
+    loadChildren: () => import('./modules/author/author.module').then((m) => m.AuthorModule),
   },
   {
     path: '',

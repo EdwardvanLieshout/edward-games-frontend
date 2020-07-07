@@ -1,24 +1,59 @@
-<section class="e-container">
-  <div class="e-flex e-flex__justify--center e-flex__align--center">
-    <div class="margin-top--3">
-      <h1 class="margin-bottom--2">About Edward</h1>
+<section class="e-container e-container--small margin-bottom--4">
+  <h1 class="margin--2 margin-bottom--3">About Edward</h1>
+
+  <a [routerLink]="['/home']">> back to home</a><br /><br />
+  <div class="e-flex e-flex e-flex__justify--center">
+    <div>
+      <p class="margin-bottom--2">
+        Edward van Lieshout is a 25 year old front-end developer from the Netherlands. His experience lies mostly in the
+        Angular framework, in which he can effortlessly build reactive, response and component-based websites from
+        scratch. Edward loves solving puzzles. Thus, he is most often found working on the js/ts side of the
+        application. However, he can also write clean stylesheets and semantic HTML, with the help of scss and HTML5
+        elements.
+      </p>
+
+      <p class="margin-bottom--2">
+        Although Edward's background is more on the technical side, he can also bring his own UX insights to the table,
+        creating the much needed feedback loop between designers and developers. Edward has put his skills in practice
+        for various customers, and for some of his personal projects. This portfolio website was made to show off some
+        projects in which a multitude of web-development techniques were used.
+      </p>
     </div>
-    <div class="margin-left--4">
+    <div class="e-flex e-flex--row">
+      <div class="hidden-ml">
+        <div class="border__shadow--green e-about__image e-image--edward e-image__container">
+          <img src="../../../../assets/images/static.gif" alt="static-noise-foreground" class="e-image__foreground" />
+        </div>
+      </div>
       <div
         #canvasContainer
-        [ngClass]="{ hidden: loading }"
-        class="border__shadow--green margin--2 e-about__canvas"
+        [ngClass]="{ hidden: loading, 'cursor--grab': !moving, 'cursor--grabbing': moving }"
+        (mousedown)="startMove()"
+        (window:mouseup)="stopMove()"
+        class="border__shadow--green margin-left--2 e-about__canvas e-about__image"
       ></div>
-
-      <p [ngClass]="{ hidden: !loading, 'e-about__loading': true }"></p>
+      <div class="margin-left--2 margin-top--1" [ngClass]="{ hidden: !loading, 'e-about__loading': true }"></div>
     </div>
   </div>
-  <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-    non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
+</section>
+
+<section class="e-container e-container--small margin-bottom--2">
+  <div class="e-flex e-flex e-flex__justify--center">
+    <div class="hidden-s e-flex__col e-about__image margin-right--2">
+      <div class="border__shadow--green e-image--edward e-image__container">
+        <img src="../../../../assets/images/static.gif" alt="static-noise-foreground" class="e-image__foreground" />
+      </div>
+    </div>
+    <div class="e-flex__col-2">
+      <p class="margin-bottom--2">
+        In his spare time, Edward likes to play piano and produce electronic music. Ages ago, when he was a young lad,
+        he hoped he could become the next aspiring Martin Garrix, but alas! Now he spends his days writing web-apps (no
+        regrets).
+      </p>
+      <p class="margin-bottom--2">
+        Besides being a creative geek, Edward also enjoys playing video games with friends. Maybe one day Edward will
+        make his own online game so he can finally win some.
+      </p>
+    </div>
+  </div>
 </section>

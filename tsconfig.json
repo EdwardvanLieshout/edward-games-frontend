@@ -10,15 +10,4 @@
     "target": "es5",
     "lib": ["es6", "dom"]
   },
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "./e2e/tsconfig.json"
-    }
-  ]
 }

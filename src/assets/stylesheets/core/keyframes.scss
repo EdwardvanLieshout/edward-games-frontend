@@ -7,3 +7,60 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes static_noise {
+  0% {
+    opacity: 0.3;
+  }
+  20% {
+    opacity: 0.3;
+  }
+  21% {
+    opacity: 0.6;
+  }
+  23% {
+    opacity: 0.6;
+  }
+  24% {
+    opacity: 0.3;
+  }
+  25% {
+    opacity: 0.6;
+  }
+  35% {
+    opacity: 0.6;
+  }
+  36% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  41% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  51% {
+    opacity: 0.3;
+  }
+  75% {
+    opacity: 0.2;
+  }
+  80% {
+    opacity: 0.3;
+  }
+  81% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  91% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}

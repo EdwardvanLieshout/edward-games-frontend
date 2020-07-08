@@ -1,46 +1,38 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  HostListener,
-} from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, Self, Optional } from '@angular/core';
+import { Observable } from 'rxjs';
 import { MapService } from '../../../../../../core/services/map.service';
 import { TileTypeEnum } from '../../../../../../shared/models/enums/tileType.enum';
+import { OnDestroyService } from '../../../../../../core/services/on-destroy.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-map-view',
   templateUrl: './map-view.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OnDestroyService],
 })
-export class MapViewComponent implements OnInit, OnDestroy {
+export class MapViewComponent implements OnInit {
   public SCREEN_WIDTH = 150;
   public SCREEN_HEIGHT = 150;
-
-  private eventsSubscription: Subscription;
-
   public events: Observable<void>;
 
   @ViewChild('canvas', { static: true })
-  canvas: ElementRef<HTMLCanvasElement>;
+  public canvas: ElementRef<HTMLCanvasElement>;
 
   private ctx: CanvasRenderingContext2D;
 
-  constructor(public mapService: MapService) {}
+  constructor(
+    public mapService: MapService,
+    @Self()
+    @Optional()
+    private onDestroyService: OnDestroyService
+  ) {}
 
   public ngOnInit(): void {
     this.events = this.mapService.getPositionEvents();
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.eventsSubscription = this.events.subscribe(() => this.performTick());
+    this.events.pipe(takeUntil(this.onDestroyService)).subscribe(() => this.performTick());
     this.performTick();
-  }
-
-  public ngOnDestroy(): void {
-    this.eventsSubscription.unsubscribe();
   }
 
   public performTick = (): void => {
@@ -64,26 +56,16 @@ export class MapViewComponent implements OnInit, OnDestroy {
     }
     this.ctx.fillStyle = 'rgb(100, 255, 100)';
     this.ctx.fillRect(
-      (this.mapService.getPosY() * this.SCREEN_HEIGHT) /
-        this.mapService.MAP_HEIGHT -
-        2,
-      (this.mapService.getPosX() * this.SCREEN_WIDTH) /
-        this.mapService.MAP_WIDTH -
-        2,
+      (this.mapService.getPosY() * this.SCREEN_HEIGHT) / this.mapService.MAP_HEIGHT - 2,
+      (this.mapService.getPosX() * this.SCREEN_WIDTH) / this.mapService.MAP_WIDTH - 2,
       4,
       4
     );
   };
 
-  public drawCameraRay = (
-    cameraX: number,
-    strokeStyle: string,
-    lineWidth: number
-  ): void => {
-    const rayDirX =
-      this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
-    const rayDirY =
-      this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
+  public drawCameraRay = (cameraX: number, strokeStyle: string, lineWidth: number): void => {
+    const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
+    const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
 
     let mapX = Math.trunc(this.mapService.getPosX());
     let mapY = Math.trunc(this.mapService.getPosY());
@@ -130,27 +112,19 @@ export class MapViewComponent implements OnInit, OnDestroy {
     }
     let perpWallDist;
     if (!side) {
-      perpWallDist =
-        (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
+      perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
     } else {
-      perpWallDist =
-        (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
+      perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
     }
 
     this.ctx.beginPath();
     this.ctx.moveTo(
-      (this.mapService.getPosY() * this.SCREEN_HEIGHT) /
-        this.mapService.MAP_HEIGHT,
-      (this.mapService.getPosX() * this.SCREEN_WIDTH) /
-        this.mapService.MAP_WIDTH
+      (this.mapService.getPosY() * this.SCREEN_HEIGHT) / this.mapService.MAP_HEIGHT,
+      (this.mapService.getPosX() * this.SCREEN_WIDTH) / this.mapService.MAP_WIDTH
     );
     this.ctx.lineTo(
-      ((this.mapService.getPosY() + (perpWallDist + 0.1) * rayDirY) *
-        this.SCREEN_HEIGHT) /
-        this.mapService.MAP_HEIGHT,
-      ((this.mapService.getPosX() + (perpWallDist + 0.1) * rayDirX) *
-        this.SCREEN_WIDTH) /
-        this.mapService.MAP_WIDTH
+      ((this.mapService.getPosY() + (perpWallDist + 0.1) * rayDirY) * this.SCREEN_HEIGHT) / this.mapService.MAP_HEIGHT,
+      ((this.mapService.getPosX() + (perpWallDist + 0.1) * rayDirX) * this.SCREEN_WIDTH) / this.mapService.MAP_WIDTH
     );
     this.ctx.lineWidth = lineWidth;
     this.ctx.strokeStyle = strokeStyle;

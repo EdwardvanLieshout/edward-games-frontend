@@ -1,0 +1,33 @@
+@import '../config';
+@import '../abstracts/all';
+@import '../core/all';
+
+.#{$block-prefix}image {
+  &__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &__foreground {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%;
+    animation: static_noise (10 * $animation-slow) linear infinite;
+    &:hover {
+      animation: none;
+      opacity: 0;
+    }
+  }
+
+  &--edward {
+    background-image: url('../../images/edward.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: auto;
+    height: auto;
+    max-height: 250px;
+  }
+}

@@ -1,4 +1,4 @@
-@import "../abstracts/all";
+@import '../abstracts/all';
 
 @mixin _multiple-border-weights($colour) {
   @for $i from 1 through 8 {

@@ -1,36 +1,32 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  OnDestroy,
-  ChangeDetectorRef,
-} from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Self, Optional } from '@angular/core';
+import { Observable } from 'rxjs';
 import { MapService } from '../../../../../../core/services/map.service';
+import { OnDestroyService } from '../../../../../../core/services/on-destroy.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-room-title',
   templateUrl: './room-title.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OnDestroyService],
 })
-export class RoomTitleComponent implements OnInit, OnDestroy {
-  private eventsSubscription: Subscription;
-
+export class RoomTitleComponent implements OnInit {
   public titleText = '';
 
   public events: Observable<void>;
 
-  constructor(public mapService: MapService, public ref: ChangeDetectorRef) {}
+  constructor(
+    public mapService: MapService,
+    public ref: ChangeDetectorRef,
+    @Self()
+    @Optional()
+    private onDestroyService: OnDestroyService
+  ) {}
 
   public ngOnInit(): void {
     this.events = this.mapService.getPositionEvents();
-    this.eventsSubscription = this.events.subscribe(() => this.performTick());
+    this.events.pipe(takeUntil(this.onDestroyService)).subscribe(() => this.performTick());
     this.performTick();
-  }
-
-  public ngOnDestroy(): void {
-    this.eventsSubscription.unsubscribe();
   }
 
   public performTick = (): void => {

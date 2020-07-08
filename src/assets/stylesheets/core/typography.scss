@@ -1,4 +1,4 @@
-@import "../abstracts/all";
+@import '../abstracts/all';
 
 @mixin _heading-defaults {
   font-family: $font-title;
@@ -9,7 +9,8 @@
   text-align: center;
 }
 
-p {
+p,
+a {
   font-family: $font-default;
   font-size: 1rem;
   line-height: 1.4rem;

@@ -96,8 +96,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy(): void {
-    clearTimeout(this.tick);
+  @HostListener('window:beforeunload')
+  public async ngOnDestroy(): Promise<void> {
+    cancelAnimationFrame(this.tick);
   }
 
   public performTick = (): void => {
@@ -158,22 +159,14 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   public calculateRays = (): void => {
     this.animationCounter = (this.animationCounter + 1) % 4;
-    const dirX = this.mapService.getDirX();
-    const dirY = this.mapService.getDirY();
-    const planeX = this.mapService.getPlaneX();
-    const planeY = this.mapService.getPlaneY();
-    const posX = this.mapService.getPosX();
-    const posY = this.mapService.getPosY();
-    const map = this.mapService.getMap();
-
     this.worker.postMessage({
-      dirX: dirX,
-      dirY: dirY,
-      planeX: planeX,
-      planeY: planeY,
-      posX: posX,
-      posY: posY,
-      map: map,
+      dirX: this.mapService.getDirX(),
+      dirY: this.mapService.getDirY(),
+      planeX: this.mapService.getPlaneX(),
+      planeY: this.mapService.getPlaneY(),
+      posX: this.mapService.getPosX(),
+      posY: this.mapService.getPosY(),
+      map: this.mapService.getMap(),
       screen_width: this.SCREEN_WIDTH,
       screen_height: this.SCREEN_HEIGHT,
       texture_width: this.TEXTURE_WIDTH,
@@ -187,13 +180,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   private handleWorkerMessage = (data): void => {
     this.ctx.putImageData(data.imageData, 0, 0);
-    // const timeDiff = new Date().getTime() - data.timestamp.getTime();
-    // const dur = 1000 / 40;
-    // let timeInterval = dur - timeDiff;
-    // if (timeInterval < 0) {
-    //   timeInterval = 0;
-    // }
-    requestAnimationFrame(this.performTick);
+    this.tick = requestAnimationFrame(this.performTick);
   };
 
   private moveForward = (): void => {

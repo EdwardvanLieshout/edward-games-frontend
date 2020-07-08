@@ -45,6 +45,8 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   private animationCounter = 0;
   private tick;
 
+  private worker: Worker;
+
   constructor(public mapService: MapService, private ref: ChangeDetectorRef) {}
 
   @HostListener('window:resize', ['$event'])
@@ -52,10 +54,20 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     this.SCREEN_WIDTH = this.canvas.nativeElement.width;
     this.SCREEN_HEIGHT = this.canvas.nativeElement.height;
     this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.data = this.ctx.createImageData(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
   }
 
   public ngOnInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
+    if (typeof Worker !== 'undefined') {
+      const path = (this.worker = new Worker('./room-view.worker', { type: 'module' }));
+      this.worker.onmessage = ({ data }) => {
+        this.handleWorkerMessage(data);
+      };
+    } else {
+      // Web Workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+    }
     Promise.all(
       [
         'grid',
@@ -79,12 +91,13 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       this.showCanvas = true;
       this.ref.markForCheck();
       this.onResize();
+      this.ctx.clearRect(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
       this.performTick();
     });
   }
 
   public ngOnDestroy(): void {
-    cancelAnimationFrame(this.tick);
+    clearTimeout(this.tick);
   }
 
   public performTick = (): void => {
@@ -101,9 +114,6 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       this.moveBackward();
     }
     this.calculateRays();
-    this.tick = requestAnimationFrame(() => {
-      this.performTick();
-    });
   };
 
   public startRotateRight = (): void => {
@@ -147,202 +157,43 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   };
 
   public calculateRays = (): void => {
-    this.data = this.ctx.createImageData(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
     this.animationCounter = (this.animationCounter + 1) % 4;
-    for (let y = 0; y < this.SCREEN_HEIGHT; y++) {
-      const rayDirX0 = this.mapService.getDirX() - this.mapService.getPlaneX();
-      const rayDirY0 = this.mapService.getDirY() - this.mapService.getPlaneY();
-      const rayDirX1 = this.mapService.getDirX() + this.mapService.getPlaneX();
-      const rayDirY1 = this.mapService.getDirY() + this.mapService.getPlaneY();
+    const dirX = this.mapService.getDirX();
+    const dirY = this.mapService.getDirY();
+    const planeX = this.mapService.getPlaneX();
+    const planeY = this.mapService.getPlaneY();
+    const posX = this.mapService.getPosX();
+    const posY = this.mapService.getPosY();
+    const map = this.mapService.getMap();
 
-      const p = y - this.SCREEN_HEIGHT / 2;
+    this.worker.postMessage({
+      dirX: dirX,
+      dirY: dirY,
+      planeX: planeX,
+      planeY: planeY,
+      posX: posX,
+      posY: posY,
+      map: map,
+      screen_width: this.SCREEN_WIDTH,
+      screen_height: this.SCREEN_HEIGHT,
+      texture_width: this.TEXTURE_WIDTH,
+      texture_height: this.TEXTURE_HEIGHT,
+      textures: this.textures,
+      imageData: this.data,
+      animationCounter: this.animationCounter,
+      timestamp: new Date(),
+    });
+  };
 
-      const posZ = 0.5 * this.SCREEN_HEIGHT;
-
-      const rowDistance = posZ / p;
-
-      const floorStepX = (rowDistance * (rayDirX1 - rayDirX0)) / this.SCREEN_WIDTH;
-      const floorStepY = (rowDistance * (rayDirY1 - rayDirY0)) / this.SCREEN_WIDTH;
-
-      let floorX = this.mapService.getPosX() + rowDistance * rayDirX0;
-      let floorY = this.mapService.getPosY() + rowDistance * rayDirY0;
-      for (let x = 0; x < this.SCREEN_WIDTH; x++) {
-        const cellX = Math.trunc(floorX);
-        const cellY = Math.trunc(floorY);
-
-        // tslint:disable-next-line:no-bitwise
-        const tx = Math.trunc(this.TEXTURE_WIDTH * (floorX - cellX)) & (this.TEXTURE_WIDTH - 1);
-        // tslint:disable-next-line:no-bitwise
-        const ty = Math.trunc(this.TEXTURE_HEIGHT * (floorY - cellY)) & (this.TEXTURE_HEIGHT - 1);
-
-        floorX += floorStepX;
-        floorY += floorStepY;
-
-        let floorTexture;
-        let ceilingTexture;
-
-        if (
-          this.mapService.getMap()[cellX] &&
-          this.mapService.getMap()[cellX][cellY] &&
-          this.mapService.getMap()[cellX][cellY].tex1 !== undefined
-        ) {
-          floorTexture = this.mapService.getMap()[cellX][cellY].tex0;
-          ceilingTexture = this.mapService.getMap()[cellX][cellY].tex1;
-        } else {
-          floorTexture = TextureTypeEnum.PLAIN;
-          ceilingTexture = TextureTypeEnum.PLAIN;
-        }
-        if (ceilingTexture === undefined) {
-          ceilingTexture = TextureTypeEnum.PLAIN;
-        }
-        const texIndex = (this.TEXTURE_WIDTH * ty + tx) * 4;
-        let color = {
-          r: this.textures[floorTexture].data[texIndex],
-          g: this.textures[floorTexture].data[texIndex + 1],
-          b: this.textures[floorTexture].data[texIndex + 2],
-          a: this.textures[floorTexture].data[texIndex + 3],
-        };
-
-        color.r = color.r / rowDistance;
-        color.g = color.g / rowDistance;
-        color.b = color.b / rowDistance;
-        let dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
-        this.data.data[dataIndex] = color.r;
-        this.data.data[dataIndex + 1] = color.g;
-        this.data.data[dataIndex + 2] = color.b;
-        this.data.data[dataIndex + 3] = color.a;
-
-        color = {
-          r: this.textures[ceilingTexture].data[texIndex],
-          g: this.textures[ceilingTexture].data[texIndex + 1],
-          b: this.textures[ceilingTexture].data[texIndex + 2],
-          a: this.textures[ceilingTexture].data[texIndex + 3],
-        };
-
-        color.r = color.r / rowDistance;
-        color.g = color.g / rowDistance;
-        color.b = color.b / rowDistance;
-        dataIndex = ((this.SCREEN_HEIGHT - y - 1) * this.SCREEN_WIDTH + x) * 4;
-        this.data.data[dataIndex] = color.r;
-        this.data.data[dataIndex + 1] = color.g;
-        this.data.data[dataIndex + 2] = color.b;
-        this.data.data[dataIndex + 3] = color.a;
-      }
-    }
-
-    for (let x = 0; x < this.SCREEN_WIDTH; x++) {
-      const cameraX = (2 * x) / this.SCREEN_WIDTH - 1;
-      const rayDirX = this.mapService.getDirX() + this.mapService.getPlaneX() * cameraX;
-      const rayDirY = this.mapService.getDirY() + this.mapService.getPlaneY() * cameraX;
-
-      let mapX = Math.trunc(this.mapService.getPosX());
-      let mapY = Math.trunc(this.mapService.getPosY());
-
-      let sideDistX;
-      let sideDistY;
-
-      const deltaDistX = Math.sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX));
-      const deltaDistY = Math.sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY));
-      let perpWallDist;
-
-      let stepX;
-      let stepY;
-
-      let hit = false;
-      let side = false;
-
-      if (rayDirX < 0) {
-        stepX = -1;
-        sideDistX = (this.mapService.getPosX() - mapX) * deltaDistX;
-      } else {
-        stepX = 1;
-        sideDistX = (mapX + 1.0 - this.mapService.getPosX()) * deltaDistX;
-      }
-      if (rayDirY < 0) {
-        stepY = -1;
-        sideDistY = (this.mapService.getPosY() - mapY) * deltaDistY;
-      } else {
-        stepY = 1;
-        sideDistY = (mapY + 1.0 - this.mapService.getPosY()) * deltaDistY;
-      }
-      while (!hit) {
-        if (sideDistX < sideDistY) {
-          sideDistX += deltaDistX;
-          mapX += stepX;
-          side = false;
-        } else {
-          sideDistY += deltaDistY;
-          mapY += stepY;
-          side = true;
-        }
-        if (this.mapService.getMap()[mapX][mapY].tileType === this.tileEnum.WALL) {
-          hit = true;
-        }
-      }
-
-      if (!side) {
-        perpWallDist = (mapX - this.mapService.getPosX() + (1 - stepX) / 2) / rayDirX;
-      } else {
-        perpWallDist = (mapY - this.mapService.getPosY() + (1 - stepY) / 2) / rayDirY;
-      }
-
-      const lineHeight = Math.trunc(this.SCREEN_HEIGHT / perpWallDist) + 10;
-
-      let drawStart = Math.trunc(-lineHeight / 2 + this.SCREEN_HEIGHT / 2);
-      if (drawStart < 0) {
-        drawStart = 0;
-      }
-      let drawEnd = Math.trunc(lineHeight / 2 + this.SCREEN_HEIGHT / 2);
-      if (drawEnd >= this.SCREEN_HEIGHT) {
-        drawEnd = this.SCREEN_HEIGHT - 1;
-      }
-
-      let texNum = this.mapService.getMap()[mapX][mapY].tex0;
-      if (texNum === this.texEnum.TV1 || texNum === this.texEnum.TV1S) {
-        texNum += this.animationCounter;
-      }
-
-      let wallX;
-      if (!side) {
-        wallX = this.mapService.getPosY() + perpWallDist * rayDirY;
-      } else {
-        wallX = this.mapService.getPosX() + perpWallDist * rayDirX;
-      }
-      wallX -= Math.trunc(wallX);
-      let texX = Math.trunc(wallX * this.TEXTURE_WIDTH);
-      if (!side && rayDirX > 0) {
-        texX = this.TEXTURE_WIDTH - texX - 1;
-      }
-      if (side && rayDirY < 0) {
-        texX = this.TEXTURE_WIDTH - texX - 1;
-      }
-
-      const step = (1.0 * this.TEXTURE_HEIGHT) / lineHeight;
-      let texPos = (drawStart - this.SCREEN_HEIGHT / 2 + lineHeight / 2) * step;
-      for (let y = drawStart; y < drawEnd; y++) {
-        // tslint:disable-next-line:no-bitwise
-        const texY = Math.trunc(texPos) & (this.TEXTURE_HEIGHT - 1);
-        texPos += step;
-        const texIndex = (this.TEXTURE_HEIGHT * texY + texX) * 4;
-        const color = {
-          r: this.textures[texNum].data[texIndex],
-          g: this.textures[texNum].data[texIndex + 1],
-          b: this.textures[texNum].data[texIndex + 2],
-          a: this.textures[texNum].data[texIndex + 3],
-        };
-
-        color.r = (color.r * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight)) / this.SCREEN_HEIGHT;
-        color.g = (color.g * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight)) / this.SCREEN_HEIGHT;
-        color.b = (color.b * (lineHeight > this.SCREEN_HEIGHT ? this.SCREEN_HEIGHT : lineHeight)) / this.SCREEN_HEIGHT;
-
-        const dataIndex = (y * this.SCREEN_WIDTH + x) * 4;
-        this.data.data[dataIndex] = color.r;
-        this.data.data[dataIndex + 1] = color.g;
-        this.data.data[dataIndex + 2] = color.b;
-        this.data.data[dataIndex + 3] = color.a;
-      }
-    }
-    this.ctx.putImageData(this.data, 0, 0);
+  private handleWorkerMessage = (data): void => {
+    this.ctx.putImageData(data.imageData, 0, 0);
+    // const timeDiff = new Date().getTime() - data.timestamp.getTime();
+    // const dur = 1000 / 40;
+    // let timeInterval = dur - timeDiff;
+    // if (timeInterval < 0) {
+    //   timeInterval = 0;
+    // }
+    requestAnimationFrame(this.performTick);
   };
 
   private moveForward = (): void => {

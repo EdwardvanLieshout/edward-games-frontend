@@ -7,6 +7,14 @@
   (window:keyup.arrowup)="cancelMoveForward()"
   (window:keydown.arrowdown)="startMoveBackward()"
   (window:keyup.arrowdown)="cancelMoveBackward()"
+  (window:keydown.d)="startRotateRight()"
+  (window:keyup.d)="cancelRotateRight()"
+  (window:keydown.a)="startRotateLeft()"
+  (window:keyup.a)="cancelRotateLeft()"
+  (window:keydown.w)="startMoveForward()"
+  (window:keyup.w)="cancelMoveForward()"
+  (window:keydown.s)="startMoveBackward()"
+  (window:keyup.s)="cancelMoveBackward()"
   [ngClass]="{
     'hidden--visually': !showCanvas,
     'e-room__canvas': true,

@@ -1,0 +1,72 @@
+<div
+  class="e-flex e-flex--row"
+  (window:keydown.arrowright)="onStartMovingRight($event)"
+  (window:keyup.arrowright)="onStopMovingRight()"
+  (window:keydown.arrowleft)="onStartMovingLeft($event)"
+  (window:keyup.arrowleft)="onStopMovingLeft()"
+  (window:keydown.arrowup)="onStartMovingUp($event)"
+  (window:keyup.arrowup)="onStopMovingUp()"
+  (window:keydown.arrowdown)="onStartMovingDown($event)"
+  (window:keyup.arrowdown)="onStopMovingDown()"
+  (window:keydown.d)="onStartMovingRight()"
+  (window:keyup.d)="onStopMovingRight()"
+  (window:keydown.a)="onStartMovingLeft()"
+  (window:keyup.a)="onStopMovingLeft()"
+  (window:keydown.w)="onStartMovingUp()"
+  (window:keyup.w)="onStopMovingUp()"
+  (window:keydown.s)="onStartMovingDown()"
+  (window:keyup.s)="onStopMovingDown()"
+>
+  <button
+    type="button"
+    (contextmenu)="$event.preventDefault()"
+    class="e-button e-button--small e-button--primary e-button__control e-flex__col e-button__control__left"
+    (mousedown)="onStartMovingLeft()"
+    (touchstart)="onStartMovingLeft()"
+    (window:mouseup)="onStopMovingLeft()"
+    (window:touchend)="onStopMovingLeft()"
+  >
+    Left
+    <span class="hidden--visually">Left</span>
+  </button>
+  <div class="e-flex__col">
+    <div class="e-flex e-flex--column">
+      <button
+        type="button"
+        (contextmenu)="$event.preventDefault()"
+        class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__up"
+        (mousedown)="onStartMovingUp()"
+        (touchstart)="onStartMovingUp()"
+        (window:mouseup)="onStopMovingUp()"
+        (window:touchend)="onStopMovingUp()"
+      >
+        Up
+        <span class="hidden--visually">Up</span>
+      </button>
+      <button
+        type="button"
+        (contextmenu)="$event.preventDefault()"
+        class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__down"
+        (mousedown)="onStartMovingDown()"
+        (touchstart)="onStartMovingDown()"
+        (window:mouseup)="onStopMovingDown()"
+        (window:touchend)="onStopMovingDown()"
+      >
+        Down
+        <span class="hidden--visually">Down</span>
+      </button>
+    </div>
+  </div>
+  <button
+    type="button"
+    (contextmenu)="$event.preventDefault()"
+    class="e-button e-button--small e-button--primary e-button__control e-flex__col e-button__control__right"
+    (mousedown)="onStartMovingRight()"
+    (touchstart)="onStartMovingRight()"
+    (window:mouseup)="onStopMovingRight()"
+    (window:touchend)="onStopMovingRight()"
+  >
+    Right
+    <span class="hidden--visually">Right</span>
+  </button>
+</div>

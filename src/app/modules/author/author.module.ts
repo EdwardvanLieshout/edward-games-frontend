@@ -7,7 +7,12 @@ import { AuthorMediaPageComponent } from './pages/author-media-page/author-media
 import { AuthorContactPageComponent } from './pages/author-contact-page/author-contact-page.component';
 
 @NgModule({
-  declarations: [AboutAuthorPageComponent, AuthorExperiencePageComponent, AuthorMediaPageComponent, AuthorContactPageComponent],
+  declarations: [
+    AboutAuthorPageComponent,
+    AuthorExperiencePageComponent,
+    AuthorMediaPageComponent,
+    AuthorContactPageComponent,
+  ],
   imports: [CommonModule, AuthorRoutingModule],
 })
 export class AuthorModule {}

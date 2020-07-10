@@ -16,14 +16,15 @@
   (window:keyup.w)="onStopMovingUp()"
   (window:keydown.s)="onStartMovingDown()"
   (window:keyup.s)="onStopMovingDown()"
+  (touchmove)="onTouchMove($event)"
 >
   <button
+    #left
     type="button"
     (contextmenu)="$event.preventDefault()"
     class="e-button e-button--small e-button--primary e-button__control e-flex__col e-button__control__left"
     (mousedown)="onStartMovingLeft()"
     (mousemove)="onChangeMovingLeft()"
-    (touchmove)="onChangeMovingLeft($event)"
     (touchstart)="onStartMovingLeft()"
     (window:mouseup)="onStopMovingLeft()"
     (window:touchend)="onStopMovingLeft()"
@@ -35,12 +36,12 @@
   <div class="e-flex__col">
     <div class="e-flex e-flex--column">
       <button
+        #up
         type="button"
         (contextmenu)="$event.preventDefault()"
         class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__up"
         (mousedown)="onStartMovingUp()"
         (mousemove)="onChangeMovingUp()"
-        (touchmove)="onChangeMovingUp($event)"
         (touchstart)="onStartMovingUp()"
         (window:mouseup)="onStopMovingUp()"
         (window:touchend)="onStopMovingUp()"
@@ -50,21 +51,23 @@
         <span class="hidden--visually">Up</span>
       </button>
       <button
+        #cancel
         type="button"
         (contextmenu)="$event.preventDefault()"
         class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__center"
         (mousemove)="onChangeCancel()"
-        (touchmove)="onChangeCancel($event)"
+        (mousedown)="onStartCancel()"
+        (touchstart)="onStartCancel()"
       >
         <span class="hidden--visually">Up</span>
       </button>
       <button
+        #down
         type="button"
         (contextmenu)="$event.preventDefault()"
         class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__down"
         (mousedown)="onStartMovingDown()"
         (mousemove)="onChangeMovingDown()"
-        (touchmove)="onChangeMovingDown($event)"
         (touchstart)="onStartMovingDown()"
         (window:mouseup)="onStopMovingDown()"
         (window:touchend)="onStopMovingDown()"
@@ -76,12 +79,12 @@
     </div>
   </div>
   <button
+    #right
     type="button"
     (contextmenu)="$event.preventDefault()"
     class="e-button e-button--small e-button--primary e-button__control e-flex__col e-button__control__right"
     (mousedown)="onStartMovingRight()"
     (mousemove)="onChangeMovingRight()"
-    (touchmove)="onChangeMovingRight($event)"
     (touchstart)="onStartMovingRight()"
     (window:mouseup)="onStopMovingRight()"
     (window:touchend)="onStopMovingRight()"

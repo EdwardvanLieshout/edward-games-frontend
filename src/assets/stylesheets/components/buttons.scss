@@ -109,6 +109,21 @@
         border-radius: 0;
         border-width: 1px;
       }
+      &:active {
+        background-color: $colour-light-gray;
+        color: $colour-dark-gray;
+        border: solid 2px $colour-white;
+      }
+      &--active {
+        background-color: $colour-dark-gray;
+        border-color: $colour-light-gray;
+        color: $colour-light-gray-hover;
+        &:active {
+          background-color: $colour-dark-gray;
+          border-color: $colour-light-gray;
+          color: $colour-light-gray-hover;
+        }
+      }
     }
   }
 }

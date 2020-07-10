@@ -19,7 +19,7 @@ import { MapService } from '../../../../../../core/services/map.service';
 })
 export class RoomViewComponent implements OnInit, OnDestroy {
   public SCREEN_WIDTH = 600;
-  public SCREEN_HEIGHT = 400;
+  public SCREEN_HEIGHT = 350;
 
   public readonly TEXTURE_WIDTH = 64;
   public readonly TEXTURE_HEIGHT = 64;
@@ -45,6 +45,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   private animationCounter = 0;
   private tick;
 
+  private tickStart: Date;
+  private tickEnd: Date;
+
   private worker: Worker;
 
   constructor(public mapService: MapService, private ref: ChangeDetectorRef) {}
@@ -58,7 +61,9 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.ref.detach();
     this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.ref.detectChanges();
     if (typeof Worker !== 'undefined') {
       const path = (this.worker = new Worker('./room-view.worker', { type: 'module' }));
       this.worker.onmessage = ({ data }) => {
@@ -85,34 +90,28 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         'brickwall-tv2-selected',
         'brickwall-tv3-selected',
         'brickwall-tv4-selected',
+        'portal1',
+        'portal2',
+        'portal3',
+        'portal4',
       ].map((str) => this.loadTexture(str))
     ).then((values) => {
       this.textures = values;
       this.showCanvas = true;
-      this.ref.markForCheck();
+      this.ref.detectChanges();
       this.onResize();
       this.ctx.clearRect(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
       this.performTick();
     });
   }
 
-  public ngOnDestroy(): void {
-    clearTimeout(this.tick);
+  @HostListener('window:beforeunload')
+  public async ngOnDestroy(): Promise<void> {
+    this.worker.terminate();
+    cancelAnimationFrame(this.tick);
   }
 
   public performTick = (): void => {
-    if (this.rotatingRight) {
-      this.rotateRight();
-    }
-    if (this.rotatingLeft) {
-      this.rotateLeft();
-    }
-    if (this.movingForward) {
-      this.moveForward();
-    }
-    if (this.movingBackward) {
-      this.moveBackward();
-    }
     this.calculateRays();
   };
 
@@ -158,22 +157,15 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   public calculateRays = (): void => {
     this.animationCounter = (this.animationCounter + 1) % 4;
-    const dirX = this.mapService.getDirX();
-    const dirY = this.mapService.getDirY();
-    const planeX = this.mapService.getPlaneX();
-    const planeY = this.mapService.getPlaneY();
-    const posX = this.mapService.getPosX();
-    const posY = this.mapService.getPosY();
-    const map = this.mapService.getMap();
-
+    this.tickStart = new Date();
     this.worker.postMessage({
-      dirX: dirX,
-      dirY: dirY,
-      planeX: planeX,
-      planeY: planeY,
-      posX: posX,
-      posY: posY,
-      map: map,
+      dirX: this.mapService.getDirX(),
+      dirY: this.mapService.getDirY(),
+      planeX: this.mapService.getPlaneX(),
+      planeY: this.mapService.getPlaneY(),
+      posX: this.mapService.getPosX(),
+      posY: this.mapService.getPosY(),
+      map: this.mapService.getMap(),
       screen_width: this.SCREEN_WIDTH,
       screen_height: this.SCREEN_HEIGHT,
       texture_width: this.TEXTURE_WIDTH,
@@ -187,29 +179,20 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   private handleWorkerMessage = (data): void => {
     this.ctx.putImageData(data.imageData, 0, 0);
-    // const timeDiff = new Date().getTime() - data.timestamp.getTime();
-    // const dur = 1000 / 40;
-    // let timeInterval = dur - timeDiff;
-    // if (timeInterval < 0) {
-    //   timeInterval = 0;
-    // }
-    requestAnimationFrame(this.performTick);
-  };
-
-  private moveForward = (): void => {
-    this.mapService.moveForward();
-  };
-
-  private moveBackward = (): void => {
-    this.mapService.moveBackward();
-  };
-
-  private rotateRight = (): void => {
-    this.mapService.rotateRight();
-  };
-
-  private rotateLeft = (): void => {
-    this.mapService.rotateLeft();
+    this.tickEnd = new Date();
+    if (this.rotatingRight) {
+      this.mapService.rotateRight(this.tickStart, this.tickEnd);
+    }
+    if (this.rotatingLeft) {
+      this.mapService.rotateLeft(this.tickStart, this.tickEnd);
+    }
+    if (this.movingForward) {
+      this.mapService.moveForward(this.tickStart, this.tickEnd);
+    }
+    if (this.movingBackward) {
+      this.mapService.moveBackward(this.tickStart, this.tickEnd);
+    }
+    this.tick = requestAnimationFrame(this.performTick);
   };
 
   private loadTexture = (name: string): Promise<ImageData> => {

@@ -14,4 +14,8 @@ export enum TextureTypeEnum {
   TV2S = 12,
   TV3S = 13,
   TV4S = 14,
+  PORTAL1 = 15,
+  PORTAL2 = 16,
+  PORTAL3 = 17,
+  PORTAL4 = 18,
 }

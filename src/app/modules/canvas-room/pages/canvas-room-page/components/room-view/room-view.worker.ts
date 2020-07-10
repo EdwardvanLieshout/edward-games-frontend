@@ -20,15 +20,26 @@ addEventListener('message', ({ data }) => {
   const animationCounter = data.animationCounter;
   const timestamp = data.timestamp;
 
+  const rayDirX0 = dirX - planeX;
+  const rayDirY0 = dirY - planeY;
+  const rayDirX1 = dirX + planeX;
+  const rayDirY1 = dirY + planeY;
+
+  const posZ = 0.5 * SCREEN_HEIGHT;
+
+  let floorTexture;
+  let ceilingTexture;
+  floorTexture = TextureTypeEnum.PLAIN;
+  ceilingTexture = TextureTypeEnum.PLAIN;
+
+  let mapX = Math.trunc(posX);
+  let mapY = Math.trunc(posY);
+
+  let sideDistX;
+  let sideDistY;
+
   for (let y = 0; y < SCREEN_HEIGHT; y++) {
-    const rayDirX0 = dirX - planeX;
-    const rayDirY0 = dirY - planeY;
-    const rayDirX1 = dirX + planeX;
-    const rayDirY1 = dirY + planeY;
-
     const p = y - SCREEN_HEIGHT / 2;
-
-    const posZ = 0.5 * SCREEN_HEIGHT;
 
     const rowDistance = posZ / p;
 
@@ -49,18 +60,9 @@ addEventListener('message', ({ data }) => {
       floorX += floorStepX;
       floorY += floorStepY;
 
-      let floorTexture;
-      let ceilingTexture;
-
       if (map[cellX] && map[cellX][cellY] && map[cellX][cellY].tex1 !== undefined) {
         floorTexture = map[cellX][cellY].tex0;
         ceilingTexture = map[cellX][cellY].tex1;
-      } else {
-        floorTexture = TextureTypeEnum.PLAIN;
-        ceilingTexture = TextureTypeEnum.PLAIN;
-      }
-      if (ceilingTexture === undefined) {
-        ceilingTexture = TextureTypeEnum.PLAIN;
       }
       const texIndex = (TEXTURE_WIDTH * ty + tx) * 4;
       let color = {
@@ -102,11 +104,8 @@ addEventListener('message', ({ data }) => {
     const rayDirX = dirX + planeX * cameraX;
     const rayDirY = dirY + planeY * cameraX;
 
-    let mapX = Math.trunc(posX);
-    let mapY = Math.trunc(posY);
-
-    let sideDistX;
-    let sideDistY;
+    mapX = Math.trunc(posX);
+    mapY = Math.trunc(posY);
 
     const deltaDistX = Math.sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX));
     const deltaDistY = Math.sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY));
@@ -165,7 +164,7 @@ addEventListener('message', ({ data }) => {
     }
 
     let texNum = map[mapX][mapY].tex0;
-    if (texNum === TextureTypeEnum.TV1 || texNum === TextureTypeEnum.TV1S) {
+    if (texNum === TextureTypeEnum.TV1 || texNum === TextureTypeEnum.TV1S || texNum === TextureTypeEnum.PORTAL1) {
       texNum += animationCounter;
     }
 

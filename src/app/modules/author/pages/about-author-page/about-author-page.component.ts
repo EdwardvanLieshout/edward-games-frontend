@@ -6,6 +6,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
   OnDestroy,
+  HostListener,
 } from '@angular/core';
 import * as THREE from 'three-full';
 
@@ -56,7 +57,8 @@ export class AboutAuthorPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy(): void {
+  @HostListener('window:beforeunload')
+  public async ngOnDestroy(): Promise<void> {
     cancelAnimationFrame(this.tick);
     this.scene.dispose();
     this.controls.dispose();

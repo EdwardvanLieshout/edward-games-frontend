@@ -64,9 +64,13 @@ export class ScreenModalComponent implements OnInit {
   }
 
   public updatePassage = (passage: PassageTypeEnum): void => {
+    if (passage === PassageTypeEnum.ADVENTURE) {
+      this.router.navigate(['adventure']);
+      return;
+    }
     this.passage = passage;
     this.info = this.infoDictionary[this.passage];
-    this.ref.markForCheck();
+    this.ref.detectChanges();
   };
 
   public close = (): void => {

@@ -23,7 +23,7 @@ export class MapService {
   private worldMap: ITile[][] = [
     [
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
-      { tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS },
+      { tileType: this.tileEnum.WALL, tex0: this.texEnum.PORTAL1 },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
@@ -638,54 +638,86 @@ export class MapService {
     return this.planeY;
   };
 
-  public moveForward = (): void => {
+  public moveForward = (tickStart: Date, tickEnd: Date): void => {
+    const speedModifier = (tickEnd.getTime() - tickStart.getTime()) / 60;
     if (
-      !this.getMap()[Math.trunc(this.getPosX() + this.getDirX() * this.moveSpeed)][Math.trunc(this.getPosY())].tileType
+      !this.getMap()[Math.trunc(this.getPosX() + this.getDirX() * this.moveSpeed * speedModifier)][
+        Math.trunc(this.getPosY())
+      ].tileType
     ) {
-      this.setPosX(this.getPosX() + this.getDirX() * this.moveSpeed);
+      this.setPosX(this.getPosX() + this.getDirX() * this.moveSpeed * speedModifier);
     }
     if (
-      !this.getMap()[Math.trunc(this.getPosX())][Math.trunc(this.getPosY() + this.getDirY() * this.moveSpeed)].tileType
+      !this.getMap()[Math.trunc(this.getPosX())][
+        Math.trunc(this.getPosY() + this.getDirY() * this.moveSpeed * speedModifier)
+      ].tileType
     ) {
-      this.setPosY(this.getPosY() + this.getDirY() * this.moveSpeed);
-    }
-    this.mapUpdated.next();
-    this.checkScreens();
-  };
-
-  public moveBackward = (): void => {
-    if (
-      !this.getMap()[Math.trunc(this.getPosX() - this.getDirX() * this.moveSpeed)][Math.trunc(this.getPosY())].tileType
-    ) {
-      this.setPosX(this.getPosX() - this.getDirX() * this.moveSpeed);
-    }
-    if (
-      !this.getMap()[Math.trunc(this.getPosX())][Math.trunc(this.getPosY() - this.getDirY() * this.moveSpeed)].tileType
-    ) {
-      this.setPosY(this.getPosY() - this.getDirY() * this.moveSpeed);
+      this.setPosY(this.getPosY() + this.getDirY() * this.moveSpeed * speedModifier);
     }
     this.mapUpdated.next();
     this.checkScreens();
   };
 
-  public rotateRight = (): void => {
+  public moveBackward = (tickStart: Date, tickEnd: Date): void => {
+    const speedModifier = (tickEnd.getTime() - tickStart.getTime()) / 60;
+    if (
+      !this.getMap()[Math.trunc(this.getPosX() - this.getDirX() * this.moveSpeed * speedModifier)][
+        Math.trunc(this.getPosY())
+      ].tileType
+    ) {
+      this.setPosX(this.getPosX() - this.getDirX() * this.moveSpeed * speedModifier);
+    }
+    if (
+      !this.getMap()[Math.trunc(this.getPosX())][
+        Math.trunc(this.getPosY() - this.getDirY() * this.moveSpeed * speedModifier)
+      ].tileType
+    ) {
+      this.setPosY(this.getPosY() - this.getDirY() * this.moveSpeed * speedModifier);
+    }
+    this.mapUpdated.next();
+    this.checkScreens();
+  };
+
+  public rotateRight = (tickStart: Date, tickEnd: Date): void => {
+    const speedModifier = (tickEnd.getTime() - tickStart.getTime()) / 60;
     const oldDirX = this.getDirX();
-    this.setDirX(this.getDirX() * Math.cos(-this.rotSpeed) - this.getDirY() * Math.sin(-this.rotSpeed));
-    this.setDirY(oldDirX * Math.sin(-this.rotSpeed) + this.getDirY() * Math.cos(-this.rotSpeed));
+    this.setDirX(
+      this.getDirX() * Math.cos(-this.rotSpeed * speedModifier) -
+        this.getDirY() * Math.sin(-this.rotSpeed * speedModifier)
+    );
+    this.setDirY(
+      oldDirX * Math.sin(-this.rotSpeed * speedModifier) + this.getDirY() * Math.cos(-this.rotSpeed * speedModifier)
+    );
     const oldPlaneX = this.getPlaneX();
-    this.setPlaneX(this.getPlaneX() * Math.cos(-this.rotSpeed) - this.getPlaneY() * Math.sin(-this.rotSpeed));
-    this.setPlaneY(oldPlaneX * Math.sin(-this.rotSpeed) + this.getPlaneY() * Math.cos(-this.rotSpeed));
+    this.setPlaneX(
+      this.getPlaneX() * Math.cos(-this.rotSpeed * speedModifier) -
+        this.getPlaneY() * Math.sin(-this.rotSpeed * speedModifier)
+    );
+    this.setPlaneY(
+      oldPlaneX * Math.sin(-this.rotSpeed * speedModifier) + this.getPlaneY() * Math.cos(-this.rotSpeed * speedModifier)
+    );
     this.mapUpdated.next();
     this.checkScreens();
   };
 
-  public rotateLeft = (): void => {
+  public rotateLeft = (tickStart: Date, tickEnd: Date): void => {
+    const speedModifier = (tickEnd.getTime() - tickStart.getTime()) / 60;
     const oldDirX = this.getDirX();
-    this.setDirX(this.getDirX() * Math.cos(this.rotSpeed) - this.getDirY() * Math.sin(this.rotSpeed));
-    this.setDirY(oldDirX * Math.sin(this.rotSpeed) + this.getDirY() * Math.cos(this.rotSpeed));
+    this.setDirX(
+      this.getDirX() * Math.cos(this.rotSpeed * speedModifier) -
+        this.getDirY() * Math.sin(this.rotSpeed * speedModifier)
+    );
+    this.setDirY(
+      oldDirX * Math.sin(this.rotSpeed * speedModifier) + this.getDirY() * Math.cos(this.rotSpeed * speedModifier)
+    );
     const oldPlaneX = this.getPlaneX();
-    this.setPlaneX(this.getPlaneX() * Math.cos(this.rotSpeed) - this.getPlaneY() * Math.sin(this.rotSpeed));
-    this.setPlaneY(oldPlaneX * Math.sin(this.rotSpeed) + this.getPlaneY() * Math.cos(this.rotSpeed));
+    this.setPlaneX(
+      this.getPlaneX() * Math.cos(this.rotSpeed * speedModifier) -
+        this.getPlaneY() * Math.sin(this.rotSpeed * speedModifier)
+    );
+    this.setPlaneY(
+      oldPlaneX * Math.sin(this.rotSpeed * speedModifier) + this.getPlaneY() * Math.cos(this.rotSpeed * speedModifier)
+    );
     this.mapUpdated.next();
     this.checkScreens();
   };
@@ -725,12 +757,13 @@ export class MapService {
     newPassage: PassageTypeEnum,
     condition: boolean,
     x: number,
-    y: number
+    y: number,
+    newTex: TextureTypeEnum
   ): boolean => {
     if (condition) {
       this.currentPassage = newPassage;
       if (oldPassage !== newPassage) {
-        this.worldMap[x][y].tex0 = this.texEnum.TV1S;
+        this.worldMap[x][y].tex0 = newTex;
         this.canNavigate.next(newPassage);
       }
       return true;
@@ -746,7 +779,8 @@ export class MapService {
       PassageTypeEnum.ABOUTAUTHOR,
       this.posX >= 1 && this.posX < 1.5 && this.posY > 9.2 && this.posY < 9.8 && this.dirX < -0.5,
       0,
-      9
+      9,
+      this.texEnum.TV1S
     );
     if (passageChanged) {
       return;
@@ -757,7 +791,8 @@ export class MapService {
       PassageTypeEnum.EXPERIENCE,
       this.posX > 2.2 && this.posX < 2.8 && this.posY >= 10.5 && this.posY < 11 && this.dirY > 0.5,
       2,
-      11
+      11,
+      this.texEnum.TV1S
     );
     if (passageChanged) {
       return;
@@ -768,7 +803,8 @@ export class MapService {
       PassageTypeEnum.MEDIA,
       this.posX > 4.5 && this.posX <= 5 && this.posY > 10.2 && this.posY < 10.8 && this.dirX > 0.5,
       5,
-      10
+      10,
+      this.texEnum.TV1S
     );
     if (passageChanged) {
       return;
@@ -779,7 +815,20 @@ export class MapService {
       PassageTypeEnum.CONTACT,
       this.posX > 4.2 && this.posX < 4.8 && this.posY > 9 && this.posY <= 9.5 && this.dirY < -0.5,
       4,
-      8
+      8,
+      this.texEnum.TV1S
+    );
+    if (passageChanged) {
+      return;
+    }
+
+    passageChanged = this.checkPassage(
+      oldPassage,
+      PassageTypeEnum.ADVENTURE,
+      this.posX >= 1 && this.posX < 1.5 && this.posY > 1.2 && this.posY < 1.8 && this.dirX < -0.5,
+      0,
+      1,
+      this.texEnum.PORTAL1
     );
     if (passageChanged) {
       return;

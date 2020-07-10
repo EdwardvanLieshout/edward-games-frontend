@@ -72,6 +72,9 @@
     &#{&} {
       width: 100%;
       margin: 0.6rem;
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+      min-height: 2rem;
       -webkit-user-select: none; /* Safari */
       -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* IE10+/Edge */
@@ -100,6 +103,11 @@
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
         border-left-width: 1px;
+      }
+      &__center {
+        margin: 0;
+        border-radius: 0;
+        border-width: 1px;
       }
     }
   }

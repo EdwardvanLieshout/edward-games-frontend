@@ -22,9 +22,12 @@
     (contextmenu)="$event.preventDefault()"
     class="e-button e-button--small e-button--primary e-button__control e-flex__col e-button__control__left"
     (mousedown)="onStartMovingLeft()"
+    (mousemove)="onChangeMovingLeft()"
+    (touchmove)="onChangeMovingLeft($event)"
     (touchstart)="onStartMovingLeft()"
     (window:mouseup)="onStopMovingLeft()"
     (window:touchend)="onStopMovingLeft()"
+    (window:touchcancel)="onStopMovingLeft()"
   >
     Left
     <span class="hidden--visually">Left</span>
@@ -36,9 +39,12 @@
         (contextmenu)="$event.preventDefault()"
         class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__up"
         (mousedown)="onStartMovingUp()"
+        (mousemove)="onChangeMovingUp()"
+        (touchmove)="onChangeMovingUp($event)"
         (touchstart)="onStartMovingUp()"
         (window:mouseup)="onStopMovingUp()"
         (window:touchend)="onStopMovingUp()"
+        (window:touchcancel)="onStopMovingUp()"
       >
         Up
         <span class="hidden--visually">Up</span>
@@ -46,11 +52,23 @@
       <button
         type="button"
         (contextmenu)="$event.preventDefault()"
+        class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__center"
+        (mousemove)="onChangeCancel()"
+        (touchmove)="onChangeCancel($event)"
+      >
+        <span class="hidden--visually">Up</span>
+      </button>
+      <button
+        type="button"
+        (contextmenu)="$event.preventDefault()"
         class="e-flex__col-1 e-button e-button--small e-button--primary e-button__control e-button__control__down"
         (mousedown)="onStartMovingDown()"
+        (mousemove)="onChangeMovingDown()"
+        (touchmove)="onChangeMovingDown($event)"
         (touchstart)="onStartMovingDown()"
         (window:mouseup)="onStopMovingDown()"
         (window:touchend)="onStopMovingDown()"
+        (window:touchcancel)="onStopMovingDown()"
       >
         Down
         <span class="hidden--visually">Down</span>
@@ -62,9 +80,12 @@
     (contextmenu)="$event.preventDefault()"
     class="e-button e-button--small e-button--primary e-button__control e-flex__col e-button__control__right"
     (mousedown)="onStartMovingRight()"
+    (mousemove)="onChangeMovingRight()"
+    (touchmove)="onChangeMovingRight($event)"
     (touchstart)="onStartMovingRight()"
     (window:mouseup)="onStopMovingRight()"
     (window:touchend)="onStopMovingRight()"
+    (window:touchcancel)="onStopMovingRight()"
   >
     Right
     <span class="hidden--visually">Right</span>

@@ -72,6 +72,10 @@
     &#{&} {
       width: 100%;
       margin: 0.6rem;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* IE10+/Edge */
+      user-select: none; /* Standard */
       @include box-shadow(transparent);
       &__up {
         margin-bottom: 0;

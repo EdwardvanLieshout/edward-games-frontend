@@ -97,8 +97,6 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       ].map((str) => this.loadTexture(str))
     ).then((values) => {
       this.textures = values;
-      this.showCanvas = true;
-      this.ref.detectChanges();
       this.onResize();
       this.ctx.clearRect(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
       this.performTick();
@@ -179,6 +177,8 @@ export class RoomViewComponent implements OnInit, OnDestroy {
 
   private handleWorkerMessage = (data): void => {
     this.ctx.putImageData(data.imageData, 0, 0);
+    this.showCanvas = true;
+    this.ref.detectChanges();
     this.tickEnd = new Date();
     if (this.rotatingRight) {
       this.mapService.rotateRight(this.tickStart, this.tickEnd);

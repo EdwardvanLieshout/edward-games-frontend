@@ -137,7 +137,7 @@ export class MapService {
       },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS },
       { tileType: this.tileEnum.WALL, tex0: this.texEnum.HILLS },
-      { tileType: this.tileEnum.WALL, tex0: this.texEnum.GREENGRID },
+      { tileType: this.tileEnum.WALL, tex0: this.texEnum.GRIDINFO },
       {
         tileType: this.tileEnum.FLOOR,
         tex0: this.texEnum.GREENGRID,
@@ -829,6 +829,18 @@ export class MapService {
       0,
       1,
       this.texEnum.PORTAL1
+    );
+    if (passageChanged) {
+      return;
+    }
+
+    passageChanged = this.checkPassage(
+      oldPassage,
+      PassageTypeEnum.MAP,
+      this.posX >= 4 && this.posX < 4.5 && this.posY > 4.2 && this.posY < 4.8 && this.dirX < -0.5,
+      3,
+      4,
+      this.texEnum.GRIDINFO
     );
     if (passageChanged) {
       return;

@@ -19,6 +19,10 @@
       animation: none;
       opacity: 0;
     }
+
+    &--light {
+      animation: static_noise_light (10 * $animation-slow) linear infinite;
+    }
   }
 
   &--edward {

@@ -23,27 +23,38 @@ export class ScreenModalComponent implements OnInit {
       title: '',
       content: '',
       route: 'author/about',
+      bgImg: '',
     },
     'About the author': {
       title: 'About the author',
       content: 'Click proceed to find out more about Edward van Lieshout.',
       route: 'author/about',
+      bgImg: '',
     },
     'Work experience': {
       title: 'Work experience',
       // tslint:disable-next-line:quotemark
       content: "Click proceed to read about Edward's work experience.",
       route: 'author/experience',
+      bgImg: '',
     },
     Media: {
       title: 'Media',
       content: 'Click proceed to go to the media page.',
       route: 'author/media',
+      bgImg: '',
     },
     'Contact the author': {
       title: 'Contact the author',
       content: 'Would you like to contact Edward van Lieshout? Click proceed and fill in the form.',
       route: 'author/contact',
+      bgImg: '',
+    },
+    Map: {
+      title: '',
+      content: '',
+      route: '',
+      bgImg: '../../../../assets/images/map.png',
     },
   };
 

@@ -15,7 +15,7 @@
 
   @include media-small {
     height: 200px;
-    bottom: 50px;
+    bottom: 150px;
   }
 
   -webkit-transform: translateX(-50%);
@@ -27,5 +27,18 @@
 
   &__text {
     opacity: 1;
+  }
+
+  &__image {
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    min-width: 100%;
+    min-height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
   }
 }

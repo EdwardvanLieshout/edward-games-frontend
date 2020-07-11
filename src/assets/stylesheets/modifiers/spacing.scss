@@ -32,5 +32,9 @@ $_base: 0.8rem;
       #{$_type}-left: auto;
       #{$_type}-right: auto;
     }
+
+    &-override {
+      #{$_type}: 0 !important;
+    }
   }
 }

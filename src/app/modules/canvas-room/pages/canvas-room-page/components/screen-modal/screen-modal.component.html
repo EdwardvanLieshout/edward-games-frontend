@@ -1,6 +1,9 @@
 <ng-container *ngIf="passage !== passageTypeEnum.NONE">
-  <div class="e-screen-modal padding-vertical--2 border--light-2 e-flex e-flex--column e-flex__justify--space-between">
-    <div class="padding-horizontal--2">
+  <div
+    class="e-screen-modal padding-vertical--2 border--light-2 e-flex e-flex--column e-flex__justify--space-between"
+    [ngClass]="{ 'padding-override bg--lightgray': info.bgImg !== '' }"
+  >
+    <div *ngIf="info.bgImg === ''" class="padding-horizontal--2">
       <h3 class="margin-bottom--1 e-screen-modal__text">{{ info.title }}</h3>
       <p class="text--center e-screen-modal__text">{{ info.content }}</p>
       <br />
@@ -8,13 +11,24 @@
         You will be returned to your current position when you are finished.
       </p>
     </div>
-    <div class="text--center">
+    <div *ngIf="info.bgImg === ''" class="text--center">
       <button class="e-button e-button--small e-button--primary" type="button" (click)="proceed()">
         Proceed
       </button>
       <button class="e-button e-button--small" type="button" (click)="close()">
         Close
       </button>
+    </div>
+    <div
+      *ngIf="info.bgImg !== ''"
+      [style]="'background-image: url(' + info.bgImg + ');'"
+      class="e-screen-modal__image e-image__container"
+    >
+      <img
+        src="../../../../assets/images/static.gif"
+        alt="static-noise-foreground"
+        class="e-image__foreground e-image__foreground--light"
+      />
     </div>
   </div>
 </ng-container>

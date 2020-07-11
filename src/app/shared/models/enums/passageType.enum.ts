@@ -5,4 +5,5 @@ export enum PassageTypeEnum {
   MEDIA = 'Media',
   CONTACT = 'Contact the author',
   ADVENTURE = 'Adventure',
+  MAP = 'Map',
 }

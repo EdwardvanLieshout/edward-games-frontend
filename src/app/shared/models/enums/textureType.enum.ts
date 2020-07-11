@@ -18,4 +18,5 @@ export enum TextureTypeEnum {
   PORTAL2 = 16,
   PORTAL3 = 17,
   PORTAL4 = 18,
+  GRIDINFO = 19,
 }

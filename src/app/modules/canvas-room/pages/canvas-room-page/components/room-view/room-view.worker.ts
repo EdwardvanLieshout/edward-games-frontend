@@ -52,6 +52,11 @@ addEventListener('message', ({ data }) => {
       const cellX = Math.trunc(floorX);
       const cellY = Math.trunc(floorY);
 
+      if (map[cellX] && map[cellX][cellY] && map[cellX][cellY].tex1 !== undefined) {
+        floorTexture = map[cellX][cellY].tex0;
+        ceilingTexture = map[cellX][cellY].tex1;
+      }
+
       // tslint:disable-next-line:no-bitwise
       const tx = Math.trunc(TEXTURE_WIDTH * (floorX - cellX)) & (TEXTURE_WIDTH - 1);
       // tslint:disable-next-line:no-bitwise
@@ -60,10 +65,6 @@ addEventListener('message', ({ data }) => {
       floorX += floorStepX;
       floorY += floorStepY;
 
-      if (map[cellX] && map[cellX][cellY] && map[cellX][cellY].tex1 !== undefined) {
-        floorTexture = map[cellX][cellY].tex0;
-        ceilingTexture = map[cellX][cellY].tex1;
-      }
       const texIndex = (TEXTURE_WIDTH * ty + tx) * 4;
       let color = {
         r: textures[floorTexture].data[texIndex],
@@ -166,6 +167,9 @@ addEventListener('message', ({ data }) => {
     let texNum = map[mapX][mapY].tex0;
     if (texNum === TextureTypeEnum.TV1 || texNum === TextureTypeEnum.TV1S || texNum === TextureTypeEnum.PORTAL1) {
       texNum += animationCounter;
+    }
+    if (texNum === TextureTypeEnum.GRIDINFO && side) {
+      texNum = TextureTypeEnum.GREENGRID;
     }
 
     let wallX;

@@ -94,6 +94,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         'portal2',
         'portal3',
         'portal4',
+        'grid-info',
       ].map((str) => this.loadTexture(str))
     ).then((values) => {
       this.textures = values;

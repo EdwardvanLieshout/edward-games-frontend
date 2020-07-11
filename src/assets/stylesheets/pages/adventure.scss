@@ -1,0 +1,67 @@
+.#{$block-prefix}adventure {
+  &__menu {
+    @include transition-slow;
+    background-color: rgba(0, 0, 0, 0.5);
+    min-width: 100vw;
+    min-height: 100vh;
+    text-align: center;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+    &--light {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    &__container {
+      background-image: url('../../images/adventure-background.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      min-width: 100vw;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    &__button {
+      @include transition-very-fast;
+      outline: none;
+      font-size: 3rem;
+      font-family: Commodore;
+      @include media-small {
+        margin: 1rem;
+        font-size: 2rem;
+      }
+      &:hover {
+        color: $colour-white;
+        text-shadow: 0 0 1px $colour-white, 0 0 2px $colour-white, 0 0 3px $colour-white;
+      }
+      &:active {
+        color: $colour-green;
+        text-shadow: 0 0 1px $colour-green, 0 0 2px $colour-green, 0 0 3px $colour-green;
+      }
+      &--back {
+        &:active {
+          color: $colour-danger;
+          text-shadow: 0 0 1px $colour-danger, 0 0 2px $colour-danger, 0 0 3px $colour-danger;
+        }
+      }
+    }
+    &__title {
+      padding: 4rem;
+      color: rgb(255, 210, 100);
+      font-size: 4rem;
+      font-family: Commodore;
+      text-shadow: 0 -1px 0 rgb(200, 150, 50), 0 1px 0 rgb(200, 150, 50), -1px 0 0 rgb(200, 150, 50),
+        1px 0 0 rgb(200, 150, 50), 0 1px 0 rgb(180, 135, 45), 0 2px 0 rgb(162, 121, 40), 0 3px 0 rgb(146, 109, 36),
+        0 4px 0 rgb(131, 98, 32), 0 5px 0 rgb(118, 88, 29), -1px 1px 0 rgb(180, 135, 45), -1px 2px 0 rgb(162, 121, 40),
+        -1px 3px 0 rgb(146, 109, 36), -1px 4px 0 rgb(131, 98, 32), -1px 5px 0 rgb(118, 88, 29),
+        1px 1px 0 rgb(180, 135, 45), 1px 2px 0 rgb(162, 121, 40), 1px 3px 0 rgb(146, 109, 36),
+        1px 4px 0 rgb(131, 98, 32), 1px 5px 0 rgb(118, 88, 29), 0 6px 1px #000, 0 0px 3px #000, 0 1px 3px #000,
+        0 3px 5px #000, 0 5px 10px #000, 0 5px 20px #000;
+
+      @include media-small {
+        padding: 2rem;
+        font-size: 2rem;
+      }
+    }
+  }
+}

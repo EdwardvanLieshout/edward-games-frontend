@@ -160,8 +160,8 @@ addEventListener('message', ({ data }) => {
       drawStart = 0;
     }
     let drawEnd = Math.trunc(lineHeight / 2 + SCREEN_HEIGHT / 2);
-    if (drawEnd >= SCREEN_HEIGHT) {
-      drawEnd = SCREEN_HEIGHT - 1;
+    if (drawEnd > SCREEN_HEIGHT) {
+      drawEnd = SCREEN_HEIGHT;
     }
 
     let texNum = map[mapX][mapY].tex0;

@@ -25,6 +25,10 @@
   }
 }
 
+@mixin transition-very-fast {
+  transition: $animation-very-fast;
+}
+
 @mixin transition-fast {
   transition: $animation-fast;
 }

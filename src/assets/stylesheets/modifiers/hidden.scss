@@ -13,6 +13,15 @@
     }
   }
 
+  &-sm {
+    @include media-small {
+      display: none !important;
+    }
+    @include media-medium-only {
+      display: none !important;
+    }
+  }
+
   &-ml {
     @include media-medium {
       display: none !important;

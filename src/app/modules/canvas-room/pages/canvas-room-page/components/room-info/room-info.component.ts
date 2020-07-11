@@ -19,7 +19,8 @@ export class RoomInfoComponent implements OnInit {
   public infoDictionary = {
     'Main Zone': {
       title: 'Welcome to the main zone!',
-      content: 'Walk around using the arrow keys to explore the surrounding areas.',
+      content:
+        'Walk around using the <span class="hidden-s">arrow keys</span><span class="hidden-ml">d-pad</span> to explore the surrounding areas.',
     },
     'Authors Room': {
       title: 'Edward van Lieshout',

@@ -84,30 +84,30 @@
         margin-bottom: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        border-bottom-width: 1px;
+        border-bottom: solid 1px $colour-light-gray-hover;
       }
       &__down {
         margin-top: 0;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
-        border-top-width: 1px;
+        border-top: solid 1px $colour-light-gray-hover;
       }
       &__left {
         margin-right: 0;
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
-        border-right-width: 1px;
+        border-right: solid 1px $colour-light-gray-hover;
       }
       &__right {
         margin-left: 0;
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
-        border-left-width: 1px;
+        border-left: solid 1px $colour-light-gray-hover;
       }
       &__center {
         margin: 0;
         border-radius: 0;
-        border-width: 1px;
+        border: solid 1px $colour-light-gray-hover;
       }
       &:active {
         background-color: $colour-light-gray;

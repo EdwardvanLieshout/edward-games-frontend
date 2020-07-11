@@ -154,7 +154,11 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   };
 
   public calculateRays = (): void => {
-    this.animationCounter = (this.animationCounter + 1) % 4;
+    let speedModifier = 1;
+    if (this.tickEnd && this.tickStart) {
+      speedModifier = (this.tickEnd.getTime() - this.tickStart.getTime()) / 60;
+    }
+    this.animationCounter = (this.animationCounter + 1 * speedModifier) % 4;
     this.tickStart = new Date();
     this.worker.postMessage({
       dirX: this.mapService.getDirX(),
@@ -170,7 +174,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       texture_height: this.TEXTURE_HEIGHT,
       textures: this.textures,
       imageData: this.data,
-      animationCounter: this.animationCounter,
+      animationCounter: Math.trunc(this.animationCounter),
       timestamp: new Date(),
     });
   };

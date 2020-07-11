@@ -1,1 +1,23 @@
-<p>adventure-menu-page works!</p>
+<div class="e-adventure__menu__container">
+  <nav #menu class="e-adventure__menu">
+    <h1 class="e-adventure__menu__title">Edward's Adventure</h1>
+    <div class="e-flex e-flex--column e-flex__align--center">
+      <button
+        class="padding--2 margin--4 e-adventure__menu__button"
+        (mouseover)="highlight()"
+        (mouseout)="stopHighlight()"
+        (click)="toLevelSelect()"
+      >
+        Play
+      </button>
+      <button
+        class="padding--2 margin--4 e-adventure__menu__button e-adventure__menu__button--back"
+        (mouseover)="highlight()"
+        (mouseout)="stopHighlight()"
+        (click)="back()"
+      >
+        Back
+      </button>
+    </div>
+  </nav>
+</div>

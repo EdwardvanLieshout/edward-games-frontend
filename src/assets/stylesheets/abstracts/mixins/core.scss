@@ -10,6 +10,12 @@
   }
 }
 
+@mixin media-medium-only {
+  @media screen and (min-width: $media-medium-width) and (max-width: ($media-large-width - 1px)) {
+    @content;
+  }
+}
+
 @mixin media-large {
   @media screen and (min-width: $media-large-width) {
     @content;

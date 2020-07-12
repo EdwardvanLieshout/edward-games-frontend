@@ -29,8 +29,8 @@ $_base: 0.8rem;
     }
     &-auto {
       display: block;
-      #{$_type}-left: auto;
-      #{$_type}-right: auto;
+      #{$_type}-left: auto !important;
+      #{$_type}-right: auto !important;
     }
 
     &-override {

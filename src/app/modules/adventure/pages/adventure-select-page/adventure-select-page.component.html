@@ -1,1 +1,63 @@
-<p>WIP... Come back later.</p>
+<div [class]="'e-adventure__select__container e-adventure__select__container-' + levelNr">
+  <div class="e-container">
+    <h1 class="e-adventure__menu__title e-adventure__select__title">Choose a level</h1>
+    <div class="e-flex e-flex--row e-flex--row--stretch-on-mobile">
+      <div class="e-flex__col">
+        <div *ngFor="let level of [1, 2, 3, 4, 5]" class="e-adventure__select__option__container">
+          <input
+            type="radio"
+            [id]="'level-opt-' + level"
+            name="level"
+            [value]="level"
+            class="hidden--visually"
+            (change)="onChangeLevel(level)"
+            [checked]="level === levelNr"
+          />
+          <label class="e-adventure__select__option" [for]="'level-opt-' + level">Level {{ level }}</label>
+        </div>
+      </div>
+      <div class="e-adventure__select__box e-flex__col padding--1">
+        <h2 class="margin-vertical--2 text--commodore">Level {{ levelNr }}</h2>
+        <div
+          class="e-image--standard e-image__container e-adventure__select__img margin-auto"
+          [style]="'background-image: url(../../../../assets/images/adventure/levels/Level' + levelNr + '.png);'"
+        >
+          <img
+            src="../../../../assets/images/static.gif"
+            alt="static-noise-foreground"
+            class="e-image__foreground e-image__foreground--light"
+            draggable="false"
+          />
+        </div>
+        <div class="e-flex e-flex--row e-flex--row--stretch-on-mobile e-flex__justify--center margin-top--2">
+          <img
+            [src]="'../../../../assets/images/adventure/gems/level' + levelNr + '/CollectableA1.png'"
+            alt="Collectable1"
+            class="e-adventure__select__collectible"
+            draggable="false"
+          />
+          <img
+            [src]="'../../../../assets/images/adventure/gems/level' + levelNr + '/CollectableB1.png'"
+            alt="Collectable2"
+            class="e-adventure__select__collectible"
+            draggable="false"
+          />
+          <img
+            [src]="'../../../../assets/images/adventure/gems/level' + levelNr + '/CollectableC1.png'"
+            alt="Collectable3"
+            class="e-adventure__select__collectible"
+            draggable="false"
+          />
+        </div>
+      </div>
+    </div>
+    <button class="padding--2 margin--2 e-adventure__menu__button margin-auto" (click)="startLevel()">
+      Start
+    </button>
+  </div>
+</div>
+<div class="e-adventure__select__container-1 hidden--visually"></div>
+<div class="e-adventure__select__container-2 hidden--visually"></div>
+<div class="e-adventure__select__container-3 hidden--visually"></div>
+<div class="e-adventure__select__container-4 hidden--visually"></div>
+<div class="e-adventure__select__container-5 hidden--visually"></div>

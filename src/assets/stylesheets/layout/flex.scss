@@ -31,6 +31,9 @@
 
   &--row {
     flex-direction: row;
+    &--stretch-on-mobile {
+      align-items: unset;
+    }
   }
 
   &--column {

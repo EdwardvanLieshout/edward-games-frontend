@@ -43,6 +43,10 @@
   transition: $animation-slow;
 }
 
+@mixin transition-very-slow {
+  transition: $animation-very-slow;
+}
+
 @mixin hide-button-defaults {
   background: none;
   border: none;

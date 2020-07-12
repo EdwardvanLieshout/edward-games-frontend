@@ -13,12 +13,16 @@
     color: $colour-dark-gray;
   }
 
+  &--commodore {
+    font-family: Commodore;
+  }
+
   &__shadow {
     &--green {
-      @include text-shadow($colour-green-shadow, 4px);
-      @for $i from 5 through 12 {
+      @include text-shadow($colour-green, 3);
+      @for $i from 2 through 12 {
         &-#{$i} {
-          @include text-shadow($colour-green-shadow, #{$i}px);
+          @include text-shadow($colour-green, $i);
         }
       }
     }

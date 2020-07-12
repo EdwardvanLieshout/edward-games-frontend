@@ -1,0 +1,13 @@
+<div [class]="'e-adventure__select__container e-adventure__select__container-' + levelNr">
+  <canvas
+    [ngClass]="{
+      'hidden--visually': !showCanvas,
+      'e-adventure__canvas': true
+    }"
+    [width]="SCREEN_WIDTH"
+    [height]="SCREEN_HEIGHT"
+    #canvas
+  ></canvas>
+  <p [ngClass]="{ hidden: showCanvas, 'e-adventure__loading': !showCanvas }"></p>
+</div>
+<app-adventure-controls></app-adventure-controls>

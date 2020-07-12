@@ -1,0 +1,11 @@
+<div
+  class="hidden--visually"
+  (window:keydown.arrowright)="onStartMovingRight()"
+  (window:keyup.arrowright)="onStopMovingRight()"
+  (window:keydown.arrowleft)="onStartMovingLeft()"
+  (window:keyup.arrowleft)="onStopMovingLeft()"
+  (window:keydown.arrowup)="onStartJumping()"
+  (window:keyup.arrowup)="onStopJumping()"
+  (window:keydown.arrowdown)="onStartCancel()"
+  (window:keyup.arrowdown)="onStopCancel()"
+></div>

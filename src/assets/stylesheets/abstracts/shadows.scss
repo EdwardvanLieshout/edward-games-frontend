@@ -1,9 +1,13 @@
 $_default-colour: $colour-black;
 
-@mixin text-shadow($_color: $_default-colour, $_amount: 4px) {
-  text-shadow: 0px 0px $_amount $_color;
+@mixin text-shadow($_color: $_default-colour, $_amount: 4) {
+  $_shadow-string: 0 0 0 transparent;
+  @for $i from 1 through $_amount {
+    $_shadow-string: $_shadow-string, 0 0 #{$i}px $_color;
+  }
+  text-shadow: $_shadow-string;
 }
 
 @mixin box-shadow($_color: $_default-colour, $_amount: 4px) {
-  box-shadow: 0px 0px $_amount $_amount $_color;
+  box-shadow: 0 0 $_amount $_amount $_color;
 }

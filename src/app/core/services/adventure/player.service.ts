@@ -10,6 +10,8 @@ import { DirTypeEnum } from '../../../shared/models/enums/direction.enum';
 export class PlayerService {
   private animationTimer = 0;
   private bufferedDir: DirTypeEnum;
+  private punchCooldown = 0;
+  private punchBuffer = false;
   private movementBuffer = false;
   private jumpBuffer = false;
   private cancelBuffer = false;
@@ -27,22 +29,32 @@ export class PlayerService {
     ) {
       level.player.y += level.player.verticalVelocity;
     }
-    if (this.bufferedDir) {
+    if (this.punchBuffer && this.punchCooldown === 0) {
+      level.player.blockingAction = ActionTypeEnum.PUNCHING;
+      this.punchCooldown = 12;
+      this.animationTimer = 0;
+      level.player.animationCounter = 1;
+    }
+    if (this.bufferedDir && level.player.blockingAction === ActionTypeEnum.NONE) {
       level.player.dir = this.bufferedDir;
     }
-    if (this.movementBuffer) {
-      level.player.action = ActionTypeEnum.MOVING;
-      this.movementBuffer = false;
-    }
     if (this.stopBuffer) {
+      level.player.animationCounter = 1;
       level.player.action = ActionTypeEnum.NONE;
       this.stopBuffer = false;
     }
-    if (level.player.action === ActionTypeEnum.MOVING) {
-      level.player.x += level.player.dir === DirTypeEnum.RIGHT ? level.player.mSpeed : -level.player.mSpeed;
+    if (this.movementBuffer) {
+      this.movementBuffer = false;
+      level.player.action = ActionTypeEnum.MOVING;
+    }
+    if (level.player.action === ActionTypeEnum.MOVING || level.player.blockingAction === ActionTypeEnum.PUNCHING) {
+      const multiplier = level.player.blockingAction === ActionTypeEnum.PUNCHING ? 1.5 : 1;
+      level.player.x += Math.trunc(
+        level.player.dir === DirTypeEnum.RIGHT ? level.player.mSpeed * multiplier : -level.player.mSpeed * multiplier
+      );
     }
 
-    this.checkMapCollision(level);
+    this.checkPlatformCollision(level);
     this.handlePlayerAnimation(level.player);
   };
 
@@ -52,6 +64,14 @@ export class PlayerService {
 
   public bufferMovement = (): void => {
     this.movementBuffer = true;
+  };
+
+  public movementBeingBuffered = (): boolean => {
+    return this.movementBuffer;
+  };
+
+  public bufferPunch = (shouldStartBuffer: boolean): void => {
+    this.punchBuffer = shouldStartBuffer;
   };
 
   public bufferJump = (): void => {
@@ -74,48 +94,82 @@ export class PlayerService {
     this.stopBuffer = true;
   };
 
-  private checkMapCollision = (level: ILevel): void => {
-    if (level.player.y >= level.height - 2 * level.player.h) {
-      if (level.player.verticalAction === ActionTypeEnum.FALLING) {
-        level.player.verticalAction = ActionTypeEnum.NONE;
-        this.canJump = true;
+  private checkPlatformCollision = (level: ILevel): void => {
+    const player = level.player;
+    for (const platform of level.platforms) {
+      if (
+        this.intersectRect(
+          player.x,
+          player.y + player.h - level.maxFallSpeed,
+          player.w,
+          level.maxFallSpeed,
+          platform.x,
+          platform.y + 10,
+          platform.w,
+          level.maxFallSpeed
+        )
+      ) {
+        this.handleCollision(level, platform.y + 10 - player.h);
+        return;
       }
-      if (this.jumpBuffer) {
-        this.jumpBuffer = false;
-        this.canJump = false;
-        level.player.verticalAction = ActionTypeEnum.JUMPING;
-        level.player.verticalVelocity = -25;
+    }
+    if (level.player.verticalAction !== ActionTypeEnum.FALLING && level.player.verticalVelocity >= 0) {
+      level.player.verticalAction = ActionTypeEnum.FALLING;
+      if (level.player.blockingAction !== ActionTypeEnum.PUNCHING) {
         level.player.animationCounter = 1;
         this.animationTimer = 0;
       }
-    } else {
-      if (level.player.verticalAction !== ActionTypeEnum.FALLING && level.player.verticalVelocity >= 0) {
-        level.player.verticalAction = ActionTypeEnum.FALLING;
-        level.player.animationCounter = 1;
-        this.animationTimer = 0;
-      }
-      if (this.cancelBuffer) {
-        level.player.verticalAction = ActionTypeEnum.FALLING;
-        level.player.animationCounter = 1;
-        this.animationTimer = 0;
-        this.cancelBuffer = false;
-        level.player.verticalVelocity = level.maxFallSpeed;
-      }
+    }
+    if (this.cancelBuffer) {
+      level.player.verticalAction = ActionTypeEnum.FALLING;
+      level.player.blockingAction = ActionTypeEnum.NONE;
+      level.player.animationCounter = 1;
+      this.animationTimer = 0;
+      this.cancelBuffer = false;
+      level.player.verticalVelocity = level.maxFallSpeed;
     }
   };
 
-  private handlePlayerAnimation = (player: IPlayer): void => {
-    this.animationTimer++;
-    if (this.animationTimer === 4) {
+  private handleCollision = (level: ILevel, y: number): void => {
+    level.player.y = y;
+    if (level.player.verticalAction === ActionTypeEnum.FALLING) {
+      level.player.verticalAction = ActionTypeEnum.NONE;
+      this.canJump = true;
+    }
+    if (this.jumpBuffer) {
+      this.jumpBuffer = false;
+      this.canJump = false;
+      level.player.verticalAction = ActionTypeEnum.JUMPING;
+      level.player.blockingAction = ActionTypeEnum.NONE;
+      this.punchCooldown = 0;
+      level.player.verticalVelocity = -25;
+      level.player.animationCounter = 1;
       this.animationTimer = 0;
-      if (player.verticalAction === ActionTypeEnum.NONE) {
-        if (player.action === ActionTypeEnum.NONE) {
-          player.animationCounter = (player.animationCounter % 3) + 1;
+    }
+  };
+
+  private checkMapCollision = (level: ILevel): void => {
+    //
+  };
+
+  private handlePlayerAnimation = (player: IPlayer): void => {
+    if (this.punchCooldown > 0 && player.blockingAction !== ActionTypeEnum.PUNCHING) {
+      this.punchCooldown--;
+    }
+    this.animationTimer++;
+    if (this.animationTimer === 3) {
+      this.animationTimer = 0;
+      if (player.blockingAction === ActionTypeEnum.PUNCHING) {
+        player.animationCounter += 1;
+        if (player.animationCounter === 5) {
+          player.animationCounter = 1;
+          player.blockingAction = ActionTypeEnum.NONE;
         } else {
-          if (player.action === ActionTypeEnum.MOVING) {
-            player.animationCounter = (player.animationCounter % 4) + 1;
-          }
+          return;
         }
+      }
+      if (player.verticalAction === ActionTypeEnum.NONE) {
+        player.animationCounter = (player.animationCounter % 8) + 1;
       } else {
         if (player.verticalAction === ActionTypeEnum.FALLING) {
           player.animationCounter = Math.min(player.animationCounter + 1, 2);
@@ -125,5 +179,21 @@ export class PlayerService {
         }
       }
     }
+  };
+
+  private intersectRect = (
+    x1: number,
+    y1: number,
+    w1: number,
+    h1: number,
+    x2: number,
+    y2: number,
+    w2: number,
+    h2: number
+  ): boolean => {
+    return this.intersectRange(x1, x1 + w1, x2, x2 + w2) && this.intersectRange(y1, y1 + h1, y2, y2 + h2);
+  };
+  private intersectRange = (ax1: number, ax2: number, bx1: number, bx2: number): boolean => {
+    return Math.max(ax1, bx1) <= Math.min(ax2, bx2);
   };
 }

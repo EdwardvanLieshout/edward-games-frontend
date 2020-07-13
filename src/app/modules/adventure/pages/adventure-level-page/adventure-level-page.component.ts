@@ -1,4 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SpritesService } from '../../../../core/services/adventure/sprites.service';
 import { CameraService } from '../../../../core/services/adventure/camera.service';
@@ -11,7 +20,7 @@ import { PlayerService } from '../../../../core/services/adventure/player.servic
   templateUrl: './adventure-level-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdventureLevelPageComponent implements OnInit {
+export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   public levelNr: string;
   public SCREEN_WIDTH = 800;
   public SCREEN_HEIGHT = 500;
@@ -46,6 +55,11 @@ export class AdventureLevelPageComponent implements OnInit {
       this.showCanvas = true;
       this.ref.detectChanges();
     });
+  }
+
+  @HostListener('window:beforeunload')
+  public async ngOnDestroy(): Promise<void> {
+    clearInterval(this.tick);
   }
 
   public performTick = (): void => {

@@ -12,4 +12,5 @@ export interface IDrawable {
   dir?: DirTypeEnum;
   action?: ActionTypeEnum;
   verticalAction?: ActionTypeEnum;
+  blockingAction?: ActionTypeEnum;
 }

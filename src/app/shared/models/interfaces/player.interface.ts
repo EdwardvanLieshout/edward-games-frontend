@@ -13,5 +13,6 @@ export interface IPlayer {
   dir: DirTypeEnum;
   action: ActionTypeEnum;
   verticalAction: ActionTypeEnum;
+  blockingAction: ActionTypeEnum;
   name: string;
 }

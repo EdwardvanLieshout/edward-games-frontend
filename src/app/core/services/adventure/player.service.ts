@@ -54,7 +54,7 @@ export class PlayerService {
       );
     }
 
-    this.checkMapCollision(level);
+    this.checkPlatformCollision(level);
     this.handlePlayerAnimation(level.player);
   };
 
@@ -94,39 +94,62 @@ export class PlayerService {
     this.stopBuffer = true;
   };
 
-  private checkMapCollision = (level: ILevel): void => {
-    if (level.player.y >= level.height - 2 * level.player.h) {
-      if (level.player.verticalAction === ActionTypeEnum.FALLING) {
-        level.player.verticalAction = ActionTypeEnum.NONE;
-        this.canJump = true;
-      }
-      if (this.jumpBuffer) {
-        this.jumpBuffer = false;
-        this.canJump = false;
-        level.player.verticalAction = ActionTypeEnum.JUMPING;
-        level.player.blockingAction = ActionTypeEnum.NONE;
-        this.punchCooldown = 0;
-        level.player.verticalVelocity = -25;
-        level.player.animationCounter = 1;
-        this.animationTimer = 0;
-      }
-    } else {
-      if (level.player.verticalAction !== ActionTypeEnum.FALLING && level.player.verticalVelocity >= 0) {
-        level.player.verticalAction = ActionTypeEnum.FALLING;
-        if (level.player.blockingAction !== ActionTypeEnum.PUNCHING) {
-          level.player.animationCounter = 1;
-          this.animationTimer = 0;
-        }
-      }
-      if (this.cancelBuffer) {
-        level.player.verticalAction = ActionTypeEnum.FALLING;
-        level.player.blockingAction = ActionTypeEnum.NONE;
-        level.player.animationCounter = 1;
-        this.animationTimer = 0;
-        this.cancelBuffer = false;
-        level.player.verticalVelocity = level.maxFallSpeed;
+  private checkPlatformCollision = (level: ILevel): void => {
+    const player = level.player;
+    for (const platform of level.platforms) {
+      if (
+        this.intersectRect(
+          player.x,
+          player.y + player.h - level.maxFallSpeed,
+          player.w,
+          level.maxFallSpeed,
+          platform.x,
+          platform.y + 10,
+          platform.w,
+          level.maxFallSpeed
+        )
+      ) {
+        this.handleCollision(level, platform.y + 10 - player.h);
+        return;
       }
     }
+    if (level.player.verticalAction !== ActionTypeEnum.FALLING && level.player.verticalVelocity >= 0) {
+      level.player.verticalAction = ActionTypeEnum.FALLING;
+      if (level.player.blockingAction !== ActionTypeEnum.PUNCHING) {
+        level.player.animationCounter = 1;
+        this.animationTimer = 0;
+      }
+    }
+    if (this.cancelBuffer) {
+      level.player.verticalAction = ActionTypeEnum.FALLING;
+      level.player.blockingAction = ActionTypeEnum.NONE;
+      level.player.animationCounter = 1;
+      this.animationTimer = 0;
+      this.cancelBuffer = false;
+      level.player.verticalVelocity = level.maxFallSpeed;
+    }
+  };
+
+  private handleCollision = (level: ILevel, y: number): void => {
+    level.player.y = y;
+    if (level.player.verticalAction === ActionTypeEnum.FALLING) {
+      level.player.verticalAction = ActionTypeEnum.NONE;
+      this.canJump = true;
+    }
+    if (this.jumpBuffer) {
+      this.jumpBuffer = false;
+      this.canJump = false;
+      level.player.verticalAction = ActionTypeEnum.JUMPING;
+      level.player.blockingAction = ActionTypeEnum.NONE;
+      this.punchCooldown = 0;
+      level.player.verticalVelocity = -25;
+      level.player.animationCounter = 1;
+      this.animationTimer = 0;
+    }
+  };
+
+  private checkMapCollision = (level: ILevel): void => {
+    //
   };
 
   private handlePlayerAnimation = (player: IPlayer): void => {
@@ -134,7 +157,7 @@ export class PlayerService {
       this.punchCooldown--;
     }
     this.animationTimer++;
-    if (this.animationTimer === 2) {
+    if (this.animationTimer === 3) {
       this.animationTimer = 0;
       if (player.blockingAction === ActionTypeEnum.PUNCHING) {
         player.animationCounter += 1;
@@ -156,5 +179,21 @@ export class PlayerService {
         }
       }
     }
+  };
+
+  private intersectRect = (
+    x1: number,
+    y1: number,
+    w1: number,
+    h1: number,
+    x2: number,
+    y2: number,
+    w2: number,
+    h2: number
+  ): boolean => {
+    return this.intersectRange(x1, x1 + w1, x2, x2 + w2) && this.intersectRange(y1, y1 + h1, y2, y2 + h2);
+  };
+  private intersectRange = (ax1: number, ax2: number, bx1: number, bx2: number): boolean => {
+    return Math.max(ax1, bx1) <= Math.min(ax2, bx2);
   };
 }

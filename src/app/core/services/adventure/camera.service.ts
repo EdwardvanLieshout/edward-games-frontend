@@ -50,8 +50,15 @@ export class CameraService {
   // tslint:disable-next-line:no-any
   private createDrawCommand = (camera: ICamera, drawable: IDrawable, sprites: any): IDrawCommand => {
     const dir = drawable.dir ? drawable.dir : '';
-    const verticalAction = drawable.verticalAction ? drawable.verticalAction : '';
-    const action = drawable.action && (verticalAction === undefined || verticalAction === '') ? drawable.action : '';
+    const blockingAction = drawable.blockingAction ? drawable.blockingAction : '';
+    const verticalAction =
+      drawable.verticalAction && (blockingAction === undefined || blockingAction === '') ? drawable.verticalAction : '';
+    const action =
+      drawable.action &&
+      (blockingAction === undefined || blockingAction === '') &&
+      (verticalAction === undefined || verticalAction === '')
+        ? drawable.action
+        : '';
     const animation = drawable.animationCounter ? drawable.animationCounter : '';
 
     return {
@@ -59,7 +66,7 @@ export class CameraService {
       y: this.offsetY(camera, drawable.y, drawable.distance),
       w: drawable.w / drawable.distance,
       h: drawable.h / drawable.distance,
-      img: sprites[drawable.name + dir + verticalAction + action + animation],
+      img: sprites[drawable.name + dir + blockingAction + verticalAction + action + animation],
     };
   };
 

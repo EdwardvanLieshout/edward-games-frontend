@@ -17,15 +17,15 @@ export class AdventureControlsComponent {
   constructor(private playerService: PlayerService) {}
 
   public onStartMovingRight = (): void => {
-    this.movingRight = true;
     this.playerService.setBufferedDir(DirTypeEnum.RIGHT);
     this.playerService.bufferMovement();
+    this.movingRight = true;
   };
 
   public onStartMovingLeft = (): void => {
-    this.movingLeft = true;
     this.playerService.setBufferedDir(DirTypeEnum.LEFT);
     this.playerService.bufferMovement();
+    this.movingLeft = true;
   };
 
   public onStopMovingRight = (): void => {
@@ -70,5 +70,13 @@ export class AdventureControlsComponent {
 
   public onStopCancel = (): void => {
     this.cancel = false;
+  };
+
+  public onStartPunch = (): void => {
+    this.playerService.bufferPunch(true);
+  };
+
+  public onStopPunch = (): void => {
+    this.playerService.bufferPunch(false);
   };
 }

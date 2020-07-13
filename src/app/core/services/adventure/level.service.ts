@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DirTypeEnum } from '../../../shared/models/enums/direction.enum';
 import { ActionTypeEnum } from '../../../shared/models/enums/action.enum';
 import { ILevel } from '../../../shared/models/interfaces/level.interface';
+import { IPlatform } from '../../../shared/models/interfaces/platform.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,7 @@ export class LevelService {
         dir: DirTypeEnum.RIGHT,
         action: ActionTypeEnum.NONE,
         verticalAction: ActionTypeEnum.NONE,
+        blockingAction: ActionTypeEnum.NONE,
         name: 'player',
       },
       camera: {
@@ -32,13 +34,51 @@ export class LevelService {
         w: 800,
         h: 500,
       },
+      platforms: [],
       skyLineLayer: [],
       backLayer: [],
       centerLayer: [],
       frontLayer: [],
       gravity: 2,
-      maxFallSpeed: 10,
+      maxFallSpeed: 15,
     };
+    level1.platforms.push(
+      ...[
+        {
+          x: 100,
+          y: 0,
+          w: 100,
+          h: 2200,
+          distance: 1,
+          name: 'ground-middle-right',
+        },
+        {
+          x: 100,
+          y: 2200,
+          w: 100,
+          h: 100,
+          distance: 1,
+          name: 'ground-middle-full-corner-r',
+        },
+        {
+          x: 200,
+          y: 2200,
+          w: 800,
+          h: 100,
+          distance: 1,
+          name: 'ground-upper-full',
+        },
+        {
+          x: 1000,
+          y: 2200,
+          w: 100,
+          h: 100,
+          distance: 1,
+          name: 'ground-upper-right',
+        },
+      ]
+    );
+    level1.centerLayer.push(...level1.platforms);
     level1.centerLayer.push(level1.player);
     return level1;
   };

@@ -143,6 +143,13 @@ export class SpritesService {
           { name: 'ground/ground-upper-right-corner', width: 100, height: 100 },
           { name: 'ground/ground-upper-small', width: 100, height: 100 },
 
+          { name: 'ground/ground-z-front-right', width: 100, height: 100 },
+          { name: 'ground/ground-z-front-small', width: 100, height: 100 },
+          { name: 'ground/ground-z-front-left', width: 100, height: 100 },
+          { name: 'ground/ground-z-front-full', width: 100, height: 100 },
+          { name: 'ground/ground-z-back-left', width: 100, height: 100 },
+          { name: 'ground/ground-z-back-right', width: 100, height: 100 },
+
           { name: 'platform/platform-full', width: 100, height: 100 },
           { name: 'platform/platform-left', width: 100, height: 100 },
           { name: 'platform/platform-right', width: 100, height: 100 },

@@ -2,6 +2,7 @@ import { IPlayer } from './player.interface';
 import { ICamera } from './camera.interface';
 import { IDrawable } from './drawable.interface';
 import { IBlock } from './block.interface';
+import { IPortal } from './portal.interface';
 
 export interface ILevel {
   code: string;
@@ -11,6 +12,7 @@ export interface ILevel {
   camera: ICamera;
   platforms: IBlock[];
   walls: IBlock[];
+  portals: IPortal[];
   skyLineLayer: IDrawable[];
   backLayer: IDrawable[];
   centerLayer: IDrawable[];

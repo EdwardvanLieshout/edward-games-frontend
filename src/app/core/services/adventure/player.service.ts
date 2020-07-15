@@ -55,7 +55,7 @@ export class PlayerService {
         level.player.dir === DirTypeEnum.RIGHT ? level.player.mSpeed * multiplier : -level.player.mSpeed * multiplier
       );
     }
-
+    this.checkPortals(level);
     this.checkPlatformCollision(level);
     this.checkWallCollision(level);
     this.handlePlayerAnimation(level.player);
@@ -97,9 +97,32 @@ export class PlayerService {
     this.stopBuffer = true;
   };
 
+  public checkPortals = (level: ILevel): void => {
+    const player = level.player;
+    for (const portal of level.portals) {
+      if (portal.distance !== player.distance) {
+        continue;
+      }
+      if (this.intersectRect(player.x, player.y, player.w, player.h, portal.x, portal.y, portal.w, portal.h)) {
+        if (portal.destX) {
+          player.x = portal.destX;
+        }
+        if (portal.destY) {
+          player.y = portal.destY;
+        }
+        if (portal.destDistance) {
+          player.distance = portal.destDistance;
+        }
+      }
+    }
+  };
+
   private checkWallCollision = (level: ILevel): void => {
     const player = level.player;
     for (const wall of level.walls) {
+      if (wall.distance !== player.distance) {
+        continue;
+      }
       if (
         this.intersectRect(
           player.x + 30,
@@ -151,6 +174,9 @@ export class PlayerService {
   private checkPlatformCollision = (level: ILevel): void => {
     const player = level.player;
     for (const platform of level.platforms) {
+      if (platform.distance !== player.distance) {
+        continue;
+      }
       if (
         this.intersectRect(
           player.x,

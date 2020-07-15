@@ -13,4 +13,5 @@ export interface IDrawable {
   action?: ActionTypeEnum;
   verticalAction?: ActionTypeEnum;
   blockingAction?: ActionTypeEnum;
+  resizeWhenDistant?: boolean;
 }

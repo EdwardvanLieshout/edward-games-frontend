@@ -39,7 +39,22 @@ export class CameraService {
       alpha: level.camera.x / (level.width - level.camera.w),
       img: sprites.bgfade,
     });
+    for (const drawable of level.skyLineLayer) {
+      if (this.isVisible(level.camera, drawable)) {
+        drawCommands.push(this.createDrawCommand(level.camera, drawable, sprites));
+      }
+    }
+    for (const drawable of level.backLayer) {
+      if (this.isVisible(level.camera, drawable)) {
+        drawCommands.push(this.createDrawCommand(level.camera, drawable, sprites));
+      }
+    }
     for (const drawable of level.centerLayer) {
+      if (this.isVisible(level.camera, drawable)) {
+        drawCommands.push(this.createDrawCommand(level.camera, drawable, sprites));
+      }
+    }
+    for (const drawable of level.frontLayer) {
       if (this.isVisible(level.camera, drawable)) {
         drawCommands.push(this.createDrawCommand(level.camera, drawable, sprites));
       }
@@ -64,8 +79,20 @@ export class CameraService {
     return {
       x: this.offsetX(camera, drawable.x, drawable.distance),
       y: this.offsetY(camera, drawable.y, drawable.distance),
-      w: drawable.w / drawable.distance,
-      h: drawable.h / drawable.distance,
+      w:
+        drawable.w /
+        (drawable.resizeWhenDistant === undefined
+          ? drawable.distance
+          : drawable.resizeWhenDistant
+          ? drawable.distance
+          : 1),
+      h:
+        drawable.h /
+        (drawable.resizeWhenDistant === undefined
+          ? drawable.distance
+          : drawable.resizeWhenDistant
+          ? drawable.distance
+          : 1),
       img: sprites[drawable.name + dir + blockingAction + verticalAction + action + animation],
     };
   };

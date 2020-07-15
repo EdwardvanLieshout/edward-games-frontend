@@ -39,7 +39,9 @@ export class PlayerService {
       level.player.dir = this.bufferedDir;
     }
     if (this.stopBuffer) {
-      level.player.animationCounter = 1;
+      if (level.player.blockingAction !== ActionTypeEnum.PUNCHING) {
+        level.player.animationCounter = 1;
+      }
       level.player.action = ActionTypeEnum.NONE;
       this.stopBuffer = false;
     }
@@ -55,6 +57,7 @@ export class PlayerService {
     }
 
     this.checkPlatformCollision(level);
+    this.checkWallCollision(level);
     this.handlePlayerAnimation(level.player);
   };
 
@@ -94,6 +97,57 @@ export class PlayerService {
     this.stopBuffer = true;
   };
 
+  private checkWallCollision = (level: ILevel): void => {
+    const player = level.player;
+    for (const wall of level.walls) {
+      if (
+        this.intersectRect(
+          player.x + 30,
+          player.y + 20,
+          player.w - 60,
+          25,
+          wall.x + 25,
+          wall.y + wall.h - 25,
+          wall.w - 50,
+          25
+        )
+      ) {
+        level.player.y = wall.y + wall.h - 20;
+        return;
+      }
+      if (
+        this.intersectRect(
+          player.x,
+          player.y + 10,
+          player.mSpeed * 1.5,
+          player.h - 10,
+          wall.x + wall.w - player.mSpeed - 35,
+          wall.y + level.maxFallSpeed,
+          player.mSpeed,
+          wall.h - level.maxFallSpeed * 2
+        )
+      ) {
+        level.player.x = wall.x + wall.w - 35;
+        return;
+      }
+      if (
+        this.intersectRect(
+          player.x + player.w - player.mSpeed * 1.5,
+          player.y + 10,
+          player.mSpeed * 1.5,
+          player.h - 10,
+          wall.x + player.mSpeed + 35,
+          wall.y + level.maxFallSpeed,
+          player.mSpeed,
+          wall.h - level.maxFallSpeed * 2
+        )
+      ) {
+        level.player.x = wall.x + 35 - player.w;
+        return;
+      }
+    }
+  };
+
   private checkPlatformCollision = (level: ILevel): void => {
     const player = level.player;
     for (const platform of level.platforms) {
@@ -103,13 +157,13 @@ export class PlayerService {
           player.y + player.h - level.maxFallSpeed,
           player.w,
           level.maxFallSpeed,
-          platform.x,
+          platform.x + 30,
           platform.y + 10,
-          platform.w,
+          platform.w - 60,
           level.maxFallSpeed
         )
       ) {
-        this.handleCollision(level, platform.y + 10 - player.h);
+        this.handlePlatformCollision(level, platform.y + 10 - player.h);
         return;
       }
     }
@@ -130,7 +184,7 @@ export class PlayerService {
     }
   };
 
-  private handleCollision = (level: ILevel, y: number): void => {
+  private handlePlatformCollision = (level: ILevel, y: number): void => {
     level.player.y = y;
     if (level.player.verticalAction === ActionTypeEnum.FALLING) {
       level.player.verticalAction = ActionTypeEnum.NONE;
@@ -142,7 +196,7 @@ export class PlayerService {
       level.player.verticalAction = ActionTypeEnum.JUMPING;
       level.player.blockingAction = ActionTypeEnum.NONE;
       this.punchCooldown = 0;
-      level.player.verticalVelocity = -25;
+      level.player.verticalVelocity = level.jumpPower;
       level.player.animationCounter = 1;
       this.animationTimer = 0;
     }

@@ -16,13 +16,15 @@ export class AdventureControlsComponent {
 
   constructor(private playerService: PlayerService) {}
 
-  public onStartMovingRight = (): void => {
+  public onStartMovingRight = (event: Event): void => {
+    event.preventDefault();
     this.playerService.setBufferedDir(DirTypeEnum.RIGHT);
     this.playerService.bufferMovement();
     this.movingRight = true;
   };
 
-  public onStartMovingLeft = (): void => {
+  public onStartMovingLeft = (event: Event): void => {
+    event.preventDefault();
     this.playerService.setBufferedDir(DirTypeEnum.LEFT);
     this.playerService.bufferMovement();
     this.movingLeft = true;
@@ -46,7 +48,8 @@ export class AdventureControlsComponent {
     }
   };
 
-  public onStartJumping = (): void => {
+  public onStartJumping = (event: Event): void => {
+    event.preventDefault();
     if (!this.jumping) {
       if (this.playerService.getCanJump()) {
         this.playerService.bufferJump();
@@ -59,7 +62,8 @@ export class AdventureControlsComponent {
     this.jumping = false;
   };
 
-  public onStartCancel = (): void => {
+  public onStartCancel = (event: Event): void => {
+    event.preventDefault();
     if (!this.cancel) {
       if (this.playerService.getCanCancel()) {
         this.playerService.bufferCancel();
@@ -72,7 +76,8 @@ export class AdventureControlsComponent {
     this.cancel = false;
   };
 
-  public onStartPunch = (): void => {
+  public onStartPunch = (event: Event): void => {
+    event.preventDefault();
     this.playerService.bufferPunch(true);
   };
 

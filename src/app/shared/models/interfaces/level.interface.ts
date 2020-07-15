@@ -1,7 +1,7 @@
 import { IPlayer } from './player.interface';
 import { ICamera } from './camera.interface';
 import { IDrawable } from './drawable.interface';
-import { IBlock } from './platform.interface';
+import { IBlock } from './block.interface';
 
 export interface ILevel {
   code: string;

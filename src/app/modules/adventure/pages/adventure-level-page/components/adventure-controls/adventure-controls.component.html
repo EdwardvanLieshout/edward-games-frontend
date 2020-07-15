@@ -1,13 +1,13 @@
 <div
   class="hidden--visually"
-  (window:keydown.arrowright)="onStartMovingRight()"
+  (window:keydown.arrowright)="onStartMovingRight($event)"
   (window:keyup.arrowright)="onStopMovingRight()"
-  (window:keydown.arrowleft)="onStartMovingLeft()"
+  (window:keydown.arrowleft)="onStartMovingLeft($event)"
   (window:keyup.arrowleft)="onStopMovingLeft()"
-  (window:keydown.arrowup)="onStartJumping()"
+  (window:keydown.arrowup)="onStartJumping($event)"
   (window:keyup.arrowup)="onStopJumping()"
-  (window:keydown.arrowdown)="onStartCancel()"
+  (window:keydown.arrowdown)="onStartCancel($event)"
   (window:keyup.arrowdown)="onStopCancel()"
-  (window:keydown.space)="onStartPunch()"
+  (window:keydown.space)="onStartPunch($event)"
   (window:keyup.space)="onStopPunch()"
 ></div>

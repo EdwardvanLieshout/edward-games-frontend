@@ -1,4 +1,4 @@
-export interface IPlatform {
+export interface IBlock {
   x: number;
   y: number;
   w: number;

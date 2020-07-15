@@ -8,6 +8,7 @@ export class SpritesService {
   public spriteChart;
   public playerSprites;
   public platformSprites;
+  public decorSprites;
   public bgSprites;
 
   // tslint:disable-next-line:no-any
@@ -16,8 +17,9 @@ export class SpritesService {
       this.loadPlayerSprites(),
       this.loadBackgroundSprites(levelNr),
       this.loadPlatformSprites(),
+      this.loadDecorSprites(),
     ]).then(() => {
-      this.spriteChart = { ...this.playerSprites, ...this.bgSprites, ...this.platformSprites };
+      this.spriteChart = { ...this.playerSprites, ...this.bgSprites, ...this.platformSprites, ...this.decorSprites };
       return this.spriteChart;
     });
   };
@@ -152,6 +154,22 @@ export class SpritesService {
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.platformSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
+        resolve();
+      });
+    });
+  };
+
+  public loadDecorSprites = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      Promise.all(
+        [
+          { name: 'distantdecor/tree1', width: 100, height: 200 },
+          { name: 'distantdecor/cloud1', width: 100, height: 100 },
+          { name: 'distantdecor/cloud2', width: 300, height: 200 },
+          { name: 'distantdecor/cloud3', width: 300, height: 200 },
+        ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
+      ).then((values) => {
+        this.decorSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();
       });
     });

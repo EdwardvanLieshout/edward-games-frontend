@@ -9,6 +9,7 @@ export class SpritesService {
   public playerSprites;
   public platformSprites;
   public decorSprites;
+  public gemSprites;
   public bgSprites;
 
   // tslint:disable-next-line:no-any
@@ -18,8 +19,15 @@ export class SpritesService {
       this.loadBackgroundSprites(levelNr),
       this.loadPlatformSprites(),
       this.loadDecorSprites(),
+      this.loadGemSprites(levelNr),
     ]).then(() => {
-      this.spriteChart = { ...this.playerSprites, ...this.bgSprites, ...this.platformSprites, ...this.decorSprites };
+      this.spriteChart = {
+        ...this.playerSprites,
+        ...this.bgSprites,
+        ...this.platformSprites,
+        ...this.decorSprites,
+        ...this.gemSprites,
+      };
       return this.spriteChart;
     });
   };
@@ -149,6 +157,8 @@ export class SpritesService {
           { name: 'ground/ground-z-front-full', width: 100, height: 100 },
           { name: 'ground/ground-z-back-left', width: 100, height: 100 },
           { name: 'ground/ground-z-back-right', width: 100, height: 100 },
+          { name: 'ground/ground-z-filler', width: 100, height: 100 },
+          { name: 'ground/ground-z-filler-small', width: 100, height: 100 },
 
           { name: 'platform/platform-full', width: 100, height: 100 },
           { name: 'platform/platform-left', width: 100, height: 100 },
@@ -177,6 +187,38 @@ export class SpritesService {
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.decorSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
+        resolve();
+      });
+    });
+  };
+
+  public loadGemSprites = (level: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      Promise.all(
+        [
+          { name: 'gems/level' + level + '/Col1', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col2', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col3', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col4', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col5', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col6', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col7', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/Col8', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA1', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA2', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA3', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA4', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB1', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB2', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB3', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB4', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC1', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC2', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC3', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC4', width: 100, height: 100 },
+        ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
+      ).then((values) => {
+        this.gemSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[2]]: s.image })));
         resolve();
       });
     });

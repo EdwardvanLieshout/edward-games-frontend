@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DirTypeEnum } from '../../../shared/models/enums/direction.enum';
 import { ActionTypeEnum } from '../../../shared/models/enums/action.enum';
 import { ILevel } from '../../../shared/models/interfaces/level.interface';
-import { isProtractorLocator } from 'protractor/built/locators';
 
 @Injectable({
   providedIn: 'root',
@@ -280,7 +279,9 @@ export class LevelService {
       { x: 100, y: 0, w: 100, h: 2200, distance: 1, name: 'wall' },
       { x: 1500, y: 2200, w: 100, h: 100, distance: 1, name: 'wall' },
       { x: 1700, y: 2200, w: 100, h: 100, distance: 1, name: 'wall' },
-      { x: 2300, y: 2200, w: 100, h: 100, distance: 1, name: 'wall' }
+      { x: 2300, y: 2200, w: 100, h: 100, distance: 1, name: 'wall' },
+      { x: 3800, y: 2200, w: 100, h: 200, distance: 1, name: 'wall' },
+      { x: 5100, y: 2200, w: 100, h: 200, distance: 1.2, name: 'wall' }
     );
 
     level1.portals.push(
@@ -290,11 +291,11 @@ export class LevelService {
       { x: 4531, y: 2000, w: 100, h: 200, distance: 1.06, name: 'portal', destX: 4440, destDistance: 1.08 },
       { x: 4541, y: 2000, w: 100, h: 200, distance: 1.08, name: 'portal', destX: 4450, destDistance: 1.1 },
 
-      { x: 4299, y: 2000, w: 100, h: 200, distance: 1.02, name: 'portal', destX: 4400, destDistance: 1 },
-      { x: 4309, y: 2000, w: 100, h: 200, distance: 1.04, name: 'portal', destX: 4410, destDistance: 1.02 },
-      { x: 4319, y: 2000, w: 100, h: 200, distance: 1.06, name: 'portal', destX: 4420, destDistance: 1.04 },
-      { x: 4329, y: 2000, w: 100, h: 200, distance: 1.08, name: 'portal', destX: 4430, destDistance: 1.06 },
-      { x: 4339, y: 2000, w: 100, h: 200, distance: 1.1, name: 'portal', destX: 4440, destDistance: 1.08 },
+      { x: 4299, y: 2000, w: 101, h: 200, distance: 1.02, name: 'portal', destX: 4400, destDistance: 1 },
+      { x: 4309, y: 2000, w: 101, h: 200, distance: 1.04, name: 'portal', destX: 4410, destDistance: 1.02 },
+      { x: 4319, y: 2000, w: 101, h: 200, distance: 1.06, name: 'portal', destX: 4420, destDistance: 1.04 },
+      { x: 4329, y: 2000, w: 101, h: 200, distance: 1.08, name: 'portal', destX: 4430, destDistance: 1.06 },
+      { x: 4339, y: 2000, w: 101, h: 200, distance: 1.1, name: 'portal', destX: 4440, destDistance: 1.08 },
 
       { x: 4551, y: 2000, w: 100, h: 200, distance: 1.1, name: 'portal', destX: 4460, destDistance: 1.12 },
       { x: 4561, y: 2000, w: 100, h: 200, distance: 1.12, name: 'portal', destX: 4470, destDistance: 1.14 },
@@ -302,23 +303,16 @@ export class LevelService {
       { x: 4581, y: 2000, w: 100, h: 200, distance: 1.16, name: 'portal', destX: 4490, destDistance: 1.18 },
       { x: 4591, y: 2000, w: 100, h: 200, distance: 1.18, name: 'portal', destX: 4500, destDistance: 1.2 },
 
-      { x: 4349, y: 2000, w: 100, h: 200, distance: 1.12, name: 'portal', destX: 4450, destDistance: 1.1 },
-      { x: 4359, y: 2000, w: 100, h: 200, distance: 1.14, name: 'portal', destX: 4460, destDistance: 1.12 },
-      { x: 4369, y: 2000, w: 100, h: 200, distance: 1.16, name: 'portal', destX: 4470, destDistance: 1.14 },
-      { x: 4379, y: 2000, w: 100, h: 200, distance: 1.18, name: 'portal', destX: 4480, destDistance: 1.16 },
-      { x: 4389, y: 2000, w: 100, h: 200, distance: 1.2, name: 'portal', destX: 4490, destDistance: 1.18 }
+      { x: 4349, y: 2000, w: 101, h: 200, distance: 1.12, name: 'portal', destX: 4450, destDistance: 1.1 },
+      { x: 4359, y: 2000, w: 101, h: 200, distance: 1.14, name: 'portal', destX: 4460, destDistance: 1.12 },
+      { x: 4369, y: 2000, w: 101, h: 200, distance: 1.16, name: 'portal', destX: 4470, destDistance: 1.14 },
+      { x: 4379, y: 2000, w: 101, h: 200, distance: 1.18, name: 'portal', destX: 4480, destDistance: 1.16 },
+      { x: 4389, y: 2000, w: 101, h: 200, distance: 1.2, name: 'portal', destX: 4490, destDistance: 1.18 }
     );
 
     level1.skyLineLayer.push(
-      {
-        x: 800,
-        y: 0,
-        w: 300,
-        h: 200,
-        distance: 8,
-        name: 'cloud2',
-        resizeWhenDistant: false,
-      },
+      { x: 800, y: 0, w: 300, h: 200, distance: 8, name: 'cloud2', resizeWhenDistant: false },
+      { name: 'cloud3', x: 8000, y: -200, w: 300, h: 200, distance: 8, resizeWhenDistant: false },
       { name: 'cloud1', x: 1500, y: 1500, w: 100, h: 100, distance: 4, resizeWhenDistant: false },
       { name: 'cloud1', x: 200, y: 1300, w: 100, h: 100, distance: 4, resizeWhenDistant: false },
       { name: 'cloud1', x: -300, y: 2200, w: 100, h: 100, distance: 4, resizeWhenDistant: false },
@@ -357,21 +351,25 @@ export class LevelService {
       { name: 'tree1', x: 5800, y: 2150, w: 110, h: 220, distance: 2, resizeWhenDistant: false },
       { name: 'tree1', x: 6000, y: 2150, w: 110, h: 220, distance: 2, resizeWhenDistant: false },
       { name: 'tree1', x: 6200, y: 2150, w: 110, h: 220, distance: 2, resizeWhenDistant: false },
-      { name: 'ground-middle-small', x: 4500, y: 2299, w: 100, h: 100, distance: 1.2 },
+      { name: 'ground-z-filler-small', x: 4500, y: 2299, w: 100, h: 100, distance: 1.2 },
       { name: 'ground-middle-full', x: 4600, y: 2299, w: 500, h: 100, distance: 1.2 },
       { name: 'ground-middle-right', x: 5100, y: 2299, w: 100, h: 100, distance: 1.2 },
-      { name: 'ground-middle-full', x: 4490, y: 2299, w: 100, h: 100, distance: 1.18 },
-      { name: 'ground-middle-full', x: 4480, y: 2299, w: 100, h: 100, distance: 1.16 },
-      { name: 'ground-middle-full', x: 4470, y: 2299, w: 100, h: 100, distance: 1.14 },
-      { name: 'ground-middle-full', x: 4460, y: 2299, w: 100, h: 100, distance: 1.12 },
-      { name: 'ground-middle-full', x: 4450, y: 2299, w: 100, h: 100, distance: 1.1 },
-      { name: 'ground-middle-full', x: 4440, y: 2299, w: 100, h: 100, distance: 1.08 },
-      { name: 'ground-middle-full', x: 4430, y: 2299, w: 100, h: 100, distance: 1.06 },
-      { name: 'ground-middle-full', x: 4420, y: 2299, w: 100, h: 100, distance: 1.04 },
-      { name: 'ground-middle-full', x: 4410, y: 2299, w: 100, h: 100, distance: 1.02 }
+      { name: 'ground-z-filler', x: 4490, y: 2299, w: 100, h: 100, distance: 1.18 },
+      { name: 'ground-z-filler', x: 4480, y: 2299, w: 100, h: 100, distance: 1.16 },
+      { name: 'ground-z-filler', x: 4470, y: 2299, w: 100, h: 100, distance: 1.14 },
+      { name: 'ground-z-filler', x: 4460, y: 2299, w: 100, h: 100, distance: 1.12 },
+      { name: 'ground-z-filler', x: 4450, y: 2299, w: 100, h: 100, distance: 1.1 },
+      { name: 'ground-z-filler', x: 4440, y: 2299, w: 100, h: 100, distance: 1.08 },
+      { name: 'ground-z-filler', x: 4430, y: 2299, w: 100, h: 100, distance: 1.06 },
+      { name: 'ground-z-filler', x: 4420, y: 2299, w: 100, h: 100, distance: 1.04 },
+      { name: 'ground-z-filler', x: 4410, y: 2299, w: 100, h: 100, distance: 1.02 }
     );
     level1.centerLayer.push(...level1.platforms);
     level1.centerLayer.push(level1.player);
+    level1.frontLayer.push(
+      { name: 'tree1', x: 4700, y: 1950, w: 220, h: 440, distance: 0.8, resizeWhenDistant: false },
+      { name: 'tree1', x: 5000, y: 1950, w: 220, h: 440, distance: 0.8, resizeWhenDistant: false }
+    );
     return level1;
   };
 }

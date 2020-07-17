@@ -54,7 +54,9 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.levelNr = this.route.snapshot.paramMap.get('levelNr');
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.level = this.levelService.getLevel1();
+
+    this.level = this.levelService['getLevel' + this.levelNr]();
+
     this.gemUIAnim = 1;
     this.gemAnimDelay = 0;
     this.sprites.getSprites(this.levelNr).then((res) => {
@@ -121,13 +123,14 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
     const minutesString = minutes < 100 ? ('0' + minutes).slice(-2) : minutes;
     const timestring = minutesString + ':' + ('0' + seconds).slice(-2) + ':' + ('00' + milliseconds).slice(-3);
 
+    const amountOfGems = this.level.player.gems.length.toString();
     this.ctx.font = '40px Arial Black';
     this.ctx.lineWidth = 2;
     const gradient = this.ctx.createLinearGradient(0, 0, 0, 40);
     gradient.addColorStop(0, 'white');
     gradient.addColorStop(1.0, 'gray');
     this.ctx.fillStyle = gradient;
-    this.ctx.fillText('0', 40, 40);
+    this.ctx.fillText(amountOfGems, 40, 40);
     const gradient2 = this.ctx.createLinearGradient(0, 470, 0, 490);
     gradient2.addColorStop(0, 'white');
     gradient2.addColorStop(1.0, 'gray');
@@ -136,7 +139,7 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
     this.ctx.fillText(timestring, 10, 490);
     this.ctx.strokeStyle = '#000000';
     this.ctx.font = '40px Arial Black';
-    this.ctx.strokeText('0', 40, 40);
+    this.ctx.strokeText(amountOfGems, 40, 40);
     this.ctx.lineWidth = 2;
     this.ctx.font = '30px Arial Black';
     this.ctx.strokeText(timestring, 10, 490);

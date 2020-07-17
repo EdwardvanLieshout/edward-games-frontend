@@ -168,6 +168,22 @@ export class SpritesService {
           { name: 'platform/red-platform-left', width: 100, height: 100 },
           { name: 'platform/red-platform-right', width: 100, height: 100 },
           { name: 'platform/red-platform-small', width: 100, height: 100 },
+
+          { name: 'jumpzones/jumpzoneavailable1', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneavailable2', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneavailable3', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneavailable4', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneavailable5', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneready1', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneready2', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneready3', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneready4', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneready5', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneunavailable1', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneunavailable2', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneunavailable3', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneunavailable4', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzoneunavailable5', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.platformSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));

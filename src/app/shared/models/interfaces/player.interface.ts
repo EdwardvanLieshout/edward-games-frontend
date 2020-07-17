@@ -1,5 +1,7 @@
 import { DirTypeEnum } from '../enums/direction.enum';
 import { ActionTypeEnum } from '../enums/action.enum';
+import { IBlock } from './block.interface';
+import { IDrawable } from './drawable.interface';
 
 export interface IPlayer {
   x: number;
@@ -15,4 +17,5 @@ export interface IPlayer {
   verticalAction: ActionTypeEnum;
   blockingAction: ActionTypeEnum;
   name: string;
+  gems: IDrawable[];
 }

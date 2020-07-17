@@ -17,6 +17,7 @@ export class PlayerService {
   private cancelBuffer = false;
   private stopBuffer = false;
   private canJump = true;
+  private updateGemAnimation = false;
 
   public updatePlayer = (level: ILevel): void => {
     level.player.verticalVelocity += level.gravity;
@@ -55,6 +56,7 @@ export class PlayerService {
         level.player.dir === DirTypeEnum.RIGHT ? level.player.mSpeed * multiplier : -level.player.mSpeed * multiplier
       );
     }
+    this.checkGems(level);
     this.checkPortals(level);
     this.checkPlatformCollision(level);
     this.checkWallCollision(level);
@@ -95,6 +97,37 @@ export class PlayerService {
 
   public bufferStop = (): void => {
     this.stopBuffer = true;
+  };
+
+  public checkGems = (level: ILevel): void => {
+    const player = level.player;
+
+    for (const gem of level.gems) {
+      if (this.updateGemAnimation) {
+        gem.animationCounter = (gem.animationCounter % 8) + 1;
+      }
+      if (
+        this.intersectRect(
+          player.x + 30,
+          player.y + 10,
+          player.w - 60,
+          player.h - 10,
+          gem.x + 30,
+          gem.y + 30,
+          gem.w - 60,
+          gem.h - 60
+        )
+      ) {
+        level.gems.splice(level.gems.indexOf(gem), 1);
+        level.centerLayer.splice(level.centerLayer.indexOf(gem), 1);
+        player.gems.push(gem);
+      }
+    }
+    if (!this.updateGemAnimation) {
+      this.updateGemAnimation = true;
+    } else {
+      this.updateGemAnimation = false;
+    }
   };
 
   public checkPortals = (level: ILevel): void => {

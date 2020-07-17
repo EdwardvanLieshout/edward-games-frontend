@@ -3,6 +3,7 @@ import { ICamera } from './camera.interface';
 import { IDrawable } from './drawable.interface';
 import { IBlock } from './block.interface';
 import { IPortal } from './portal.interface';
+import { IJumpzone } from './jumpzone.interface';
 
 export interface ILevel {
   code: string;
@@ -13,6 +14,8 @@ export interface ILevel {
   platforms: IBlock[];
   walls: IBlock[];
   portals: IPortal[];
+  gems: IDrawable[];
+  jumpzones: IJumpzone[];
   skyLineLayer: IDrawable[];
   backLayer: IDrawable[];
   centerLayer: IDrawable[];

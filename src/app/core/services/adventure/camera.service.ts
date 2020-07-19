@@ -75,7 +75,6 @@ export class CameraService {
         ? drawable.action
         : '';
     const animation = drawable.animationCounter ? drawable.animationCounter : '';
-
     return {
       x: this.offsetX(camera, drawable.x, drawable.distance),
       y: this.offsetY(camera, drawable.y, drawable.distance),
@@ -98,6 +97,9 @@ export class CameraService {
   };
 
   private isVisible = (camera: ICamera, d: IDrawable): boolean => {
+    if (d.hidden) {
+      return false;
+    }
     if (
       this.offsetX(camera, d.x, d.distance) >= 0 - d.w &&
       this.offsetX(camera, d.x, d.distance) <= camera.w &&

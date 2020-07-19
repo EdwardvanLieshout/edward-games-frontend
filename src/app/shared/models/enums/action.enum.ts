@@ -4,4 +4,6 @@ export enum ActionTypeEnum {
   JUMPING = 'j',
   MOVING = 'm',
   PUNCHING = 'p',
+  DEAD = 'dead',
+  DAMAGE = 'dmg',
 }

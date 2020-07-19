@@ -51,9 +51,7 @@ export class AdventureControlsComponent {
   public onStartJumping = (event: Event): void => {
     event.preventDefault();
     if (!this.jumping) {
-      if (this.playerService.getCanJump()) {
-        this.playerService.bufferJump();
-      }
+      this.playerService.bufferJump();
       this.jumping = true;
     }
   };

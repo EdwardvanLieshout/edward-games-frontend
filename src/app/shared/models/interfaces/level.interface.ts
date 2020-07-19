@@ -4,6 +4,7 @@ import { IDrawable } from './drawable.interface';
 import { IBlock } from './block.interface';
 import { IPortal } from './portal.interface';
 import { IJumpzone } from './jumpzone.interface';
+import { IEnemy } from './enemy.interface';
 
 export interface ILevel {
   code: string;
@@ -16,6 +17,7 @@ export interface ILevel {
   portals: IPortal[];
   gems: IDrawable[];
   jumpzones: IJumpzone[];
+  enemies: IEnemy[];
   skyLineLayer: IDrawable[];
   backLayer: IDrawable[];
   centerLayer: IDrawable[];

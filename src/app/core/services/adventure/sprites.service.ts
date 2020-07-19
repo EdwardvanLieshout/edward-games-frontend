@@ -10,6 +10,7 @@ export class SpritesService {
   public platformSprites;
   public decorSprites;
   public gemSprites;
+  public enemySprites;
   public bgSprites;
 
   // tslint:disable-next-line:no-any
@@ -20,6 +21,7 @@ export class SpritesService {
       this.loadPlatformSprites(),
       this.loadDecorSprites(),
       this.loadGemSprites(levelNr),
+      this.loadEnemySprites(),
     ]).then(() => {
       this.spriteChart = {
         ...this.playerSprites,
@@ -27,6 +29,7 @@ export class SpritesService {
         ...this.platformSprites,
         ...this.decorSprites,
         ...this.gemSprites,
+        ...this.enemySprites,
       };
       return this.spriteChart;
     });
@@ -111,6 +114,9 @@ export class SpritesService {
           { name: 'player/lf2', width: 100, height: 100 },
           { name: 'player/rf1', width: 100, height: 100 },
           { name: 'player/rf2', width: 100, height: 100 },
+
+          { name: 'player/ldmg1', width: 100, height: 100 },
+          { name: 'player/rdmg1', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.playerSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/').join('')]: s.image })));
@@ -184,6 +190,22 @@ export class SpritesService {
           { name: 'jumpzones/jumpzoneunavailable3', width: 100, height: 100 },
           { name: 'jumpzones/jumpzoneunavailable4', width: 100, height: 100 },
           { name: 'jumpzones/jumpzoneunavailable5', width: 100, height: 100 },
+
+          { name: 'jumpzones/jumpzonesingleavailable1', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleavailable2', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleavailable3', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleavailable4', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleavailable5', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleready1', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleready2', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleready3', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleready4', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleready5', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleunavailable1', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleunavailable2', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleunavailable3', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleunavailable4', width: 100, height: 100 },
+          { name: 'jumpzones/jumpzonesingleunavailable5', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.platformSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
@@ -224,17 +246,62 @@ export class SpritesService {
           { name: 'gems/level' + level + '/CollectableA2', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableA3', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableA4', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA5', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA6', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA7', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableA8', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableB1', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableB2', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableB3', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableB4', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB5', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB6', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB7', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableB8', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableC1', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableC2', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableC3', width: 100, height: 100 },
           { name: 'gems/level' + level + '/CollectableC4', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC5', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC6', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC7', width: 100, height: 100 },
+          { name: 'gems/level' + level + '/CollectableC8', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.gemSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[2]]: s.image })));
+        resolve();
+      });
+    });
+  };
+
+  public loadEnemySprites = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      Promise.all(
+        [
+          { name: 'enemy/Pigldead1', width: 100, height: 100 },
+          { name: 'enemy/Pigrdead1', width: 100, height: 100 },
+          { name: 'enemy/Pigl1', width: 100, height: 100 },
+          { name: 'enemy/Pigl2', width: 100, height: 100 },
+          { name: 'enemy/Pigl3', width: 100, height: 100 },
+          { name: 'enemy/Pigl4', width: 100, height: 100 },
+          { name: 'enemy/Pigr1', width: 100, height: 100 },
+          { name: 'enemy/Pigr2', width: 100, height: 100 },
+          { name: 'enemy/Pigr3', width: 100, height: 100 },
+          { name: 'enemy/Pigr4', width: 100, height: 100 },
+
+          { name: 'enemy/Owlldead1', width: 100, height: 100 },
+          { name: 'enemy/Owlrdead1', width: 100, height: 100 },
+          { name: 'enemy/Owll1', width: 100, height: 100 },
+          { name: 'enemy/Owll2', width: 100, height: 100 },
+          { name: 'enemy/Owll3', width: 100, height: 100 },
+          { name: 'enemy/Owll4', width: 100, height: 100 },
+          { name: 'enemy/Owlr1', width: 100, height: 100 },
+          { name: 'enemy/Owlr2', width: 100, height: 100 },
+          { name: 'enemy/Owlr3', width: 100, height: 100 },
+          { name: 'enemy/Owlr4', width: 100, height: 100 },
+        ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
+      ).then((values) => {
+        this.enemySprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();
       });
     });

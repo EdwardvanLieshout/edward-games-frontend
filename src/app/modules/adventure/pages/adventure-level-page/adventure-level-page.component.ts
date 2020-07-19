@@ -14,6 +14,7 @@ import { CameraService } from '../../../../core/services/adventure/camera.servic
 import { ILevel } from '../../../../shared/models/interfaces/level.interface';
 import { LevelService } from '../../../../core/services/adventure/level.service';
 import { PlayerService } from '../../../../core/services/adventure/player.service';
+import { EnemyService } from '../../../../core/services/adventure/enemy.service';
 
 @Component({
   selector: 'app-adventure-level-page',
@@ -48,6 +49,7 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
     private cameraService: CameraService,
     private levelService: LevelService,
     private playerService: PlayerService,
+    private enemyService: EnemyService,
     private ref: ChangeDetectorRef
   ) {}
 
@@ -75,6 +77,7 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   }
 
   public performTick = (): void => {
+    this.enemyService.updateEnemies(this.level);
     this.playerService.updatePlayer(this.level);
     this.refreshCanvas();
     this.timeIncrement = new Date(this.timeIncrement.getTime() + 35);
@@ -95,6 +98,15 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
 
   public drawGems = (): void => {
     this.ctx.drawImage(this.spriteChart['Col' + this.gemUIAnim], -25, -25, 100, 100);
+    for (const gem of this.level.player.bigGems) {
+      this.ctx.drawImage(
+        this.spriteChart[gem.name + this.gemUIAnim],
+        -20,
+        30 + this.level.player.bigGems.indexOf(gem) * 55,
+        100,
+        100
+      );
+    }
     this.gemAnimDelay++;
     if (this.gemAnimDelay >= 2) {
       this.gemAnimDelay = 0;
@@ -102,16 +114,6 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
       if (this.gemUIAnim > 8) {
         this.gemUIAnim = 1;
       }
-    }
-
-    for (let i = 0; i < 3; i++) {
-      this.ctx.drawImage(
-        this.spriteChart['Collectable' + String.fromCharCode(65 + i) + Math.ceil(this.gemUIAnim / 2)],
-        -20,
-        30 + i * 55,
-        100,
-        100
-      );
     }
   };
 
@@ -140,7 +142,6 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
     this.ctx.strokeStyle = '#000000';
     this.ctx.font = '40px Arial Black';
     this.ctx.strokeText(amountOfGems, 40, 40);
-    this.ctx.lineWidth = 2;
     this.ctx.font = '30px Arial Black';
     this.ctx.strokeText(timestring, 10, 490);
   };

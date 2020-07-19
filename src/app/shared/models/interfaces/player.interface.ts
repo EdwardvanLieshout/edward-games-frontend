@@ -13,9 +13,12 @@ export interface IPlayer {
   animationCounter: number;
   mSpeed: number;
   dir: DirTypeEnum;
+  dmgDir: DirTypeEnum;
   action: ActionTypeEnum;
   verticalAction: ActionTypeEnum;
   blockingAction: ActionTypeEnum;
   name: string;
   gems: IDrawable[];
+  bigGems: IDrawable[];
+  hidden: boolean;
 }

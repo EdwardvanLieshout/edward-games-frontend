@@ -3,6 +3,8 @@ import { ILevel } from '../../../shared/models/interfaces/level.interface';
 import { ActionTypeEnum } from '../../../shared/models/enums/action.enum';
 import { IPlayer } from '../../../shared/models/interfaces/player.interface';
 import { DirTypeEnum } from '../../../shared/models/enums/direction.enum';
+import { AvailabilityTypeEnum } from '../../../shared/models/enums/availabilityType.enum';
+import { IEnemy } from '../../../shared/models/interfaces/enemy.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +13,8 @@ export class PlayerService {
   private animationTimer = 0;
   private bufferedDir: DirTypeEnum;
   private punchCooldown = 0;
+  private dmgCooldown = 0;
+  private immunityCooldown = 0;
   private punchBuffer = false;
   private movementBuffer = false;
   private jumpBuffer = false;
@@ -20,6 +24,10 @@ export class PlayerService {
   private updateGemAnimation = false;
 
   public updatePlayer = (level: ILevel): void => {
+    if (this.dmgCooldown === 0 && level.player.blockingAction === ActionTypeEnum.DAMAGE) {
+      level.player.blockingAction = ActionTypeEnum.NONE;
+      this.immunityCooldown = 40;
+    }
     level.player.verticalVelocity += level.gravity;
     if (level.player.verticalVelocity > level.maxFallSpeed) {
       level.player.verticalVelocity = level.maxFallSpeed;
@@ -30,17 +38,20 @@ export class PlayerService {
     ) {
       level.player.y += level.player.verticalVelocity;
     }
-    if (this.punchBuffer && this.punchCooldown === 0) {
+    if (this.bufferedDir && level.player.blockingAction === ActionTypeEnum.NONE) {
+      level.player.dir = this.bufferedDir;
+    }
+    if (this.punchBuffer && this.punchCooldown === 0 && level.player.blockingAction !== ActionTypeEnum.DAMAGE) {
       level.player.blockingAction = ActionTypeEnum.PUNCHING;
       this.punchCooldown = 12;
       this.animationTimer = 0;
       level.player.animationCounter = 1;
     }
-    if (this.bufferedDir && level.player.blockingAction === ActionTypeEnum.NONE) {
-      level.player.dir = this.bufferedDir;
-    }
     if (this.stopBuffer) {
-      if (level.player.blockingAction !== ActionTypeEnum.PUNCHING) {
+      if (
+        level.player.blockingAction !== ActionTypeEnum.PUNCHING &&
+        level.player.verticalAction === ActionTypeEnum.NONE
+      ) {
         level.player.animationCounter = 1;
       }
       level.player.action = ActionTypeEnum.NONE;
@@ -50,8 +61,13 @@ export class PlayerService {
       this.movementBuffer = false;
       level.player.action = ActionTypeEnum.MOVING;
     }
-    if (level.player.action === ActionTypeEnum.MOVING || level.player.blockingAction === ActionTypeEnum.PUNCHING) {
-      const multiplier = level.player.blockingAction === ActionTypeEnum.PUNCHING ? 1.5 : 1;
+    if (level.player.action === ActionTypeEnum.MOVING || level.player.blockingAction !== ActionTypeEnum.NONE) {
+      const multiplier =
+        level.player.blockingAction === ActionTypeEnum.PUNCHING
+          ? 1.5
+          : level.player.blockingAction === ActionTypeEnum.DAMAGE
+          ? 0.8
+          : 1;
       level.player.x += Math.trunc(
         level.player.dir === DirTypeEnum.RIGHT ? level.player.mSpeed * multiplier : -level.player.mSpeed * multiplier
       );
@@ -59,7 +75,9 @@ export class PlayerService {
     this.checkGems(level);
     this.checkPortals(level);
     this.checkPlatformCollision(level);
+    this.checkJumpZones(level);
     this.checkWallCollision(level);
+    this.checkEnemyCollision(level);
     this.handlePlayerAnimation(level.player);
   };
 
@@ -99,6 +117,61 @@ export class PlayerService {
     this.stopBuffer = true;
   };
 
+  public checkJumpZones = (level: ILevel): void => {
+    const player = level.player;
+    const tryJump = this.jumpBuffer;
+    for (const jumpZone of level.jumpzones) {
+      if (this.updateGemAnimation) {
+        jumpZone.animationCounter = (jumpZone.animationCounter % 5) + 1;
+      }
+      if (jumpZone.availability === AvailabilityTypeEnum.UNAVAILABLE) {
+        if (!this.canJump) {
+          for (const sprite of jumpZone.drawables) {
+            sprite.name = 'jumpzonesingle' + jumpZone.availability;
+            sprite.animationCounter = jumpZone.animationCounter;
+          }
+          continue;
+        }
+      }
+      if (
+        this.intersectRect(
+          player.x + 45,
+          player.y + 45,
+          10,
+          10,
+          jumpZone.area.x,
+          jumpZone.area.y,
+          jumpZone.area.w,
+          jumpZone.area.h
+        )
+      ) {
+        if (jumpZone.availability === AvailabilityTypeEnum.AVAILABLE) {
+          jumpZone.availability = AvailabilityTypeEnum.READY;
+        }
+        if (tryJump && player.blockingAction !== ActionTypeEnum.DAMAGE) {
+          jumpZone.availability = AvailabilityTypeEnum.UNAVAILABLE;
+          this.jumpBuffer = false;
+          this.canJump = false;
+          level.player.verticalAction = ActionTypeEnum.JUMPING;
+          level.player.blockingAction = ActionTypeEnum.NONE;
+          this.punchCooldown = 0;
+          level.player.verticalVelocity = level.jumpPower;
+          level.player.animationCounter = 1;
+          this.animationTimer = 0;
+        }
+      } else {
+        jumpZone.availability = AvailabilityTypeEnum.AVAILABLE;
+      }
+      for (const sprite of jumpZone.drawables) {
+        sprite.name = 'jumpzonesingle' + jumpZone.availability;
+        sprite.animationCounter = jumpZone.animationCounter;
+      }
+    }
+    if (tryJump) {
+      this.jumpBuffer = false;
+    }
+  };
+
   public checkGems = (level: ILevel): void => {
     const player = level.player;
 
@@ -120,7 +193,11 @@ export class PlayerService {
       ) {
         level.gems.splice(level.gems.indexOf(gem), 1);
         level.centerLayer.splice(level.centerLayer.indexOf(gem), 1);
-        player.gems.push(gem);
+        if (gem.name === 'Col') {
+          player.gems.push(gem);
+        } else {
+          player.bigGems.push(gem);
+        }
       }
     }
     if (!this.updateGemAnimation) {
@@ -238,19 +315,105 @@ export class PlayerService {
       level.player.blockingAction = ActionTypeEnum.NONE;
       level.player.animationCounter = 1;
       this.animationTimer = 0;
+      level.player.animationCounter = 1;
       this.cancelBuffer = false;
       level.player.verticalVelocity = level.maxFallSpeed;
     }
   };
 
+  private checkEnemyCollision = (level: ILevel): void => {
+    if (level.player.blockingAction === ActionTypeEnum.DAMAGE) {
+      return;
+    }
+    const player = level.player;
+    for (const enemy of level.enemies) {
+      if (enemy.distance !== player.distance || enemy.action === ActionTypeEnum.DEAD) {
+        continue;
+      }
+      if (
+        player.verticalAction === ActionTypeEnum.FALLING &&
+        this.intersectRect(
+          player.x + 30,
+          player.y + player.h - level.maxFallSpeed,
+          player.w - 60,
+          level.maxFallSpeed,
+          enemy.hitbox.x,
+          enemy.hitbox.y,
+          enemy.hitbox.w,
+          enemy.hitbox.h
+        )
+      ) {
+        this.handleJumpOnEnemy(player, enemy);
+        return;
+      }
+      if (
+        player.blockingAction === ActionTypeEnum.PUNCHING &&
+        this.intersectRect(
+          player.dir === DirTypeEnum.LEFT ? player.x - 10 : player.x + 50,
+          player.y + 10,
+          60,
+          80,
+          enemy.hitbox.x,
+          enemy.hitbox.y,
+          enemy.hitbox.w,
+          enemy.hitbox.h
+        )
+      ) {
+        this.handlePunchEnemy(player, enemy);
+        return;
+      }
+      if (
+        player.blockingAction !== ActionTypeEnum.DAMAGE &&
+        this.immunityCooldown === 0 &&
+        this.intersectRect(
+          player.x + 40,
+          player.y + 40,
+          20,
+          50,
+          enemy.hitbox.x + enemy.hitbox.w / 2,
+          enemy.hitbox.y,
+          enemy.hitbox.w / 2,
+          enemy.hitbox.h
+        )
+      ) {
+        player.dir = DirTypeEnum.RIGHT;
+        this.handleDmgEnemy(player);
+        return;
+      }
+      if (
+        player.blockingAction !== ActionTypeEnum.DAMAGE &&
+        this.immunityCooldown === 0 &&
+        this.intersectRect(
+          player.x + 40,
+          player.y + 40,
+          20,
+          50,
+          enemy.hitbox.x,
+          enemy.hitbox.y,
+          enemy.hitbox.w / 2,
+          enemy.hitbox.h
+        )
+      ) {
+        player.dir = DirTypeEnum.LEFT;
+        this.handleDmgEnemy(player);
+        return;
+      }
+    }
+  };
+
   private handlePlatformCollision = (level: ILevel, y: number): void => {
     level.player.y = y;
-    if (level.player.verticalAction === ActionTypeEnum.FALLING) {
+    if (
+      level.player.verticalAction === ActionTypeEnum.FALLING ||
+      (level.player.verticalAction === ActionTypeEnum.JUMPING && level.player.verticalVelocity >= 0)
+    ) {
       level.player.verticalAction = ActionTypeEnum.NONE;
       this.canJump = true;
+      for (const jumpZone of level.jumpzones) {
+        jumpZone.availability = AvailabilityTypeEnum.AVAILABLE;
+      }
     }
-    if (this.jumpBuffer) {
-      this.jumpBuffer = false;
+    if (this.jumpBuffer && this.getCanJump() && level.player.blockingAction !== ActionTypeEnum.DAMAGE) {
       this.canJump = false;
       level.player.verticalAction = ActionTypeEnum.JUMPING;
       level.player.blockingAction = ActionTypeEnum.NONE;
@@ -261,13 +424,54 @@ export class PlayerService {
     }
   };
 
+  private handleJumpOnEnemy = (player: IPlayer, enemy: IEnemy): void => {
+    player.verticalAction = ActionTypeEnum.JUMPING;
+    if (player.blockingAction !== ActionTypeEnum.PUNCHING) {
+      player.animationCounter = 1;
+      this.animationTimer = 0;
+    }
+    player.verticalVelocity = -15;
+    enemy.action = ActionTypeEnum.DEAD;
+    enemy.animationCounter = 1;
+  };
+
+  private handlePunchEnemy = (player: IPlayer, enemy: IEnemy): void => {
+    enemy.action = ActionTypeEnum.DEAD;
+    enemy.softWalls = [];
+    enemy.dir = player.dir;
+    enemy.animationCounter = 1;
+    enemy.verticalVelocity = enemy.deathVelocityY;
+    enemy.horizontalVelocity = enemy.deathVelocityX;
+  };
+
+  private handleDmgEnemy = (player: IPlayer): void => {
+    player.blockingAction = ActionTypeEnum.DAMAGE;
+    player.verticalAction = ActionTypeEnum.FALLING;
+    player.animationCounter = 1;
+    player.verticalVelocity = 0;
+    this.dmgCooldown = 15;
+  };
+
   private checkMapCollision = (level: ILevel): void => {
     //
   };
 
   private handlePlayerAnimation = (player: IPlayer): void => {
+    if (this.immunityCooldown > 0) {
+      this.immunityCooldown--;
+      if (this.immunityCooldown % 8 > 3) {
+        player.hidden = true;
+      } else {
+        player.hidden = false;
+      }
+    }
     if (this.punchCooldown > 0 && player.blockingAction !== ActionTypeEnum.PUNCHING) {
       this.punchCooldown--;
+    }
+    if (this.dmgCooldown > 0) {
+      this.dmgCooldown--;
+
+      return;
     }
     this.animationTimer++;
     if (this.animationTimer === 3) {

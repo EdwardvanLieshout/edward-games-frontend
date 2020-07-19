@@ -23,6 +23,7 @@ export class SpritesService {
       this.loadGemSprites(levelNr),
       this.loadEnemySprites(),
     ]).then(() => {
+      console.log('all loaded');
       this.spriteChart = {
         ...this.playerSprites,
         ...this.bgSprites,
@@ -43,6 +44,7 @@ export class SpritesService {
           { name: 'bg/bg' + levelNr + 'fade', width: 600, height: 400 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
+        console.log('bg loaded');
         this.bgSprites = Object.assign(
           {},
           ...values.map((s) => ({
@@ -119,6 +121,7 @@ export class SpritesService {
           { name: 'player/rdmg1', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
+        console.log('player loaded');
         this.playerSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/').join('')]: s.image })));
         resolve();
       });
@@ -208,6 +211,7 @@ export class SpritesService {
           { name: 'jumpzones/jumpzonesingleunavailable5', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
+        console.log('platforms loaded');
         this.platformSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();
       });
@@ -224,6 +228,7 @@ export class SpritesService {
           { name: 'distantdecor/cloud3', width: 300, height: 200 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
+        console.log('decor loaded');
         this.decorSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();
       });
@@ -268,6 +273,7 @@ export class SpritesService {
           { name: 'gems/level' + level + '/CollectableC8', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
+        console.log('gems loaded');
         this.gemSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[2]]: s.image })));
         resolve();
       });
@@ -301,6 +307,7 @@ export class SpritesService {
           { name: 'enemy/Owlr4', width: 100, height: 100 },
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
+        console.log('enemies loaded');
         this.enemySprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();
       });

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { AdventureMenuPageComponent } from './pages/adventure-menu-page/adventure-menu-page.component';
 import { AdventureSelectPageComponent } from './pages/adventure-select-page/adventure-select-page.component';
 import { AdventureLevelPageComponent } from './pages/adventure-level-page/adventure-level-page.component';
+import { GameOverPageComponent } from './pages/game-over-page/game-over-page.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'level/:levelNr',
     component: AdventureLevelPageComponent,
+  },
+  {
+    path: 'rip/:levelNr',
+    component: GameOverPageComponent,
   },
 ];
 

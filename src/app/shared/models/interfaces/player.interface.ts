@@ -21,4 +21,5 @@ export interface IPlayer {
   gems: IDrawable[];
   bigGems: IDrawable[];
   hidden: boolean;
+  health: number;
 }

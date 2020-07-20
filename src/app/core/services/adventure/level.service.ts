@@ -34,6 +34,7 @@ export class LevelService {
         gems: [],
         bigGems: [],
         hidden: false,
+        health: 4,
       },
       camera: {
         x: 100,
@@ -795,7 +796,8 @@ export class LevelService {
       ...([].concat(...level1.jumpzones.map((j) => j.drawables)) as IDrawable[]),
       ...level1.gems,
       ...level1.enemies,
-      level1.player
+      level1.player,
+      { x: 9000, y: 2200, w: 100, h: 100, distance: 1.2, name: 'Finish' }
     );
     level1.frontLayer.push(
       { name: 'tree1', x: 4700, y: 1950, w: 220, h: 440, distance: 0.8, resizeWhenDistant: false },
@@ -827,6 +829,7 @@ export class LevelService {
         gems: [],
         bigGems: [],
         hidden: false,
+        health: 4,
       },
       camera: {
         x: 100,

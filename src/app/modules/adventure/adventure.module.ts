@@ -5,9 +5,16 @@ import { AdventureRoutingModule } from './adventure-routing.module';
 import { AdventureSelectPageComponent } from './pages/adventure-select-page/adventure-select-page.component';
 import { AdventureLevelPageComponent } from './pages/adventure-level-page/adventure-level-page.component';
 import { AdventureControlsComponent } from './pages/adventure-level-page/components/adventure-controls/adventure-controls.component';
+import { GameOverPageComponent } from './pages/game-over-page/game-over-page.component';
 
 @NgModule({
-  declarations: [AdventureMenuPageComponent, AdventureSelectPageComponent, AdventureLevelPageComponent, AdventureControlsComponent],
+  declarations: [
+    AdventureMenuPageComponent,
+    AdventureSelectPageComponent,
+    AdventureLevelPageComponent,
+    AdventureControlsComponent,
+    GameOverPageComponent,
+  ],
   imports: [CommonModule, AdventureRoutingModule],
 })
 export class AdventureModule {}

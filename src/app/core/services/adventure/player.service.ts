@@ -23,6 +23,20 @@ export class PlayerService {
   private canJump = true;
   private updateGemAnimation = false;
 
+  public setUp = (): void => {
+    this.animationTimer = 0;
+    this.punchCooldown = 0;
+    this.dmgCooldown = 0;
+    this.immunityCooldown = 0;
+    this.punchBuffer = false;
+    this.movementBuffer = false;
+    this.jumpBuffer = false;
+    this.cancelBuffer = false;
+    this.stopBuffer = false;
+    this.canJump = true;
+    this.updateGemAnimation = false;
+  };
+
   public updatePlayer = (level: ILevel): void => {
     if (this.dmgCooldown === 0 && level.player.blockingAction === ActionTypeEnum.DAMAGE) {
       level.player.blockingAction = ActionTypeEnum.NONE;
@@ -115,6 +129,10 @@ export class PlayerService {
 
   public bufferStop = (): void => {
     this.stopBuffer = true;
+  };
+
+  public checkDeath = (level: ILevel): boolean => {
+    return level.player.y >= level.height;
   };
 
   public checkJumpZones = (level: ILevel): void => {
@@ -450,6 +468,7 @@ export class PlayerService {
     player.animationCounter = 1;
     player.verticalVelocity = 0;
     this.dmgCooldown = 15;
+    player.health--;
   };
 
   private checkMapCollision = (level: ILevel): void => {

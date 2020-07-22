@@ -47,6 +47,10 @@
   transition: $animation-very-slow;
 }
 
+@mixin transition-uber-slow {
+  transition: $animation-uber-slow;
+}
+
 @mixin hide-button-defaults {
   background: none;
   border: none;

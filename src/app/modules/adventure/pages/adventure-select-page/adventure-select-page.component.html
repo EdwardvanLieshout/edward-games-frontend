@@ -3,7 +3,7 @@
     <h1 class="e-adventure__menu__title e-adventure__select__title">Choose a level</h1>
     <div class="e-flex e-flex--row e-flex--row--stretch-on-mobile">
       <div class="e-flex__col">
-        <div *ngFor="let level of [1, 2, 3, 4, 5]" class="e-adventure__select__option__container">
+        <div *ngFor="let level of [1, 2, 3, 4, 5]">
           <input
             type="radio"
             [id]="'level-opt-' + level"
@@ -48,6 +48,12 @@
             class="e-adventure__select__collectible"
             draggable="false"
           />
+          <button
+            class="padding--2 margin--2 e-adventure__menu__button e-adventure__menu__button--small margin-auto"
+            (click)="viewLeaderBoards()"
+          >
+            View Leaderboards
+          </button>
         </div>
       </div>
     </div>

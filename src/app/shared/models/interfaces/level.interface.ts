@@ -25,4 +25,5 @@ export interface ILevel {
   gravity: number;
   jumpPower: number;
   maxFallSpeed: number;
+  finish: IBlock;
 }

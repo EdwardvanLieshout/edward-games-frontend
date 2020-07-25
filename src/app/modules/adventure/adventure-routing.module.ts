@@ -4,6 +4,8 @@ import { AdventureMenuPageComponent } from './pages/adventure-menu-page/adventur
 import { AdventureSelectPageComponent } from './pages/adventure-select-page/adventure-select-page.component';
 import { AdventureLevelPageComponent } from './pages/adventure-level-page/adventure-level-page.component';
 import { GameOverPageComponent } from './pages/game-over-page/game-over-page.component';
+import { LevelCompleteComponent } from './pages/level-complete/level-complete.component';
+import { AdventureReplayPageComponent } from './pages/adventure-replay-page/adventure-replay-page.component';
 
 const routes: Routes = [
   {
@@ -21,6 +23,14 @@ const routes: Routes = [
   {
     path: 'rip/:levelNr',
     component: GameOverPageComponent,
+  },
+  {
+    path: 'leaderboards/:levelNr',
+    component: LevelCompleteComponent,
+  },
+  {
+    path: 'replay/:id',
+    component: AdventureReplayPageComponent,
   },
 ];
 

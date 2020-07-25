@@ -55,6 +55,7 @@ export class LevelService {
       gravity: 2,
       jumpPower: -25,
       maxFallSpeed: 15,
+      finish: { x: 9000, y: 2200, w: 100, h: 100, distance: 1.2, name: 'Finish' },
     };
 
     level1.platforms.push(
@@ -797,7 +798,7 @@ export class LevelService {
       ...level1.gems,
       ...level1.enemies,
       level1.player,
-      { x: 9000, y: 2200, w: 100, h: 100, distance: 1.2, name: 'Finish' }
+      level1.finish
     );
     level1.frontLayer.push(
       { name: 'tree1', x: 4700, y: 1950, w: 220, h: 440, distance: 0.8, resizeWhenDistant: false },
@@ -850,6 +851,7 @@ export class LevelService {
       gravity: 2,
       jumpPower: -25,
       maxFallSpeed: 15,
+      finish: { x: 9000, y: 2200, w: 100, h: 100, distance: 1.2, name: 'Finish' },
     };
 
     level2.centerLayer.push(...level2.platforms);

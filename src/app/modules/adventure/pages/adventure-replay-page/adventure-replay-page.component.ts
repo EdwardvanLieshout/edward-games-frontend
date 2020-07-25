@@ -8,21 +8,22 @@ import {
   HostListener,
   OnDestroy,
 } from '@angular/core';
+import { ILevel } from '../../../../shared/models/interfaces/level.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SpritesService } from '../../../../core/services/adventure/sprites.service';
 import { CameraService } from '../../../../core/services/adventure/camera.service';
-import { ILevel } from '../../../../shared/models/interfaces/level.interface';
 import { LevelService } from '../../../../core/services/adventure/level.service';
 import { PlayerService } from '../../../../core/services/adventure/player.service';
 import { EnemyService } from '../../../../core/services/adventure/enemy.service';
 import { LeaderboardService } from '../../../../core/services/adventure/leaderboard.service';
+import { IReplay } from '../../../../shared/models/interfaces/replay.interface';
 
 @Component({
-  selector: 'app-adventure-level-page',
-  templateUrl: './adventure-level-page.component.html',
+  selector: 'app-adventure-replay-page',
+  templateUrl: './adventure-replay-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdventureLevelPageComponent implements OnInit, OnDestroy {
+export class AdventureReplayPageComponent implements OnInit, OnDestroy {
   public levelNr: string;
   public SCREEN_WIDTH = 800;
   public SCREEN_HEIGHT = 500;
@@ -36,6 +37,9 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
 
   private ctx: CanvasRenderingContext2D;
   private level: ILevel;
+
+  private replay: IReplay;
+  private replayTickCount = 0;
 
   private tick;
 
@@ -58,7 +62,9 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.levelNr = this.route.snapshot.paramMap.get('levelNr');
+    const lr = this.leaderboardService.getLevelRanking(this.route.snapshot.paramMap.get('id'));
+    this.replay = lr.replay;
+    this.levelNr = lr.levelNr;
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.playerService.setUp();
     this.level = this.levelService['getLevel' + this.levelNr]();
@@ -82,11 +88,10 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
 
   public performTick = (): void => {
     this.enemyService.updateEnemies(this.level);
+    this.playerService.updateActionsFromReplay(this.replay.ticks[this.replayTickCount]);
+    this.replayTickCount++;
     this.playerService.updatePlayer(this.level);
     if (this.playerService.checkFinish(this.level)) {
-      this.playerService.completeReplay();
-      const replay = this.playerService.getReplay();
-
       this.router.navigate(['adventure/leaderboards', this.levelNr]);
     }
     if (this.playerService.checkDeath(this.level) || this.hpBarWidth <= 0) {

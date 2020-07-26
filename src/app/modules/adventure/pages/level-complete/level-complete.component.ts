@@ -62,13 +62,43 @@ export class LevelCompleteComponent implements OnInit {
       return [];
     }
     if (this.selectedMode === 'Normal') {
-      return levelRankings.filter((lr) => !lr.replay.collector && !lr.replay.pacifist);
+      return levelRankings
+        .filter((lr) => !lr.replay.collector && !lr.replay.pacifist)
+        .sort((a, b) => {
+          if (a.time < b.time) {
+            return -1;
+          }
+          if (a.time > b.time) {
+            return 1;
+          }
+          return 0;
+        });
     }
     if (this.selectedMode === 'Collector') {
-      return levelRankings.filter((lr) => lr.replay.collector && !lr.replay.pacifist);
+      return levelRankings
+        .filter((lr) => lr.replay.collector && !lr.replay.pacifist)
+        .sort((a, b) => {
+          if (a.time < b.time) {
+            return -1;
+          }
+          if (a.time > b.time) {
+            return 1;
+          }
+          return 0;
+        });
     }
     if (this.selectedMode === 'Pacifist') {
-      return levelRankings.filter((lr) => lr.replay.pacifist);
+      return levelRankings
+        .filter((lr) => lr.replay.pacifist)
+        .sort((a, b) => {
+          if (a.time < b.time) {
+            return -1;
+          }
+          if (a.time > b.time) {
+            return 1;
+          }
+          return 0;
+        });
     }
   };
 

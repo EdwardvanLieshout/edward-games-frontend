@@ -9,6 +9,8 @@ import { ActionTypeEnum } from '../../../shared/models/enums/action.enum';
   providedIn: 'root',
 })
 export class CameraService {
+  private uiAnimDelay = 0;
+
   public reposition = (level: ILevel): void => {
     level.camera.x = level.player.x - (level.camera.w / 2 - level.player.w / 2);
     level.camera.y = level.player.y - (level.camera.h / 2 - level.player.h / 2);
@@ -59,7 +61,26 @@ export class CameraService {
         drawCommands.push(this.createDrawCommand(level.camera, drawable, sprites));
       }
     }
+    this.uiAnimDelay++;
+    for (const ui of level.uiDrawables) {
+      if (this.intersectRect(level.player.x, level.player.y, level.player.w, level.player.h, ui.x, ui.y, ui.w, ui.h)) {
+        drawCommands.push(this.createUIDrawCommand(ui.uiDrawable, sprites));
+      }
+
+      if (this.uiAnimDelay === 12) {
+        ui.uiDrawable.animationCounter = (ui.uiDrawable.animationCounter % ui.uiMaxAnim) + 1;
+      }
+    }
+    if (this.uiAnimDelay === 12) {
+      this.uiAnimDelay = 0;
+    }
     return drawCommands;
+  };
+
+  // tslint:disable-next-line:no-any
+  private createUIDrawCommand = (drawable: IDrawable, sprites: any): IDrawCommand => {
+    const animation = drawable.animationCounter ? drawable.animationCounter : '';
+    return { x: drawable.x, y: drawable.y, w: drawable.w, h: drawable.h, img: sprites[drawable.name + animation] };
   };
 
   // tslint:disable-next-line:no-any
@@ -117,5 +138,21 @@ export class CameraService {
 
   private offsetY = (camera: ICamera, y: number, distance: number): number => {
     return Math.round(y / distance) - Math.round(camera.y / distance) + Math.round(camera.h * 0.5 * (1 - 1 / distance));
+  };
+
+  private intersectRect = (
+    x1: number,
+    y1: number,
+    w1: number,
+    h1: number,
+    x2: number,
+    y2: number,
+    w2: number,
+    h2: number
+  ): boolean => {
+    return this.intersectRange(x1, x1 + w1, x2, x2 + w2) && this.intersectRange(y1, y1 + h1, y2, y2 + h2);
+  };
+  private intersectRange = (ax1: number, ax2: number, bx1: number, bx2: number): boolean => {
+    return Math.max(ax1, bx1) <= Math.min(ax2, bx2);
   };
 }

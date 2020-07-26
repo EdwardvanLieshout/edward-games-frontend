@@ -1,0 +1,291 @@
+@import '../config';
+@import '../abstracts/all';
+
+$_cube-dimension: 400px;
+
+.#{$block-prefix}cube {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: $_cube-dimension;
+  height: $_cube-dimension;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+  @include transition-very-slow;
+
+  & > :nth-child(1) {
+    @include cube-front($_cube-dimension);
+  }
+  & > :nth-child(2) {
+    @include cube-right($_cube-dimension);
+  }
+  & > :nth-child(3) {
+    @include cube-back($_cube-dimension);
+  }
+  & > :nth-child(4) {
+    @include cube-left($_cube-dimension);
+  }
+  & > :nth-child(5) {
+    @include cube-top($_cube-dimension);
+  }
+  & > :nth-child(6) {
+    @include cube-bottom($_cube-dimension);
+  }
+
+  &__container {
+    background-color: $colour-dark-gray;
+    width: 100vw;
+    height: 100vh;
+    perspective: 600px;
+  }
+
+  &__face {
+    @include transition-uber-slow;
+    position: absolute;
+    background-color: $colour-light-gray;
+    color: black;
+    width: $_cube-dimension;
+    height: $_cube-dimension;
+    opacity: 0.2;
+    text-align: center;
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+    box-shadow: 0px 0px 5px white;
+
+    &__container {
+      width: $_cube-dimension;
+      height: $_cube-dimension;
+      overflow-y: auto;
+      &--right {
+        background-color: aliceblue;
+
+        & button {
+          padding-left: 1rem;
+          padding-right: 1rem;
+          font-size: 0.8em;
+        }
+      }
+      &--front {
+        background-color: $colour-light-gray;
+        h1 {
+          color: rgb(255, 210, 100);
+          font-weight: bolder;
+          text-shadow: 0 -1px 0 rgb(200, 150, 50), 0 1px 0 rgb(200, 150, 50), -1px 0 0 rgb(200, 150, 50),
+            1px 0 0 rgb(200, 150, 50), 0 1px 0 rgb(180, 135, 45), 0 2px 0 rgb(162, 121, 40), 0 3px 0 rgb(146, 109, 36),
+            0 4px 0 rgb(131, 98, 32), 0 5px 0 rgb(118, 88, 29), -1px 1px 0 rgb(180, 135, 45),
+            -1px 2px 0 rgb(162, 121, 40), -1px 3px 0 rgb(146, 109, 36), -1px 4px 0 rgb(131, 98, 32),
+            -1px 5px 0 rgb(118, 88, 29), 1px 1px 0 rgb(180, 135, 45), 1px 2px 0 rgb(162, 121, 40),
+            1px 3px 0 rgb(146, 109, 36), 1px 4px 0 rgb(131, 98, 32), 1px 5px 0 rgb(118, 88, 29), 0 6px 1px #000,
+            0 0px 3px #000, 0 1px 3px #000, 0 3px 5px #000, 0 5px 10px #000, 0 5px 20px #000;
+        }
+      }
+    }
+  }
+
+  &--front {
+    transform: translate(-50%, -50%) rotateY(0deg);
+    & > :nth-child(1) {
+      opacity: 0.8;
+    }
+  }
+
+  &--right {
+    transform: translate(-50%, -50%) rotateY(-90deg);
+    & > :nth-child(2) {
+      opacity: 0.8;
+    }
+  }
+
+  &--back {
+    transform: translate(-50%, -50%) rotateY(-180deg);
+    & > :nth-child(3) {
+      opacity: 0.8;
+    }
+  }
+
+  &--left {
+    transform: translate(-50%, -50%) rotateY(-270deg);
+    & > :nth-child(4) {
+      opacity: 0.8;
+    }
+  }
+
+  &--top {
+    transform: translate(-50%, -50%) rotateX(-90deg);
+    & > :nth-child(5) {
+      opacity: 0.8;
+    }
+  }
+
+  &--bottom {
+    transform: translate(-50%, -50%) rotateX(90deg);
+    & > :nth-child(6) {
+      opacity: 0.8;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    padding-top: $_cube-dimension;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    top: $_cube-dimension + 100;
+    z-index: -1;
+
+    & > button {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+  &--small {
+    @include transition-very-slow;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateX(300px) translateY(-50px) translateZ(50px);
+    animation: rotate_cube_small (2 * $animation-uber-slow) linear infinite;
+    transform-style: preserve-3d;
+    pointer-events: none;
+
+    & > :nth-child(1) {
+      @include cube-front(100px);
+    }
+    & > :nth-child(2) {
+      @include cube-right(100px);
+    }
+    & > :nth-child(3) {
+      @include cube-back(100px);
+    }
+    & > :nth-child(4) {
+      @include cube-left(100px);
+    }
+    & > :nth-child(5) {
+      @include cube-top(100px);
+    }
+    & > :nth-child(6) {
+      @include cube-bottom(100px);
+    }
+
+    &__container {
+      background-color: $colour-dark-gray;
+      width: 400px;
+      height: 400px;
+      perspective: 300px;
+    }
+
+    &__face {
+      @include transition-very-slow;
+      position: absolute;
+      background-color: $colour-green;
+      color: black;
+      width: 100px;
+      height: 100px;
+      opacity: 0.2;
+      text-align: center;
+      line-height: 100px;
+      -webkit-backface-visibility: visible;
+      backface-visibility: visible;
+      box-shadow: 0px 0px 5px black;
+    }
+
+    &--disco {
+      animation: disco_beat (3 * $animation-uber-slow) linear infinite;
+      & > div {
+        border: white solid 2px;
+        box-shadow: none;
+        animation: disco_colours (2 * $animation-uber-slow) linear infinite,
+          disco_beat_opacity (3 * $animation-uber-slow) linear infinite;
+      }
+    }
+
+    &--grid {
+      animation: rotate_cube_small (6 * $animation-uber-slow) linear infinite;
+      & > div {
+        border: none;
+        box-shadow: none;
+        background: url('../../textures/grid.png');
+        opacity: 0.6;
+      }
+    }
+  }
+
+  &--smaller {
+    @include transition-very-slow;
+    position: relative;
+    width: 50px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateX(300px) translateY(-50px) translateZ(50px);
+    animation: rotate_cube_smaller (2 * $animation-very-slow) linear infinite;
+    transform-style: preserve-3d;
+    pointer-events: none;
+
+    & > :nth-child(1) {
+      @include cube-front(50px);
+    }
+    & > :nth-child(2) {
+      @include cube-right(50px);
+    }
+    & > :nth-child(3) {
+      @include cube-back(50px);
+    }
+    & > :nth-child(4) {
+      @include cube-left(50px);
+    }
+    & > :nth-child(5) {
+      @include cube-top(50px);
+    }
+    & > :nth-child(6) {
+      @include cube-bottom(50px);
+    }
+
+    &__container {
+      background-color: $colour-dark-gray;
+      width: 400px;
+      height: 400px;
+      perspective: 300px;
+    }
+
+    &__face {
+      @include transition-very-slow;
+      position: absolute;
+      background-color: $colour-danger;
+      color: black;
+      width: 50px;
+      height: 50px;
+      opacity: 0.7;
+      text-align: center;
+      line-height: 50px;
+      -webkit-backface-visibility: visible;
+      backface-visibility: visible;
+      box-shadow: 0px 0px 3px white;
+    }
+
+    &--disco {
+      animation: disco_dance (2.4 * $animation-uber-slow) linear infinite;
+      & > div {
+        border: white solid 2px;
+        box-shadow: none;
+        animation: disco_lights (2 * $animation-uber-slow) linear infinite;
+      }
+    }
+
+    &--grid {
+      animation: rotate_cube_smaller (10 * $animation-uber-slow) linear infinite;
+      & > div {
+        border: none;
+        box-shadow: none;
+        background: url('../../textures/grid.png');
+        opacity: 0.6;
+      }
+    }
+  }
+}

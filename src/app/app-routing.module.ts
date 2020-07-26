@@ -15,6 +15,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/adventure/adventure.module').then((m) => m.AdventureModule),
   },
   {
+    path: 'cube',
+    loadChildren: () => import('./modules/cube/cube.module').then((m) => m.CubeModule),
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',

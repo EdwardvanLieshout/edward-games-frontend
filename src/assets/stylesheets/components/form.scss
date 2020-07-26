@@ -1,0 +1,61 @@
+@import '../config';
+@import '../abstracts/all';
+
+@mixin outline-yellow {
+  outline: 3px;
+  outline-color: rgba(255, 210, 100, 0.3);
+  outline-offset: -2px;
+  outline-style: auto;
+}
+
+@mixin form-element-external-defaults {
+  @include transition-slow;
+  background-color: $colour-white;
+  background-position: 99%;
+  border: 1px solid $colour-dark-gray;
+  border-radius: 2px;
+
+  @include active-mouse-states {
+    border-color: rgba(255, 210, 100, 1);
+  }
+
+  &:focus,
+  &:focus-within {
+    @include outline-yellow();
+  }
+
+  &--loading {
+    &#{&} {
+      @include spinner-after-element($colour-dark-gray) {
+        width: 2.2rem;
+        height: 2.2rem;
+        top: 1.4rem;
+        right: 1rem;
+      }
+    }
+  }
+
+  &--error {
+    border-color: $colour-danger;
+
+    @include active-mouse-states {
+      border-color: $colour-danger;
+    }
+  }
+}
+
+@mixin form-element-internal-defaults {
+  background: none;
+  border: 0;
+  font-size: 1rem;
+  line-height: 1.4rem;
+  margin: 0;
+  outline: 0;
+  padding: 1rem 0.5rem;
+  width: 80%;
+}
+
+.#{$block-prefix}form__input {
+  @include form-element-internal-defaults;
+  @include form-element-external-defaults;
+}

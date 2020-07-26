@@ -12,6 +12,7 @@ export class SpritesService {
   public gemSprites;
   public enemySprites;
   public bgSprites;
+  public uiSprites;
 
   // tslint:disable-next-line:no-any
   public getSprites = (levelNr: string): Promise<any> => {
@@ -22,6 +23,7 @@ export class SpritesService {
       this.loadDecorSprites(),
       this.loadGemSprites(levelNr),
       this.loadEnemySprites(),
+      this.loadUISprites(),
     ]).then(() => {
       this.spriteChart = {
         ...this.playerSprites,
@@ -30,6 +32,7 @@ export class SpritesService {
         ...this.decorSprites,
         ...this.gemSprites,
         ...this.enemySprites,
+        ...this.uiSprites,
       };
       return this.spriteChart;
     });
@@ -218,6 +221,7 @@ export class SpritesService {
     return new Promise((resolve, reject) => {
       Promise.all(
         [
+          { name: 'misc/Finish', width: 100, height: 100 },
           { name: 'distantdecor/tree1', width: 100, height: 200 },
           { name: 'distantdecor/cloud1', width: 100, height: 100 },
           { name: 'distantdecor/cloud2', width: 300, height: 200 },
@@ -302,6 +306,32 @@ export class SpritesService {
         ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.enemySprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
+        resolve();
+      });
+    });
+  };
+
+  public loadUISprites = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      Promise.all(
+        [
+          { name: 'UI/HPBar', width: 100, height: 100 },
+          { name: 'UI/WalkGuide1', width: 200, height: 150 },
+          { name: 'UI/WalkGuide2', width: 200, height: 150 },
+          { name: 'UI/JumpGuide1', width: 200, height: 150 },
+          { name: 'UI/JumpGuide2', width: 200, height: 150 },
+          { name: 'UI/GapGuide1', width: 200, height: 150 },
+          { name: 'UI/GapGuide2', width: 200, height: 150 },
+          { name: 'UI/EnemyGuide1', width: 200, height: 150 },
+          { name: 'UI/EnemyGuide2', width: 200, height: 150 },
+          { name: 'UI/JumpKillGuide1', width: 200, height: 150 },
+          { name: 'UI/JumpKillGuide2', width: 200, height: 150 },
+          { name: 'UI/JumpKillGuide3', width: 200, height: 150 },
+          { name: 'UI/PunchGuide1', width: 200, height: 150 },
+          { name: 'UI/PunchGuide2', width: 200, height: 150 },
+        ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
+      ).then((values) => {
+        this.uiSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();
       });
     });

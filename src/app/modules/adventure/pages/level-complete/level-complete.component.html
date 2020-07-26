@@ -1,0 +1,85 @@
+<div
+  [class]="'e-adventure__select__container e-adventure__select__container-' + levelNr"
+  [ngClass]="{ 'e-adventure__leaderboard--blur': showModal }"
+>
+  <div class="e-container">
+    <h1 class="e-adventure__menu__title e-adventure__select__title">Leaderboards</h1>
+    <a [routerLink]="['/adventure/select']">< back to level select</a><br /><br />
+    <div class="e-adventure__select__box e-flex__col padding--1">
+      <h2 class="margin-vertical--1 text--commodore">Level {{ levelNr }}</h2>
+      <div class="e-adventure__select__container--horizontal">
+        <div class="e-flex__col text--center" *ngFor="let mode of ['Normal', 'Collector', 'Pacifist']">
+          <input
+            type="radio"
+            [id]="'ranking-opt-' + mode"
+            name="mode"
+            [value]="mode"
+            class="hidden--visually"
+            [checked]="mode === selectedMode"
+            (change)="onChangeMode(mode)"
+          />
+          <label
+            class="e-adventure__select__option e-adventure__select__option--horizontal"
+            [for]="'ranking-opt-' + mode"
+            >{{ mode }}</label
+          >
+        </div>
+      </div>
+      <div class="e-flex e-flex--column e-adventure__leaderboard__table">
+        <div class="e-flex__col e-flex e-flex--row e-flex__align--center e-adventure__leaderboard__row">
+          <div class="e-flex__col text--center padding-vertical--1">
+            <strong>Name</strong>
+          </div>
+          <div class="e-flex__col text--center padding-vertical--1">
+            <strong>Time</strong>
+          </div>
+          <div class="e-flex__col text--center padding-vertical--1">
+            <strong>Replay</strong>
+          </div>
+        </div>
+        <div
+          class="e-flex__col e-flex e-flex--row e-flex__align--center padding-vertical--1 e-adventure__leaderboard__row"
+          *ngFor="let levelRanking of filterLevelRankings(levelRankings | async)"
+        >
+          <div class="e-flex__col text--center e-adventure__leaderboard__name">{{ levelRanking.name }}</div>
+          <div class="e-flex__col text--center">{{ levelRanking.time }}</div>
+          <div class="e-flex__col text--center">
+            <button (click)="watchReplay(levelRanking.id)" type="button" class="e-button e-button--small">
+              Watch replay
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showModal" class="e-adventure__leaderboard__modal__container">
+  <div class="e-adventure__leaderboard__modal padding--1">
+    <h2 class="margin-vertical--1 text--commodore">Level {{ levelNr }} complete!</h2>
+    <form
+      (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+      class="text--center padding--2 e-flex e-flex--column e-flex__align--center e-flex__justify--space-between"
+    >
+      <p *ngIf="!showError" class="text--center">Choose a name that will be displayed on the leaderboards.</p>
+      <p *ngIf="showError" class="text--center text--danger">Please fill in a valid name.</p>
+
+      <input
+        type="text"
+        class="e-form__input margin-vertical--1"
+        formControlName="name"
+        (keypress)="omitSpecialChar($event)"
+        [maxlength]="MAX_LENGTH"
+      />
+      <div>
+        <button class="e-button e-button--small e-button--primary" type="submit">
+          Submit
+        </button>
+        <button class="e-button e-button--small" type="button" (click)="closeModal()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

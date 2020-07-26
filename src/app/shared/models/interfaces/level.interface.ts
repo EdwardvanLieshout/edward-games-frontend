@@ -22,7 +22,9 @@ export interface ILevel {
   backLayer: IDrawable[];
   centerLayer: IDrawable[];
   frontLayer: IDrawable[];
+  uiDrawables: IBlock[];
   gravity: number;
   jumpPower: number;
   maxFallSpeed: number;
+  finish: IBlock;
 }

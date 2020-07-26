@@ -1,0 +1,46 @@
+<div class="e-cube__container">
+  <div class="e-cube e-cube--front" #cube>
+    <div class="e-cube__face">
+      <app-front-face></app-front-face>
+    </div>
+    <div class="e-cube__face">
+      <app-right-face (disco)="applyDisco()" (normal)="applyNormal()" (grid)="applyGrid()"></app-right-face>
+    </div>
+    <div class="e-cube__face">
+      <app-right-face></app-right-face>
+    </div>
+    <div class="e-cube__face">
+      <app-right-face></app-right-face>
+    </div>
+    <div class="e-cube__face">
+      <app-right-face></app-right-face>
+    </div>
+    <div class="e-cube__face">
+      <app-right-face></app-right-face>
+    </div>
+    <div class="e-cube--small" #smallCube>
+      <div class="e-cube--small__face"></div>
+      <div class="e-cube--small__face"></div>
+      <div class="e-cube--small__face"></div>
+      <div class="e-cube--small__face"></div>
+      <div class="e-cube--small__face"></div>
+      <div class="e-cube--small__face"></div>
+    </div>
+    <div class="e-cube--smaller" #smallerCube>
+      <div class="e-cube--smaller__face"></div>
+      <div class="e-cube--smaller__face"></div>
+      <div class="e-cube--smaller__face"></div>
+      <div class="e-cube--smaller__face"></div>
+      <div class="e-cube--smaller__face"></div>
+      <div class="e-cube--smaller__face"></div>
+    </div>
+  </div>
+  <div class="e-cube__controls">
+    <button class="e-button e-button--small" (click)="moveLeft()">Left</button>
+    <button class="e-button e-button--small" (click)="moveRight()">Mini cubes</button>
+    <button class="e-button e-button--small" (click)="moveFront()">Intro</button>
+    <button class="e-button e-button--small" (click)="moveBack()">Back</button>
+    <button class="e-button e-button--small" (click)="moveTop()">Top</button>
+    <button class="e-button e-button--small" (click)="moveBottom()">Bottom</button>
+  </div>
+</div>

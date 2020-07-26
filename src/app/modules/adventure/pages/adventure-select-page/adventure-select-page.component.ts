@@ -18,4 +18,8 @@ export class AdventureSelectPageComponent {
   public startLevel = (): void => {
     this.router.navigate(['adventure/level', this.levelNr]);
   };
+
+  public viewLeaderBoards = (): void => {
+    this.router.navigate(['adventure/leaderboards', this.levelNr]);
+  };
 }

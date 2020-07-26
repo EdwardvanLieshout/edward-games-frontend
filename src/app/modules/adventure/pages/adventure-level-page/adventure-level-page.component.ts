@@ -8,13 +8,14 @@ import {
   HostListener,
   OnDestroy,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SpritesService } from '../../../../core/services/adventure/sprites.service';
 import { CameraService } from '../../../../core/services/adventure/camera.service';
 import { ILevel } from '../../../../shared/models/interfaces/level.interface';
 import { LevelService } from '../../../../core/services/adventure/level.service';
 import { PlayerService } from '../../../../core/services/adventure/player.service';
 import { EnemyService } from '../../../../core/services/adventure/enemy.service';
+import { LeaderboardService } from '../../../../core/services/adventure/leaderboard.service';
 
 @Component({
   selector: 'app-adventure-level-page',
@@ -28,6 +29,7 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   public showCanvas = false;
   // tslint:disable-next-line:no-any
   public spriteChart: any;
+  public hpBarWidth = 84;
 
   @ViewChild('canvas', { static: true })
   public canvas: ElementRef<HTMLCanvasElement>;
@@ -45,18 +47,20 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private sprites: SpritesService,
     private cameraService: CameraService,
     private levelService: LevelService,
     private playerService: PlayerService,
     private enemyService: EnemyService,
+    private leaderboardService: LeaderboardService,
     private ref: ChangeDetectorRef
   ) {}
 
   public ngOnInit(): void {
     this.levelNr = this.route.snapshot.paramMap.get('levelNr');
     this.ctx = this.canvas.nativeElement.getContext('2d');
-
+    this.playerService.setUp();
     this.level = this.levelService['getLevel' + this.levelNr]();
 
     this.gemUIAnim = 1;
@@ -79,6 +83,15 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   public performTick = (): void => {
     this.enemyService.updateEnemies(this.level);
     this.playerService.updatePlayer(this.level);
+    if (this.playerService.checkFinish(this.level)) {
+      this.playerService.completeReplay();
+      const replay = this.playerService.getReplay();
+
+      this.router.navigate(['adventure/leaderboards', this.levelNr]);
+    }
+    if (this.playerService.checkDeath(this.level) || this.hpBarWidth <= 0) {
+      this.router.navigate(['adventure/rip', this.levelNr]);
+    }
     this.refreshCanvas();
     this.timeIncrement = new Date(this.timeIncrement.getTime() + 35);
   };
@@ -92,6 +105,7 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
       this.ctx.drawImage(dc.img, dc.x, dc.y, dc.w, dc.h);
       this.ctx.globalAlpha = 1;
     }
+    this.drawHp();
     this.drawGems();
     this.drawText();
   };
@@ -117,13 +131,17 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
     }
   };
 
-  public drawText = (): void => {
-    const timerValue = this.timeIncrement.getTime() - this.time.getTime();
+  public getTimeString = (timerValue: number): string => {
     const milliseconds = timerValue % 1000;
     const seconds = Math.round((timerValue - milliseconds) / 1000) % 60;
     const minutes = Math.round(((timerValue - milliseconds) / 1000 - seconds) / 60);
     const minutesString = minutes < 100 ? ('0' + minutes).slice(-2) : minutes;
     const timestring = minutesString + ':' + ('0' + seconds).slice(-2) + ':' + ('00' + milliseconds).slice(-3);
+    return timestring;
+  };
+
+  public drawText = (): void => {
+    const timestring = this.getTimeString(this.timeIncrement.getTime() - this.time.getTime());
 
     const amountOfGems = this.level.player.gems.length.toString();
     this.ctx.font = '40px Arial Black';
@@ -144,5 +162,22 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
     this.ctx.strokeText(amountOfGems, 40, 40);
     this.ctx.font = '30px Arial Black';
     this.ctx.strokeText(timestring, 10, 490);
+  };
+
+  public drawHp = (): void => {
+    this.ctx.drawImage(this.spriteChart['HPBar'], 680, -20, 100, 100);
+    this.ctx.fillStyle = '#FF0000';
+    this.ctx.fillRect(688, 30, 84, 21);
+    if (this.hpBarWidth > this.level.player.health * 21) {
+      this.hpBarWidth -= 2;
+      let gvalue = 2 * Math.abs(Math.round(((this.hpBarWidth - this.level.player.health * 21) / 21) * 255));
+      gvalue = gvalue > 255 ? 255 : gvalue;
+      let rvalue = 2 * (255 - Math.abs(Math.round(((this.hpBarWidth - this.level.player.health * 21) / 21) * 255)));
+      rvalue = rvalue > 255 ? 255 : rvalue;
+      this.ctx.fillStyle = 'rgb(' + rvalue + ', ' + gvalue + ', 0)';
+      this.ctx.fillRect(this.level.player.health * 21 + 688, 30, 21, 21);
+    }
+    this.ctx.fillStyle = '#00FF00';
+    this.ctx.fillRect(688, 30, this.hpBarWidth, 21);
   };
 }

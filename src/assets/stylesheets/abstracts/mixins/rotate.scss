@@ -1,0 +1,23 @@
+@mixin cube-front($_cube-dimension) {
+  transform: rotateY(0deg) translateZ($_cube-dimension / 2);
+}
+
+@mixin cube-right($_cube-dimension) {
+  transform: rotateY(90deg) translateZ($_cube-dimension / 2);
+}
+
+@mixin cube-back($_cube-dimension) {
+  transform: rotateY(180deg) translateZ($_cube-dimension / 2);
+}
+
+@mixin cube-left($_cube-dimension) {
+  transform: rotateY(270deg) translateZ($_cube-dimension / 2);
+}
+
+@mixin cube-top($_cube-dimension) {
+  transform: rotateX(90deg) translateZ($_cube-dimension / 2);
+}
+
+@mixin cube-bottom($_cube-dimension) {
+  transform: rotateX(-90deg) translateZ($_cube-dimension / 2);
+}

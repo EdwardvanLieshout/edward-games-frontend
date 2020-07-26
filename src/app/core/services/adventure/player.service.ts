@@ -5,13 +5,15 @@ import { IPlayer } from '../../../shared/models/interfaces/player.interface';
 import { DirTypeEnum } from '../../../shared/models/enums/direction.enum';
 import { AvailabilityTypeEnum } from '../../../shared/models/enums/availabilityType.enum';
 import { IEnemy } from '../../../shared/models/interfaces/enemy.interface';
+import { IReplay } from '../../../shared/models/interfaces/replay.interface';
+import { IReplayTick } from '../../../shared/models/interfaces/replaytick.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerService {
   private animationTimer = 0;
-  private bufferedDir: DirTypeEnum;
+  private bufferedDir: DirTypeEnum = DirTypeEnum.RIGHT;
   private punchCooldown = 0;
   private dmgCooldown = 0;
   private immunityCooldown = 0;
@@ -22,8 +24,43 @@ export class PlayerService {
   private stopBuffer = false;
   private canJump = true;
   private updateGemAnimation = false;
+  private replay: IReplay = {
+    isComplete: false,
+    collector: false,
+    pacifist: true,
+    ticks: [],
+  };
+
+  public setUp = (): void => {
+    this.bufferedDir = DirTypeEnum.RIGHT;
+    this.animationTimer = 0;
+    this.punchCooldown = 0;
+    this.dmgCooldown = 0;
+    this.immunityCooldown = 0;
+    this.punchBuffer = false;
+    this.movementBuffer = false;
+    this.jumpBuffer = false;
+    this.cancelBuffer = false;
+    this.stopBuffer = false;
+    this.canJump = true;
+    this.updateGemAnimation = false;
+    this.replay = {
+      isComplete: false,
+      ticks: [],
+      collector: false,
+      pacifist: true,
+    };
+  };
 
   public updatePlayer = (level: ILevel): void => {
+    this.replay.ticks.push({
+      bufferedDir: this.bufferedDir,
+      punchBuffer: this.punchBuffer,
+      movementBuffer: this.movementBuffer,
+      jumpBuffer: this.jumpBuffer,
+      cancelBuffer: this.cancelBuffer,
+      stopBuffer: this.stopBuffer,
+    });
     if (this.dmgCooldown === 0 && level.player.blockingAction === ActionTypeEnum.DAMAGE) {
       level.player.blockingAction = ActionTypeEnum.NONE;
       this.immunityCooldown = 40;
@@ -81,6 +118,23 @@ export class PlayerService {
     this.handlePlayerAnimation(level.player);
   };
 
+  public updateActionsFromReplay = (replayTick: IReplayTick) => {
+    this.bufferedDir = replayTick.bufferedDir;
+    this.punchBuffer = replayTick.punchBuffer;
+    this.movementBuffer = replayTick.movementBuffer;
+    this.jumpBuffer = replayTick.jumpBuffer;
+    this.cancelBuffer = replayTick.cancelBuffer;
+    this.stopBuffer = replayTick.stopBuffer;
+  };
+
+  public getReplay = (): IReplay => {
+    return this.replay;
+  };
+
+  public completeReplay = (): void => {
+    this.replay.isComplete = true;
+  };
+
   public setBufferedDir = (dir: DirTypeEnum): void => {
     this.bufferedDir = dir;
   };
@@ -115,6 +169,23 @@ export class PlayerService {
 
   public bufferStop = (): void => {
     this.stopBuffer = true;
+  };
+
+  public checkDeath = (level: ILevel): boolean => {
+    return level.player.y >= level.height;
+  };
+
+  public checkFinish = (level: ILevel): boolean => {
+    return this.intersectRect(
+      level.player.x + 30,
+      level.player.y + 10,
+      level.player.w - 60,
+      level.player.h - 90,
+      level.finish.x + 10,
+      level.finish.y + 10,
+      level.finish.w - 20,
+      level.finish.h - 20
+    );
   };
 
   public checkJumpZones = (level: ILevel): void => {
@@ -204,6 +275,9 @@ export class PlayerService {
       this.updateGemAnimation = true;
     } else {
       this.updateGemAnimation = false;
+    }
+    if (player.gems.length === 50 && player.bigGems.length === 3) {
+      this.replay.collector = true;
     }
   };
 
@@ -433,6 +507,7 @@ export class PlayerService {
     player.verticalVelocity = -15;
     enemy.action = ActionTypeEnum.DEAD;
     enemy.animationCounter = 1;
+    this.replay.pacifist = false;
   };
 
   private handlePunchEnemy = (player: IPlayer, enemy: IEnemy): void => {
@@ -442,6 +517,7 @@ export class PlayerService {
     enemy.animationCounter = 1;
     enemy.verticalVelocity = enemy.deathVelocityY;
     enemy.horizontalVelocity = enemy.deathVelocityX;
+    this.replay.pacifist = false;
   };
 
   private handleDmgEnemy = (player: IPlayer): void => {
@@ -450,6 +526,7 @@ export class PlayerService {
     player.animationCounter = 1;
     player.verticalVelocity = 0;
     this.dmgCooldown = 15;
+    player.health--;
   };
 
   private checkMapCollision = (level: ILevel): void => {

@@ -226,9 +226,10 @@
         transform: translate(-50%, -50%);
       }
       &__title {
-        padding-top: 1rem !important;
+        padding-top: 0rem !important;
         padding-bottom: 1rem !important;
         font-size: 2.5rem;
+        line-height: 2.5rem;
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Self, Optional, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ILevelRanking } from '../../../../shared/models/interfaces/levelranking.interface';
 import { Observable } from 'rxjs';
@@ -6,11 +6,14 @@ import { LeaderboardService } from '../../../../core/services/adventure/leaderbo
 import { PlayerService } from '../../../../core/services/adventure/player.service';
 import { IReplay } from '../../../../shared/models/interfaces/replay.interface';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { OnDestroyService } from '../../../../core/services/on-destroy.service';
 
 @Component({
   selector: 'app-level-complete',
   templateUrl: './level-complete.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OnDestroyService],
 })
 export class LevelCompleteComponent implements OnInit {
   public levelNr: string;
@@ -27,7 +30,11 @@ export class LevelCompleteComponent implements OnInit {
     private route: ActivatedRoute,
     private playerService: PlayerService,
     private leaderboardService: LeaderboardService,
-    private router: Router
+    private router: Router,
+    @Self()
+    @Optional()
+    private onDestroyService: OnDestroyService,
+    private ref: ChangeDetectorRef
   ) {}
 
   public ngOnInit(): void {
@@ -43,12 +50,26 @@ export class LevelCompleteComponent implements OnInit {
         this.selectedMode = 'Pacifist';
       }
     }
-    this.levelRankings = this.leaderboardService.getLevelRankings(this.levelNr, this.selectedMode);
+    this.levelRankings = this.leaderboardService.getLevelRankings();
   }
 
   public onChangeMode = (mode: string): void => {
     this.selectedMode = mode;
-    this.levelRankings = this.leaderboardService.getLevelRankings(this.levelNr, this.selectedMode);
+  };
+
+  public filterLevelRankings = (levelRankings: ILevelRanking[]): ILevelRanking[] => {
+    if (!levelRankings) {
+      return [];
+    }
+    if (this.selectedMode === 'Normal') {
+      return levelRankings.filter((lr) => !lr.replay.collector && !lr.replay.pacifist);
+    }
+    if (this.selectedMode === 'Collector') {
+      return levelRankings.filter((lr) => lr.replay.collector && !lr.replay.pacifist);
+    }
+    if (this.selectedMode === 'Pacifist') {
+      return levelRankings.filter((lr) => lr.replay.pacifist);
+    }
   };
 
   public watchReplay = (id: string): void => {
@@ -60,16 +81,19 @@ export class LevelCompleteComponent implements OnInit {
       this.showError = true;
       return;
     }
-    this.leaderboardService.addLevelRanking(this.levelNr, {
-      id: '',
-      levelNr: this.levelNr,
-      name: this.form.controls.name.value,
-      time: this.getTimeString(this.storedReplay.ticks.length * 35),
-      replay: this.storedReplay,
-    });
-    this.showModal = false;
-    this.playerService.setUp();
-    this.levelRankings = this.leaderboardService.getLevelRankings(this.levelNr, this.selectedMode);
+    this.leaderboardService
+      .addLevelRanking({
+        levelNr: this.levelNr,
+        name: this.form.controls.name.value,
+        replay: this.storedReplay,
+      })
+      .pipe(takeUntil(this.onDestroyService))
+      .subscribe(() => {
+        this.showModal = false;
+        this.playerService.setUp();
+        this.levelRankings = this.leaderboardService.getLevelRankings();
+        this.ref.markForCheck();
+      });
   };
 
   public getTimeString = (timerValue: number): string => {

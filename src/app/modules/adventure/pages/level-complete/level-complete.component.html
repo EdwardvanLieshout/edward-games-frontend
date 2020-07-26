@@ -39,7 +39,7 @@
         </div>
         <div
           class="e-flex__col e-flex e-flex--row e-flex__align--center padding-vertical--1 e-adventure__leaderboard__row"
-          *ngFor="let levelRanking of levelRankings | async"
+          *ngFor="let levelRanking of filterLevelRankings(levelRankings | async)"
         >
           <div class="e-flex__col text--center e-adventure__leaderboard__name">{{ levelRanking.name }}</div>
           <div class="e-flex__col text--center">{{ levelRanking.time }}</div>

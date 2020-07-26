@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ILevelRanking } from '../../../shared/models/interfaces/levelranking.interface';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -8,26 +10,17 @@ import { Observable, of } from 'rxjs';
 export class LeaderboardService {
   private levelRankings: ILevelRanking[] = [];
 
-  public getLevelRankings = (levelNr: string, mode: string): Observable<ILevelRanking[]> => {
-    const rankings = [...this.levelRankings];
-    if (mode === 'Normal') {
-      return of(rankings.filter((r) => !r.replay.collector && !r.replay.pacifist).filter((r) => r.levelNr === levelNr));
-    }
-    if (mode === 'Collector') {
-      return of(rankings.filter((r) => r.replay.collector && !r.replay.pacifist).filter((r) => r.levelNr === levelNr));
-    }
-    if (mode === 'Pacifist') {
-      return of(rankings.filter((r) => r.replay.pacifist).filter((r) => r.levelNr === levelNr));
-    }
-    return of(rankings.filter((r) => r.levelNr === levelNr));
+  constructor(private http: HttpClient) {}
+
+  public getLevelRankings = (): Observable<ILevelRanking[]> => {
+    return this.http.get<ILevelRanking[]>(`${environment.backend}/level-rankings/`);
   };
 
-  public getLevelRanking = (id: string): ILevelRanking => {
-    return this.levelRankings.find((lr) => lr.id === id);
+  public getLevelRanking = (id: string): Observable<ILevelRanking> => {
+    return this.http.get<ILevelRanking>(`${environment.backend}/level-rankings/${id}`);
   };
 
-  public addLevelRanking = (levelNr: string, ranking: ILevelRanking): void => {
-    ranking.id = this.levelRankings.length.toString();
-    this.levelRankings.push(ranking);
+  public addLevelRanking = (ranking: ILevelRanking): Observable<ILevelRanking> => {
+    return this.http.post<ILevelRanking>(`${environment.backend}/level-rankings/`, ranking);
   };
 }

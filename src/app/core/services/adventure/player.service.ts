@@ -13,7 +13,7 @@ import { IReplayTick } from '../../../shared/models/interfaces/replaytick.interf
 })
 export class PlayerService {
   private animationTimer = 0;
-  private bufferedDir: DirTypeEnum;
+  private bufferedDir: DirTypeEnum = DirTypeEnum.RIGHT;
   private punchCooldown = 0;
   private dmgCooldown = 0;
   private immunityCooldown = 0;
@@ -32,6 +32,7 @@ export class PlayerService {
   };
 
   public setUp = (): void => {
+    this.bufferedDir = DirTypeEnum.RIGHT;
     this.animationTimer = 0;
     this.punchCooldown = 0;
     this.dmgCooldown = 0;

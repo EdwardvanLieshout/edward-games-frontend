@@ -7,6 +7,8 @@ import {
   ChangeDetectorRef,
   HostListener,
   OnDestroy,
+  Self,
+  Optional,
 } from '@angular/core';
 import { ILevel } from '../../../../shared/models/interfaces/level.interface';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,11 +19,14 @@ import { PlayerService } from '../../../../core/services/adventure/player.servic
 import { EnemyService } from '../../../../core/services/adventure/enemy.service';
 import { LeaderboardService } from '../../../../core/services/adventure/leaderboard.service';
 import { IReplay } from '../../../../shared/models/interfaces/replay.interface';
+import { OnDestroyService } from '../../../../core/services/on-destroy.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-adventure-replay-page',
   templateUrl: './adventure-replay-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OnDestroyService],
 })
 export class AdventureReplayPageComponent implements OnInit, OnDestroy {
   public levelNr: string;
@@ -59,28 +64,35 @@ export class AdventureReplayPageComponent implements OnInit, OnDestroy {
     private playerService: PlayerService,
     private enemyService: EnemyService,
     private leaderboardService: LeaderboardService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    @Self()
+    @Optional()
+    private onDestroyService: OnDestroyService
   ) {}
 
   public ngOnInit(): void {
-    const lr = this.leaderboardService.getLevelRanking(this.route.snapshot.paramMap.get('id'));
-    this.name = lr.name;
-    this.replay = lr.replay;
-    this.levelNr = lr.levelNr;
-    this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.playerService.setUp();
-    this.level = this.levelService['getLevel' + this.levelNr]();
+    this.leaderboardService
+      .getLevelRanking(this.route.snapshot.paramMap.get('id'))
+      .pipe(takeUntil(this.onDestroyService))
+      .subscribe((lr) => {
+        this.name = lr.name;
+        this.replay = lr.replay;
+        this.levelNr = lr.levelNr;
+        this.ctx = this.canvas.nativeElement.getContext('2d');
+        this.playerService.setUp();
+        this.level = this.levelService['getLevel' + this.levelNr]();
 
-    this.gemUIAnim = 1;
-    this.gemAnimDelay = 0;
-    this.sprites.getSprites(this.levelNr).then((res) => {
-      this.spriteChart = res;
-      this.time = new Date();
-      this.timeIncrement = new Date();
-      this.tick = setInterval(() => this.performTick(), 35);
-      this.showCanvas = true;
-      this.ref.detectChanges();
-    });
+        this.gemUIAnim = 1;
+        this.gemAnimDelay = 0;
+        this.sprites.getSprites(this.levelNr).then((res) => {
+          this.spriteChart = res;
+          this.time = new Date();
+          this.timeIncrement = new Date();
+          this.tick = setInterval(() => this.performTick(), 35);
+          this.showCanvas = true;
+          this.ref.detectChanges();
+        });
+      });
   }
 
   @HostListener('window:beforeunload')

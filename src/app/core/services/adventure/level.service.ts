@@ -5,7 +5,6 @@ import { ILevel } from '../../../shared/models/interfaces/level.interface';
 import { AvailabilityTypeEnum } from '../../../shared/models/enums/availabilityType.enum';
 import { IDrawable } from '../../../shared/models/interfaces/drawable.interface';
 import { IBlock } from '../../../shared/models/interfaces/block.interface';
-import { IJumpzone } from '../../../shared/models/interfaces/jumpzone.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -52,6 +51,7 @@ export class LevelService {
       backLayer: [],
       centerLayer: [],
       frontLayer: [],
+      uiDrawables: [],
       gravity: 2,
       jumpPower: -25,
       maxFallSpeed: 15,
@@ -804,6 +804,69 @@ export class LevelService {
       { name: 'tree1', x: 4700, y: 1950, w: 220, h: 440, distance: 0.8, resizeWhenDistant: false },
       { name: 'tree1', x: 5000, y: 1950, w: 220, h: 440, distance: 0.8, resizeWhenDistant: false }
     );
+    level1.uiDrawables.push(
+      {
+        x: 0,
+        y: 0,
+        w: 800,
+        h: 3000,
+        distance: 1,
+        name: 'ui',
+        uiDrawable: { x: 200, y: 50, w: 150, h: 113, distance: 1, name: 'WalkGuide', animationCounter: 1 },
+        uiMaxAnim: 2,
+      },
+      {
+        x: 0,
+        y: 0,
+        w: 800,
+        h: 3000,
+        distance: 1,
+        name: 'ui',
+        uiDrawable: { x: 450, y: 50, w: 150, h: 113, distance: 1, name: 'JumpGuide', animationCounter: 1 },
+        uiMaxAnim: 2,
+      },
+      {
+        x: 1300,
+        y: 0,
+        w: 300,
+        h: 3000,
+        distance: 1,
+        name: 'ui',
+        uiDrawable: { x: 325, y: 50, w: 150, h: 113, distance: 1, name: 'GapGuide', animationCounter: 1 },
+        uiMaxAnim: 2,
+      },
+      {
+        x: 1800,
+        y: 0,
+        w: 400,
+        h: 3000,
+        distance: 1,
+        name: 'ui',
+        uiDrawable: { x: 325, y: 50, w: 150, h: 113, distance: 1, name: 'EnemyGuide', animationCounter: 1 },
+        uiMaxAnim: 2,
+      },
+      {
+        x: 3800,
+        y: 0,
+        w: 800,
+        h: 3000,
+        distance: 1,
+        name: 'ui',
+        uiDrawable: { x: 200, y: 50, w: 150, h: 113, distance: 1, name: 'JumpKillGuide', animationCounter: 1 },
+        uiMaxAnim: 3,
+      },
+      {
+        x: 3800,
+        y: 0,
+        w: 800,
+        h: 3000,
+        distance: 1,
+        name: 'ui',
+        uiDrawable: { x: 450, y: 50, w: 150, h: 113, distance: 1, name: 'PunchGuide', animationCounter: 1 },
+        uiMaxAnim: 2,
+      }
+    );
+
     return level1;
   };
 
@@ -848,6 +911,7 @@ export class LevelService {
       backLayer: [],
       centerLayer: [],
       frontLayer: [],
+      uiDrawables: [],
       gravity: 2,
       jumpPower: -25,
       maxFallSpeed: 15,

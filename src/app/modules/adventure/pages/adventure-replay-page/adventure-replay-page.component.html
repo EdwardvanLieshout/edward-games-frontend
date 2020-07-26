@@ -1,12 +1,18 @@
 <div [class]="'e-adventure__select__container e-adventure__select__container-' + levelNr">
-  <canvas
-    [ngClass]="{
-      'hidden--visually': !showCanvas,
-      'e-adventure__canvas': true
-    }"
-    [width]="SCREEN_WIDTH"
-    [height]="SCREEN_HEIGHT"
-    #canvas
-  ></canvas>
-  <p [ngClass]="{ hidden: showCanvas, 'e-adventure__loading': !showCanvas }"></p>
+  <div class="e-adventure__canvas--replay__container">
+    <h1 class="e-adventure__menu__title e-adventure__select__title e-adventure__canvas--replay__title">
+      {{ name }}'s replay
+    </h1>
+    <p><a [routerLink]="['/adventure/leaderboards', levelNr]">< back</a><br /><br /></p>
+    <canvas
+      [ngClass]="{
+        'hidden--visually': !showCanvas,
+        'e-adventure__canvas--replay': true
+      }"
+      [width]="SCREEN_WIDTH"
+      [height]="SCREEN_HEIGHT"
+      #canvas
+    ></canvas>
+    <p [ngClass]="{ hidden: showCanvas, 'e-adventure__loading': !showCanvas }"></p>
+  </div>
 </div>

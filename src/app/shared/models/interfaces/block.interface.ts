@@ -1,3 +1,5 @@
+import { IDrawable } from './drawable.interface';
+
 export interface IBlock {
   x: number;
   y: number;
@@ -5,4 +7,6 @@ export interface IBlock {
   h: number;
   distance: number;
   name: string;
+  uiDrawable?: IDrawable;
+  uiMaxAnim?: number;
 }

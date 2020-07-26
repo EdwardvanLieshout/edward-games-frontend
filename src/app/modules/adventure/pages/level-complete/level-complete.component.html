@@ -62,8 +62,16 @@
       [formGroup]="form"
       class="text--center padding--2 e-flex e-flex--column e-flex__align--center e-flex__justify--space-between"
     >
-      <p class="text--center">Choose a name that will be displayed on the leaderboards.</p>
-      <input type="text" class="e-form__input margin-vertical--1" formControlName="name" />
+      <p *ngIf="!showError" class="text--center">Choose a name that will be displayed on the leaderboards.</p>
+      <p *ngIf="showError" class="text--center text--danger">Please fill in a valid name.</p>
+
+      <input
+        type="text"
+        class="e-form__input margin-vertical--1"
+        formControlName="name"
+        (keypress)="omitSpecialChar($event)"
+        [maxlength]="MAX_LENGTH"
+      />
       <div>
         <button class="e-button e-button--small e-button--primary" type="submit">
           Submit

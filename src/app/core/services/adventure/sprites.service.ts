@@ -314,7 +314,22 @@ export class SpritesService {
   public loadUISprites = (): Promise<void> => {
     return new Promise((resolve, reject) => {
       Promise.all(
-        [{ name: 'UI/HPBar', width: 100, height: 100 }].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
+        [
+          { name: 'UI/HPBar', width: 100, height: 100 },
+          { name: 'UI/WalkGuide1', width: 200, height: 150 },
+          { name: 'UI/WalkGuide2', width: 200, height: 150 },
+          { name: 'UI/JumpGuide1', width: 200, height: 150 },
+          { name: 'UI/JumpGuide2', width: 200, height: 150 },
+          { name: 'UI/GapGuide1', width: 200, height: 150 },
+          { name: 'UI/GapGuide2', width: 200, height: 150 },
+          { name: 'UI/EnemyGuide1', width: 200, height: 150 },
+          { name: 'UI/EnemyGuide2', width: 200, height: 150 },
+          { name: 'UI/JumpKillGuide1', width: 200, height: 150 },
+          { name: 'UI/JumpKillGuide2', width: 200, height: 150 },
+          { name: 'UI/JumpKillGuide3', width: 200, height: 150 },
+          { name: 'UI/PunchGuide1', width: 200, height: 150 },
+          { name: 'UI/PunchGuide2', width: 200, height: 150 },
+        ].map((spr) => this.loadSprite(spr.name, spr.width, spr.height))
       ).then((values) => {
         this.uiSprites = Object.assign({}, ...values.map((s) => ({ [s.name.split('/')[1]]: s.image })));
         resolve();

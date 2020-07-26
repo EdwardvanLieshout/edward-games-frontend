@@ -31,6 +31,7 @@ export class AdventureReplayPageComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:no-any
   public spriteChart: any;
   public hpBarWidth = 84;
+  public name = '';
 
   @ViewChild('canvas', { static: true })
   public canvas: ElementRef<HTMLCanvasElement>;
@@ -63,6 +64,7 @@ export class AdventureReplayPageComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const lr = this.leaderboardService.getLevelRanking(this.route.snapshot.paramMap.get('id'));
+    this.name = lr.name;
     this.replay = lr.replay;
     this.levelNr = lr.levelNr;
     this.ctx = this.canvas.nativeElement.getContext('2d');

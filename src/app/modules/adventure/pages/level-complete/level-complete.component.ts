@@ -19,6 +19,9 @@ export class LevelCompleteComponent implements OnInit {
   public showModal = false;
   public storedReplay: IReplay;
   public form: FormGroup;
+  public showError = false;
+
+  public readonly MAX_LENGTH = 30;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +56,10 @@ export class LevelCompleteComponent implements OnInit {
   };
 
   public onSubmit = (): void => {
+    if (this.formIsInValid()) {
+      this.showError = true;
+      return;
+    }
     this.leaderboardService.addLevelRanking(this.levelNr, {
       id: '',
       levelNr: this.levelNr,
@@ -79,9 +86,22 @@ export class LevelCompleteComponent implements OnInit {
     this.playerService.setUp();
   };
 
+  public formIsInValid = (): boolean => {
+    this.form.controls.name.setValue(this.form.controls.name.value.trim());
+    this.form.updateValueAndValidity();
+    return this.form.status === 'INVALID';
+  };
+
+  public omitSpecialChar = (e): boolean => {
+    let k;
+    // tslint:disable-next-line: deprecation
+    document.all ? (k = e.keyCode) : (k = e.which);
+    return (k > 64 && k < 91) || (k > 96 && k < 123) || k === 8 || k === 32 || (k >= 48 && k <= 57);
+  };
+
   private createForm = (): FormGroup => {
     return new FormGroup({
-      name: new FormControl('', Validators.maxLength(30)),
+      name: new FormControl('', [Validators.maxLength(this.MAX_LENGTH), Validators.required]),
     });
   };
 }

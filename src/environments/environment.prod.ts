@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backend: 'http://www.edward.games:3000/api',
+  backend: 'http://www.edward.games:3000',
 };

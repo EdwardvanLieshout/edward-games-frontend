@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  backend: 'http://www.edward.games:3000/api',
+  backend: 'http://www.edward.games:3000',
 };
 
 /*

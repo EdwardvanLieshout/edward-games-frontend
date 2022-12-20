@@ -18,6 +18,7 @@ addEventListener('message', ({ data }) => {
   const textures = data.textures;
   const imageData = data.imageData;
   const animationCounter = data.animationCounter;
+  const slowAnimationCounter = data.slowAnimationCounter;
   const timestamp = data.timestamp;
 
   const rayDirX0 = dirX - planeX;
@@ -55,6 +56,16 @@ addEventListener('message', ({ data }) => {
       if (map[cellX] && map[cellX][cellY] && map[cellX][cellY].tex1 !== undefined) {
         floorTexture = map[cellX][cellY].tex0;
         ceilingTexture = map[cellX][cellY].tex1;
+      }
+
+      if (
+        floorTexture === TextureTypeEnum.DISCORED1 ||
+        floorTexture === TextureTypeEnum.DISCOBLUE1 ||
+        floorTexture === TextureTypeEnum.DISCOMULTI1 ||
+        floorTexture === TextureTypeEnum.DISCOGREEN1 ||
+        floorTexture === TextureTypeEnum.DISCOPURPLE1
+      ) {
+        floorTexture += Math.floor(slowAnimationCounter / 4);
       }
 
       // tslint:disable-next-line:no-bitwise

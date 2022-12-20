@@ -83,9 +83,13 @@ export class AdventureLevelPageComponent implements OnInit, OnDestroy {
   public performTick = (): void => {
     this.enemyService.updateEnemies(this.level);
     this.playerService.updatePlayer(this.level);
+    this.cameraService.updateAnimatedDrawables(this.level);
     if (this.playerService.checkFinish(this.level)) {
       this.playerService.completeReplay();
       const replay = this.playerService.getReplay();
+      for (let bigGem of this.level.player.bigGems) {
+        localStorage.setItem('level' + this.level.code + bigGem.name, 'true');
+      }
 
       this.router.navigate(['adventure/leaderboards', this.levelNr]);
     }

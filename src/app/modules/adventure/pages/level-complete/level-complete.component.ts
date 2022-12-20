@@ -61,6 +61,7 @@ export class LevelCompleteComponent implements OnInit {
     if (!levelRankings) {
       return [];
     }
+    levelRankings = levelRankings.filter((levelRanking) => levelRanking.levelNr === this.levelNr);
     if (this.selectedMode === 'Normal') {
       return levelRankings
         .filter((lr) => !lr.replay.collector && !lr.replay.pacifist)

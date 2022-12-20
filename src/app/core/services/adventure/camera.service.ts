@@ -77,6 +77,16 @@ export class CameraService {
     return drawCommands;
   };
 
+  public updateAnimatedDrawables = (level: ILevel): void => {
+    for (let drawable of level.animatedDrawables) {
+      drawable.animationCounterDelay++;
+      if (drawable.animationCounterDelay === (drawable.animationSleep ?? 3)) {
+        drawable.animationCounterDelay = 0;
+        drawable.animationCounter = (drawable.animationCounter % (drawable.maxFrame ?? 4)) + 1;
+      }
+    }
+  };
+
   // tslint:disable-next-line:no-any
   private createUIDrawCommand = (drawable: IDrawable, sprites: any): IDrawCommand => {
     const animation = drawable.animationCounter ? drawable.animationCounter : '';

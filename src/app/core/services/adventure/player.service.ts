@@ -75,14 +75,21 @@ export class PlayerService {
     ) {
       level.player.y += level.player.verticalVelocity;
     }
+    let changingDir = false;
     if (this.bufferedDir && level.player.blockingAction === ActionTypeEnum.NONE) {
-      level.player.dir = this.bufferedDir;
+      if (this.bufferedDir !== level.player.dir) {
+        changingDir = true;
+        level.player.dir = this.bufferedDir;
+      }
     }
     if (this.punchBuffer && this.punchCooldown === 0 && level.player.blockingAction !== ActionTypeEnum.DAMAGE) {
       level.player.blockingAction = ActionTypeEnum.PUNCHING;
       this.punchCooldown = 12;
       this.animationTimer = 0;
       level.player.animationCounter = 1;
+    }
+    if (this.movementBuffer) {
+      level.player.action = ActionTypeEnum.MOVING;
     }
     if (this.stopBuffer) {
       if (
@@ -94,10 +101,10 @@ export class PlayerService {
       level.player.action = ActionTypeEnum.NONE;
       this.stopBuffer = false;
     }
-    if (this.movementBuffer) {
-      this.movementBuffer = false;
+    if (this.movementBuffer && changingDir) {
       level.player.action = ActionTypeEnum.MOVING;
     }
+    this.movementBuffer = false;
     if (level.player.action === ActionTypeEnum.MOVING || level.player.blockingAction !== ActionTypeEnum.NONE) {
       const multiplier =
         level.player.blockingAction === ActionTypeEnum.PUNCHING
@@ -260,7 +267,8 @@ export class PlayerService {
           gem.y + 30,
           gem.w - 60,
           gem.h - 60
-        )
+        ) &&
+        player.distance === gem.distance
       ) {
         level.gems.splice(level.gems.indexOf(gem), 1);
         level.centerLayer.splice(level.centerLayer.indexOf(gem), 1);
@@ -297,6 +305,9 @@ export class PlayerService {
         if (portal.destDistance) {
           player.distance = portal.destDistance;
         }
+        level.centerLayer.sort((a, b) =>
+          b.distance - a.distance === 0 ? (a.name === 'player' ? 1 : 0) : b.distance - a.distance
+        );
       }
     }
   };
@@ -505,19 +516,28 @@ export class PlayerService {
       this.animationTimer = 0;
     }
     player.verticalVelocity = -15;
-    enemy.action = ActionTypeEnum.DEAD;
-    enemy.animationCounter = 1;
-    this.replay.pacifist = false;
+    if (!enemy.isInvincible) {
+      enemy.action = ActionTypeEnum.DEAD;
+      enemy.animationCounter = 1;
+      this.replay.pacifist = false;
+    }
   };
 
   private handlePunchEnemy = (player: IPlayer, enemy: IEnemy): void => {
-    enemy.action = ActionTypeEnum.DEAD;
-    enemy.softWalls = [];
-    enemy.dir = player.dir;
-    enemy.animationCounter = 1;
-    enemy.verticalVelocity = enemy.deathVelocityY;
-    enemy.horizontalVelocity = enemy.deathVelocityX;
-    this.replay.pacifist = false;
+    if (!enemy.isInvincible) {
+      enemy.action = ActionTypeEnum.DEAD;
+      enemy.softWalls = [];
+      enemy.dir = player.dir;
+      enemy.animationCounter = 1;
+      enemy.verticalVelocity = enemy.deathVelocityY;
+      enemy.horizontalVelocity = enemy.deathVelocityX;
+      this.replay.pacifist = false;
+    } else {
+      player.animationCounter = 1;
+      player.blockingAction = ActionTypeEnum.NONE;
+      enemy.verticalVelocity = enemy.deathVelocityY;
+      enemy.pushVelocityX = enemy.deathVelocityX * (player.dir === DirTypeEnum.RIGHT ? 1 : -1);
+    }
   };
 
   private handleDmgEnemy = (player: IPlayer): void => {

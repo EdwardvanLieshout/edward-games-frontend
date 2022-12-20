@@ -43,6 +43,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
   private textures: ImageData[];
 
   private animationCounter = 0;
+  private slowAnimationCounter = 0;
   private tick;
 
   private tickStart: Date;
@@ -95,6 +96,28 @@ export class RoomViewComponent implements OnInit, OnDestroy {
         'portal3',
         'portal4',
         'grid-info',
+        'hitech',
+        'discored1',
+        'discored2',
+        'discored3',
+        'discored4',
+        'discoblue1',
+        'discoblue2',
+        'discoblue3',
+        'discoblue4',
+        'discomulti1',
+        'discomulti2',
+        'discomulti3',
+        'discomulti4',
+        'discogreen1',
+        'discogreen2',
+        'discogreen3',
+        'discogreen4',
+        'discopurple1',
+        'discopurple2',
+        'discopurple3',
+        'discopurple4',
+        'stonewall',
       ].map((str) => this.loadTexture(str))
     ).then((values) => {
       this.textures = values;
@@ -160,6 +183,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       speedModifier = (this.tickEnd.getTime() - this.tickStart.getTime()) / 60;
     }
     this.animationCounter = (this.animationCounter + 1 * speedModifier) % 4;
+    this.slowAnimationCounter = (this.slowAnimationCounter + 1 * speedModifier) % 16;
     this.tickStart = new Date();
     this.worker.postMessage({
       dirX: this.mapService.getDirX(),
@@ -176,6 +200,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
       textures: this.textures,
       imageData: this.data,
       animationCounter: Math.trunc(this.animationCounter),
+      slowAnimationCounter: Math.trunc(this.slowAnimationCounter),
       timestamp: new Date(),
     });
   };

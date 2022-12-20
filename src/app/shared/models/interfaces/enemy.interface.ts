@@ -12,8 +12,10 @@ export interface IEnemy {
   dir: DirTypeEnum;
   animationCounter?: number;
   animationCounterDelay?: number;
+  animationFrames?: number;
   hitbox: IBlock;
   isFlying: boolean;
+  isInvincible?: boolean;
   name: string;
   horizontalVelocity: number;
   verticalVelocity: number;
@@ -42,4 +44,6 @@ export interface IEnemy {
   mso: number;
   swo: IBlock[];
   actiono: ActionTypeEnum;
+
+  pushVelocityX: number;
 }

@@ -9,6 +9,9 @@ export interface IDrawable {
   distance: number;
   name: string;
   animationCounter?: number;
+  maxFrame?: number;
+  animationCounterDelay?: number;
+  animationSleep?: number;
   dir?: DirTypeEnum;
   action?: ActionTypeEnum;
   verticalAction?: ActionTypeEnum;

@@ -22,4 +22,8 @@ export class AdventureSelectPageComponent {
   public viewLeaderBoards = (): void => {
     this.router.navigate(['adventure/leaderboards', this.levelNr]);
   };
+
+  public hasGem = (key: string): string => {
+    return localStorage.getItem(key);
+  };
 }

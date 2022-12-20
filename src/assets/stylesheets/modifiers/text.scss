@@ -21,6 +21,10 @@
     font-family: Commodore;
   }
 
+  &--small {
+    font-size: 0.7rem;
+  }
+
   &__shadow {
     &--green {
       @include text-shadow($colour-green, 3);

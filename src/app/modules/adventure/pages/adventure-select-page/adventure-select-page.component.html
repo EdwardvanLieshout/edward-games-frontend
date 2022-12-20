@@ -34,18 +34,21 @@
             [src]="'../../../../assets/images/adventure/gems/level' + levelNr + '/CollectableA1.png'"
             alt="Collectable1"
             class="e-adventure__select__collectible"
+            [ngClass]="{ 'e-image--desaturated': !hasGem('level' + levelNr + 'CollectableA') }"
             draggable="false"
           />
           <img
             [src]="'../../../../assets/images/adventure/gems/level' + levelNr + '/CollectableB1.png'"
             alt="Collectable2"
             class="e-adventure__select__collectible"
+            [ngClass]="{ 'e-image--desaturated': !hasGem('level' + levelNr + 'CollectableB') }"
             draggable="false"
           />
           <img
             [src]="'../../../../assets/images/adventure/gems/level' + levelNr + '/CollectableC1.png'"
             alt="Collectable3"
             class="e-adventure__select__collectible"
+            [ngClass]="{ 'e-image--desaturated': !hasGem('level' + levelNr + 'CollectableC') }"
             draggable="false"
           />
           <button

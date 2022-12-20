@@ -29,7 +29,13 @@ export class EnemyService {
           enemy.horizontalVelocity = 0;
         }
       }
-      const moveX = Math.trunc(enemy.dir === DirTypeEnum.RIGHT ? enemy.mSpeed : -enemy.mSpeed);
+      const moveX = Math.trunc(enemy.dir === DirTypeEnum.RIGHT ? enemy.mSpeed : -enemy.mSpeed) + enemy.pushVelocityX;
+      if (enemy.pushVelocityX > 0) {
+        enemy.pushVelocityX--;
+      }
+      if (enemy.pushVelocityX < 0) {
+        enemy.pushVelocityX++;
+      }
       enemy.x += moveX;
       enemy.hitbox.x += moveX;
       this.checkPlatformCollision(enemy);
@@ -58,8 +64,14 @@ export class EnemyService {
         } else {
           if (enemy.dir === DirTypeEnum.LEFT) {
             enemy.dir = DirTypeEnum.RIGHT;
+            enemy.x -= enemy.pushVelocityX;
+            enemy.hitbox.x -= enemy.pushVelocityX;
+            enemy.pushVelocityX = 0;
           } else {
             enemy.dir = DirTypeEnum.LEFT;
+            enemy.x -= enemy.pushVelocityX;
+            enemy.hitbox.x -= enemy.pushVelocityX;
+            enemy.pushVelocityX = 0;
           }
         }
         return;
@@ -102,7 +114,7 @@ export class EnemyService {
     enemy.animationCounterDelay++;
     if (enemy.animationCounterDelay === 3) {
       enemy.animationCounterDelay = 0;
-      enemy.animationCounter = (enemy.animationCounter % 4) + 1;
+      enemy.animationCounter = (enemy.animationCounter % (enemy.animationFrames ?? 4)) + 1;
     }
   };
 

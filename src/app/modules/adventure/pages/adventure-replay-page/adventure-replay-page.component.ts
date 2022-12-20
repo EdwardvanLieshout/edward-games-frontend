@@ -103,6 +103,7 @@ export class AdventureReplayPageComponent implements OnInit, OnDestroy {
   public performTick = (): void => {
     this.enemyService.updateEnemies(this.level);
     this.playerService.updateActionsFromReplay(this.replay.ticks[this.replayTickCount]);
+    this.cameraService.updateAnimatedDrawables(this.level);
     this.replayTickCount++;
     this.playerService.updatePlayer(this.level);
     if (this.playerService.checkFinish(this.level)) {

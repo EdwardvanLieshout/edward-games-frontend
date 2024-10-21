@@ -4,6 +4,7 @@ import { IBlock } from './block.interface';
 import { IDrawable } from './drawable.interface';
 
 export interface IPlayer {
+  id?: string;
   x: number;
   y: number;
   w: number;

@@ -2325,6 +2325,7 @@ export class LevelService {
     for (let i = block.x; i < block.x + block.w; i += 100) {
       for (let j = block.y; j < block.y + block.h; j += 100) {
         drawables.push({
+          id: block.id,
           x: i,
           y: j,
           w: 100,

@@ -68,6 +68,15 @@
     }
   }
 
+  &--link {
+    color: $colour-green;
+    text-decoration: underline;
+
+    &:hover {
+      color: $colour-green-light;
+    }
+  }
+
   &__control {
     &#{&} {
       width: 100%;

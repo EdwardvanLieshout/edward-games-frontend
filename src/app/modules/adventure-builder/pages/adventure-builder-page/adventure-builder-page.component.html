@@ -1,0 +1,18 @@
+<div [class]="'e-adventure__select__container e-adventure__select__container-1'">
+  <div class="margin--2">
+    <h1 class="e-adventure__menu__title e-adventure__select__title e-adventure__canvas--replay__title">
+      Level Builder
+    </h1>
+    <div>
+      <div class="e-flex">
+        <div class="e-flex__col">
+          <app-builder-canvas [level]="level"></app-builder-canvas>
+        </div>
+        <div class="e-flex__col">
+          <app-entity-list [level]="level"></app-entity-list>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-builder-movement></app-builder-movement>
+</div>

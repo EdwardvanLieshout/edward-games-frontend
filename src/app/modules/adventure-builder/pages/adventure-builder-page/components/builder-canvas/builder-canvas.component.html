@@ -1,0 +1,12 @@
+<canvas
+  [ngClass]="{
+    'hidden--visually': !showCanvas,
+    'e-adventure__canvas--replay': true
+  }"
+  [width]="SCREEN_WIDTH"
+  [height]="SCREEN_HEIGHT"
+  #canvas
+></canvas>
+<p [ngClass]="{ hidden: showCanvas, 'e-adventure__loading': !showCanvas }"></p>
+
+<p>{{ cameraService.camera.x }}, {{ cameraService.camera.y }}</p>

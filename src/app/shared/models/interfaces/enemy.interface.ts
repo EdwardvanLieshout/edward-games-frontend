@@ -4,6 +4,7 @@ import { DirTypeEnum } from '../enums/direction.enum';
 import { ActionTypeEnum } from '../enums/action.enum';
 
 export interface IEnemy {
+  id?: string;
   x: number;
   y: number;
   w: number;

@@ -1,0 +1,103 @@
+<div class="e-builder__container">
+  <div class="e-builder__backdrop padding--2">
+    <div class="e-flex e-flex__justify--space-between e-flex__align--end">
+      <h2 class="e-builder__title">Player</h2>
+      <button class="e-button--link" (click)="toggleShowPlayer()">{{ showPlayer ? 'Hide' : 'Show' }}</button>
+    </div>
+    <div
+      *ngIf="showPlayer"
+      [ngClass]="{
+        'e-builder__item': selectedEntityService.selectedId !== level.player.id,
+        'e-builder__item--selected': selectedEntityService.selectedId === level.player.id
+      }"
+      (click)="setSelected(level.player.id)"
+    >
+      <div class="e-flex e-flex__align--center">
+        <p class="e-flex__col">{{ level.player.name }}#{{ level.player.id }}</p>
+        <p class="e-flex__col">X, Y: {{ level.player.x }}, {{ level.player.y }}</p>
+      </div>
+      <div class="e-flex e-flex__align--center">
+        <div class="e-flex__col">
+          <img
+            [src]="'../../../../../../../assets/images/adventure/player/l1.png'"
+            alt="player-image"
+            class="e-adventure__select__collectible"
+            draggable="false"
+          />
+        </div>
+        <p class="e-flex__col">{{ level.player.w }}x{{ level.player.h }}</p>
+      </div>
+      <p>Distance: {{ level.player.distance }}</p>
+      <p>Walking Speed: {{ level.player.mSpeed }}</p>
+    </div>
+    <div class="e-flex e-flex__justify--space-between e-flex__align--end">
+      <h2 class="e-builder__title">Enemies</h2>
+      <button class="e-button--link" (click)="toggleShowEnemies()">{{ showEnemies ? 'Hide' : 'Show' }}</button>
+    </div>
+    <ng-container *ngIf="showEnemies">
+      <div
+        *ngFor="let enemy of level.enemies"
+        [ngClass]="{
+          'e-builder__item': selectedEntityService.selectedId !== enemy.id,
+          'e-builder__item--selected': selectedEntityService.selectedId === enemy.id
+        }"
+        (click)="setSelected(enemy.id)"
+      >
+        <div class="e-flex e-flex__align--center">
+          <p class="e-flex__col">{{ enemy.name }}#{{ enemy.id }}</p>
+          <p class="e-flex__col">X, Y: {{ enemy.x }}, {{ enemy.y }}</p>
+        </div>
+        <div class="e-flex e-flex__align--center">
+          <div class="e-flex__col">
+            <img
+              [src]="'../../../../../../../assets/images/adventure/enemy/' + enemy.name + 'l1.png'"
+              alt="enemy-image"
+              class="e-adventure__select__collectible"
+              draggable="false"
+            />
+          </div>
+          <p class="e-flex__col">{{ enemy.w }}x{{ enemy.h }}</p>
+        </div>
+        <p>Distance: {{ enemy.distance }}</p>
+        <p>Walking Speed: {{ enemy.mSpeed }}</p>
+      </div>
+    </ng-container>
+    <div class="e-flex e-flex__justify--space-between e-flex__align--end">
+      <h2 class="e-builder__title">Ground</h2>
+      <button class="e-button--link" (click)="toggleShowGround()">{{ showGround ? 'Hide' : 'Show' }}</button>
+    </div>
+    <ng-container *ngIf="showGround">
+      <div
+        *ngFor="let platform of level.platforms"
+        [ngClass]="{
+          'e-builder__item': selectedEntityService.selectedId !== platform.id,
+          'e-builder__item--selected': selectedEntityService.selectedId === platform.id
+        }"
+        (click)="setSelected(platform.id)"
+      >
+        <div class="e-flex e-flex__align--center">
+          <p class="e-flex__col">{{ platform.name }}#{{ platform.id }}</p>
+          <p class="e-flex__col">X, Y: {{ platform.x }}, {{ platform.y }}</p>
+        </div>
+        <div class="e-flex e-flex__align--center">
+          <div class="e-flex__col">
+            <img
+              [src]="
+                '../../../../../../../assets/images/adventure/' +
+                (platform.name.includes('ground') ? 'ground' : 'platform') +
+                '/level1/' +
+                platform.name +
+                '.png'
+              "
+              alt="ground-image"
+              class="e-adventure__select__collectible"
+              draggable="false"
+            />
+          </div>
+          <p class="e-flex__col">{{ platform.w }}x{{ platform.h }}</p>
+        </div>
+        <p>Distance: {{ platform.distance }}</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

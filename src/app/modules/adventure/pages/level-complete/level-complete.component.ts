@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { LeaderboardService } from '../../../../core/services/adventure/leaderboard.service';
 import { PlayerService } from '../../../../core/services/adventure/player.service';
 import { IReplay } from '../../../../shared/models/interfaces/replay.interface';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { OnDestroyService } from '../../../../core/services/on-destroy.service';
 
@@ -21,7 +21,7 @@ export class LevelCompleteComponent implements OnInit {
   public levelRankings: Observable<ILevelRanking[]>;
   public showModal = false;
   public storedReplay: IReplay;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public showError = false;
 
   public readonly MAX_LENGTH = 30;
@@ -154,9 +154,9 @@ export class LevelCompleteComponent implements OnInit {
     return (k > 64 && k < 91) || (k > 96 && k < 123) || k === 8 || k === 32 || (k >= 48 && k <= 57);
   };
 
-  private createForm = (): FormGroup => {
-    return new FormGroup({
-      name: new FormControl('', [Validators.maxLength(this.MAX_LENGTH), Validators.required]),
+  private createForm = (): UntypedFormGroup => {
+    return new UntypedFormGroup({
+      name: new UntypedFormControl('', [Validators.maxLength(this.MAX_LENGTH), Validators.required]),
     });
   };
 }

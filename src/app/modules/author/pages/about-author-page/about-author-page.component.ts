@@ -78,4 +78,11 @@ export class AboutAuthorPageComponent implements OnInit, OnDestroy {
   public stopMove = (): void => {
     this.moving = false;
   };
+
+  public calculateAge = (): number => {
+    const birthDate = new Date(1995, 4, 16, 0, 0, 0);
+    const ageDifMs = Date.now() - birthDate.getTime();
+    const ageDate = new Date(ageDifMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  };
 }

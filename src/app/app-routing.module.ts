@@ -24,6 +24,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/cube/cube.module').then((m) => m.CubeModule),
   },
   {
+    path: 'catgpt',
+    loadChildren: () => import('./modules/catgpt/catgpt.module').then((m) => m.CatgptModule),
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',

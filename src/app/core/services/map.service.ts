@@ -789,9 +789,9 @@ export class MapService {
     passageChanged = this.checkPassage(
       oldPassage,
       PassageTypeEnum.EXPERIENCE,
-      this.posX > 2.2 && this.posX < 2.8 && this.posY >= 10.5 && this.posY < 11 && this.dirY > 0.5,
-      2,
-      11,
+      this.posX > 4.5 && this.posX <= 5 && this.posY > 10.2 && this.posY < 10.8 && this.dirX > 0.5,
+      5,
+      10,
       this.texEnum.TV1S
     );
     if (passageChanged) {
@@ -800,10 +800,10 @@ export class MapService {
 
     passageChanged = this.checkPassage(
       oldPassage,
-      PassageTypeEnum.MEDIA,
-      this.posX > 4.5 && this.posX <= 5 && this.posY > 10.2 && this.posY < 10.8 && this.dirX > 0.5,
-      5,
-      10,
+      PassageTypeEnum.EDDYLIEZ,
+      this.posX > 2.2 && this.posX < 2.8 && this.posY >= 10.5 && this.posY < 11 && this.dirY > 0.5,
+      2,
+      11,
       this.texEnum.TV1S
     );
     if (passageChanged) {

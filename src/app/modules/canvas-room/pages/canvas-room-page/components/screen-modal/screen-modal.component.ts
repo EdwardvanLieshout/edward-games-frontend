@@ -38,11 +38,12 @@ export class ScreenModalComponent implements OnInit {
       route: 'author/experience',
       bgImg: '',
     },
-    Media: {
-      title: 'Media',
-      content: 'Click proceed to go to the media page.',
-      route: 'author/media',
+    'Eddy Liez': {
+      title: 'Eddy Liez',
+      content: "Checkout Eddy Liez's latest project.",
+      route: '',
       bgImg: '',
+      eddyLiez: true,
     },
     'Contact the author': {
       title: 'Contact the author',

@@ -15,8 +15,17 @@ const routes: Routes = [
     loadChildren: () => import('./modules/adventure/adventure.module').then((m) => m.AdventureModule),
   },
   {
+    path: 'builder',
+    loadChildren: () =>
+      import('./modules/adventure-builder/adventure-builder.module').then((m) => m.AdventureBuilderModule),
+  },
+  {
     path: 'cube',
     loadChildren: () => import('./modules/cube/cube.module').then((m) => m.CubeModule),
+  },
+  {
+    path: 'catgpt',
+    loadChildren: () => import('./modules/catgpt/catgpt.module').then((m) => m.CatgptModule),
   },
   {
     path: '',

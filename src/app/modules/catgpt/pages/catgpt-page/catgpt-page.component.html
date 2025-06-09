@@ -1,0 +1,9 @@
+<form [formGroup]="form" (submit)="submitForm()">
+  <label for="story">Write words here:</label>
+
+  <textarea id="story" name="story" rows="5" cols="33" formControlName="text">
+Hello.
+</textarea
+  >
+  <button type="submit">Submit!</button>
+</form>

@@ -1,6 +1,7 @@
 import { IDrawable } from './drawable.interface';
 
 export interface IBlock {
+  id?: string;
   x: number;
   y: number;
   w: number;

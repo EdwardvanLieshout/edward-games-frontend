@@ -2,6 +2,7 @@ import { DirTypeEnum } from '../enums/direction.enum';
 import { ActionTypeEnum } from '../enums/action.enum';
 
 export interface IDrawable {
+  id?: string;
   x: number;
   y: number;
   w: number;

@@ -66,7 +66,7 @@ export class RoomViewComponent implements OnInit, OnDestroy {
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.ref.detectChanges();
     if (typeof Worker !== 'undefined') {
-      const path = (this.worker = new Worker('./room-view.worker', { type: 'module' }));
+      const path = (this.worker = new Worker(new URL('./room-view.worker', import.meta.url), { type: 'module' }));
       this.worker.onmessage = ({ data }) => {
         this.handleWorkerMessage(data);
       };

@@ -57,7 +57,7 @@ export class IpaService {
           res = this.ipaBackup[w.toLowerCase()];
         }
         if (!res) {
-          return 'UNKNOWN';
+          return this.splitUpAndTranslate(w);
         }
         return res;
       })
@@ -65,7 +65,49 @@ export class IpaService {
     return result.trim();
   };
 
-  translateNumberToWords(num: string): string {
+  private splitUpAndTranslate(word: string): string {
+    word = word.replace(/([A-Z])/g, ' $1');
+    word = word.replace(/-/g, ' ');
+    const wordsToTranslate = word.split(/\s+/);
+    const result = wordsToTranslate
+      .filter((w) => w !== '')
+      .map((w) => {
+        let res = this.ipaDict[w.toLowerCase()];
+        if (!res) {
+          res = this.ipaBackup[w.toLowerCase()];
+        }
+        if (!res) {
+          return this.detectAbbreviations(w);
+        }
+        return res;
+      })
+      .join(' ');
+    return result.trim();
+  }
+
+  private detectAbbreviations(word: string): string {
+    if (word.match(/[aeiouy]/gi) === null) {
+      const wordsToTranslate = word.split('');
+      const result = wordsToTranslate
+        .filter((w) => w !== '')
+        .map((w) => {
+          let res = this.ipaDict[w.toLowerCase()];
+          if (!res) {
+            res = this.ipaBackup[w.toLowerCase()];
+          }
+          if (!res) {
+            return 'UNKNOWN';
+          }
+          return res;
+        })
+        .join(' ');
+      return result.trim();
+    } else {
+      return 'UNKNOWN';
+    }
+  }
+
+  private translateNumberToWords(num: string): string {
     return this.toWords.convert(+num);
   }
 }

@@ -1,0 +1,73 @@
+@mixin media-small {
+  @media screen and (max-width: ($media-medium-width - 1px)) {
+    @content;
+  }
+}
+
+@mixin media-medium {
+  @media screen and (min-width: $media-medium-width) {
+    @content;
+  }
+}
+
+@mixin media-medium-only {
+  @media screen and (min-width: $media-medium-width) and (max-width: ($media-large-width - 1px)) {
+    @content;
+  }
+}
+
+@mixin media-large {
+  @media screen and (min-width: $media-large-width) {
+    @content;
+  }
+}
+
+@mixin active-mouse-states {
+  &:active,
+  &:focus,
+  &:focus-within,
+  &:hover {
+    @content;
+  }
+}
+
+@mixin transition-very-fast {
+  transition: $animation-very-fast;
+}
+
+@mixin transition-fast {
+  transition: $animation-fast;
+}
+
+@mixin transition-slow {
+  transition: $animation-slow;
+}
+
+@mixin transition-very-slow {
+  transition: $animation-very-slow;
+}
+
+@mixin transition-uber-slow {
+  transition: $animation-uber-slow;
+}
+
+@mixin hide-button-defaults {
+  background: none;
+  border: none;
+  box-shadow: none;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+}
+
+@mixin hide-visually-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}

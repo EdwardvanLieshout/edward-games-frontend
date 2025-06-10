@@ -1,0 +1,39 @@
+@import '../abstracts/all';
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: $colour-black;
+  color: $colour-light-gray;
+  font-family: $font-default;
+}
+
+button {
+  @include hide-button-defaults;
+  color: $colour-light-gray;
+  cursor: pointer;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: $colour-green;
+
+  &:visited {
+    color: $colour-green-shadow;
+  }
+
+  &:hover {
+    color: $colour-green-light;
+  }
+}

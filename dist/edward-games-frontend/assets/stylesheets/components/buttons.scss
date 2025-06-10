@@ -1,0 +1,138 @@
+@import '../config';
+@import '../abstracts/all';
+
+.#{$block-prefix}button {
+  @include transition-fast;
+  border-radius: 2px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-height: 5rem;
+  min-width: 8rem;
+  padding: 0.8rem 3.6rem;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: $colour-dark-gray;
+  border: solid 2px $colour-light-gray;
+
+  @include active-mouse-states {
+    background-color: $colour-dark-gray-hover;
+    color: $colour-light-gray-hover;
+    @include box-shadow($colour-light-gray);
+  }
+
+  @include media-small {
+    font-size: 1rem;
+    min-height: 3.4rem;
+    min-width: 5rem;
+    padding: 0.4rem 1.8rem;
+  }
+
+  &--small {
+    font-size: 1rem;
+    min-height: 3.4rem;
+    min-width: 5rem;
+    padding: 0.4rem 1.8rem;
+
+    @include media-small {
+      font-size: 0.8rem;
+      min-height: 3rem;
+      min-width: 4rem;
+      padding: 0.2rem 0.8rem;
+    }
+  }
+
+  &--primary {
+    background-color: $colour-light-gray;
+    color: $colour-dark-gray;
+    border: solid 2px $colour-white;
+
+    @include active-mouse-states {
+      background-color: $colour-light-gray-hover;
+      color: $colour-dark-gray-hover;
+      @include box-shadow($colour-white);
+    }
+
+    &:active {
+      background-color: $colour-dark-gray;
+      border: solid 2px $colour-light-gray;
+      color: $colour-light-gray-hover;
+      @include box-shadow($colour-black);
+    }
+  }
+
+  & + & {
+    margin-left: 1.8rem;
+    @include media-small {
+      margin-left: 0.8rem;
+    }
+  }
+
+  &--link {
+    color: $colour-green;
+    text-decoration: underline;
+
+    &:hover {
+      color: $colour-green-light;
+    }
+  }
+
+  &__control {
+    &#{&} {
+      width: 100%;
+      margin: 0.6rem;
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+      min-height: 2rem;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* IE10+/Edge */
+      user-select: none; /* Standard */
+      @include box-shadow(transparent);
+      &__up {
+        margin-bottom: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: solid 1px $colour-light-gray-hover;
+      }
+      &__down {
+        margin-top: 0;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top: solid 1px $colour-light-gray-hover;
+      }
+      &__left {
+        margin-right: 0;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-right: solid 1px $colour-light-gray-hover;
+      }
+      &__right {
+        margin-left: 0;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        border-left: solid 1px $colour-light-gray-hover;
+      }
+      &__center {
+        margin: 0;
+        border-radius: 0;
+        border: solid 1px $colour-light-gray-hover;
+      }
+      &:active {
+        background-color: $colour-light-gray;
+        color: $colour-dark-gray;
+        border: solid 2px $colour-white;
+      }
+      &--active {
+        background-color: $colour-dark-gray;
+        border-color: $colour-light-gray;
+        color: $colour-light-gray-hover;
+        &:active {
+          background-color: $colour-dark-gray;
+          border-color: $colour-light-gray;
+          color: $colour-light-gray-hover;
+        }
+      }
+    }
+  }
+}

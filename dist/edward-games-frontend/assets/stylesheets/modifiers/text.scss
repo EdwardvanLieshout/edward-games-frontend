@@ -1,0 +1,38 @@
+@import '../abstracts/all';
+
+.text {
+  &--center {
+    text-align: center;
+  }
+
+  &--green {
+    color: $colour-green;
+  }
+
+  &--dark {
+    color: $colour-dark-gray;
+  }
+
+  &--danger {
+    color: $colour-danger;
+  }
+
+  &--commodore {
+    font-family: Commodore;
+  }
+
+  &--small {
+    font-size: 0.7rem;
+  }
+
+  &__shadow {
+    &--green {
+      @include text-shadow($colour-green, 3);
+      @for $i from 2 through 12 {
+        &-#{$i} {
+          @include text-shadow($colour-green, $i);
+        }
+      }
+    }
+  }
+}

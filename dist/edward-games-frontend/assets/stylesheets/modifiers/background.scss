@@ -1,0 +1,10 @@
+@import '../abstracts/all';
+
+.bg {
+  &--lightgray {
+    background-color: $colour-light-gray;
+  }
+  &--darkgray {
+    background-color: $colour-dark-gray;
+  }
+}

@@ -1,0 +1,40 @@
+$_base: 0.8rem;
+
+@each $_type in 'margin', 'padding' {
+  .#{$_type} {
+    @for $i from 0 through 8 {
+      &--#{$i} {
+        #{$_type}: ($i * $_base);
+      }
+
+      &-bottom--#{$i},
+      &-vertical--#{$i} {
+        #{$_type}-bottom: ($i * $_base);
+      }
+
+      &-top--#{$i},
+      &-vertical--#{$i} {
+        #{$_type}-top: ($i * $_base);
+      }
+
+      &-right--#{$i},
+      &-horizontal--#{$i} {
+        #{$_type}-right: ($i * $_base);
+      }
+
+      &-left--#{$i},
+      &-horizontal--#{$i} {
+        #{$_type}-left: ($i * $_base);
+      }
+    }
+    &-auto {
+      display: block;
+      #{$_type}-left: auto !important;
+      #{$_type}-right: auto !important;
+    }
+
+    &-override {
+      #{$_type}: 0 !important;
+    }
+  }
+}

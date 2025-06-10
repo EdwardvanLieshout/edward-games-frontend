@@ -1,0 +1,36 @@
+@import '../abstracts/all';
+
+@mixin _multiple-border-weights($colour) {
+  @for $i from 1 through 8 {
+    &-#{$i} {
+      border: solid #{$i}px $colour;
+    }
+  }
+}
+
+@mixin _multiple-shadow-weights($colour) {
+  @for $i from 4 through 12 {
+    &-#{$i} {
+      @include box-shadow($colour, #{$i}px);
+    }
+  }
+}
+
+.border {
+  &--green {
+    border: solid 1px $colour-green;
+    @include _multiple-border-weights($colour-green);
+  }
+
+  &--light {
+    border: solid 1px $colour-light-gray;
+    @include _multiple-border-weights($colour-light-gray);
+  }
+
+  &__shadow {
+    &--green {
+      @include box-shadow($colour-green, 4px);
+      @include _multiple-shadow-weights($colour-green);
+    }
+  }
+}

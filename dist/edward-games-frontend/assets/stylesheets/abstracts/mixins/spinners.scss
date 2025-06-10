@@ -1,0 +1,46 @@
+@import '../animation-speeds';
+@import '../colours';
+
+$_default-colour: $colour-green;
+
+@mixin _spinner-root-defaults {
+  background-image: none;
+  cursor: progress;
+  position: relative;
+}
+
+@mixin _spinner-psuedo-defaults($_colour: $_default-colour) {
+  animation: rotate (2 * $animation-slow) linear infinite;
+  background-image: none;
+  border: 4px solid $_colour;
+  border-left-color: transparent;
+  border-radius: 50%;
+  content: '';
+  height: 1.6rem;
+  width: 1.6rem;
+  position: absolute;
+  top: 0;
+  z-index: +1;
+}
+
+@mixin spinner-before-element($colour) {
+  @include _spinner-root-defaults;
+
+  &::before {
+    @include _spinner-psuedo-defaults($colour);
+    left: 0;
+
+    @content;
+  }
+}
+
+@mixin spinner-after-element($colour) {
+  @include _spinner-root-defaults;
+
+  &::after {
+    @include _spinner-psuedo-defaults($colour);
+    right: 0;
+
+    @content;
+  }
+}
